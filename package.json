@@ -13,6 +13,7 @@
     "node-github": "0.0.3",
     "commander": "~1.1.1",
     "github": "~0.1.8",
-    "async": "~0.2.8"
+    "async": "~0.2.8",
+    "nconf": "~0.6.7"
   }
 }
