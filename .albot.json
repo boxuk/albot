@@ -1,5 +1,6 @@
 {
   "organisation": "athieriot",
   "github_token": "",
-  "filter": ""
+  "hipchat_token": "",
+  "filter": "albot"
 }
