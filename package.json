@@ -1,0 +1,18 @@
+{
+  "name": "albot",
+  "version": "0.1.0",
+  "description": "Automated Leverage Box Operation Tool",
+  "main": "albot.coffee",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": "",
+  "author": "Aurélien Thieriot",
+  "license": "MIT",
+  "dependencies": {
+    "node-github": "0.0.3",
+    "commander": "~1.1.1",
+    "github": "~0.1.8",
+    "async": "~0.2.8"
+  }
+}
