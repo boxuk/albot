@@ -8,6 +8,9 @@ HipchatApi = require 'hipchat'
 @channel = Nconf.get("hipchat").channel
 @nickname = Nconf.get("nickname")
 
+format = (status, title, url, infos, comments) =>
+  "test"
+  
 display = (status, title, url, infos, comments) =>
   iconCmd = if status then Styled.green('✓') else Styled.red('✘')
   icon = if status then "✓" else "✘"
@@ -17,5 +20,6 @@ display = (status, title, url, infos, comments) =>
   @rooms.message(@channel, @nickname, "#{icon} <a href='#{url}'>#{title}</a>: <strong>#{infos}</strong> - <i>#{comments} comments</i>", {message_format: "html", color: statusColor})
 
 module.exports = {
+  format: format,
   display: display
 }

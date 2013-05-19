@@ -4,7 +4,7 @@
   "description": "Automated Leverage Box Operation Tool",
   "main": "albot.coffee",
   "scripts": {
-    "test": "npm test"
+    "test": "./node_modules/.bin/mocha"
   },
   "repository": "",
   "author": "Aurélien Thieriot",
@@ -18,5 +18,9 @@
     "hipchat": "0.0.2",
     "underscore": "~1.4.4",
     "styled": "0.0.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.9.0",
+    "chai": "~1.6.0"
   }
 }
