@@ -8,38 +8,37 @@ _ = require('underscore')._
 HipchatApi = require 'hipchat'
 
 Commands = require './commands'
+Cache = require './cache'
 
 @rooms = new HipchatApi(Nconf.get("hipchat").token).Rooms
 @channel = Nconf.get("hipchat").channel
 @frequency = Nconf.get("hipchat").frequency
 
-store = (messages) =>
-  @cache = _.map(messages, (message) -> JSON.stringify(message))
-cached = (line) =>
-  _.contains(@cache, JSON.stringify(line))
-
-dispatch = (line) ->
+dispatch = (message) ->
   pattern = new RegExp("^#{Nconf.get("nickname")} ([a-z]+)$");
-  cmd = line.message.match(pattern)
+  cmd = message.match(pattern)
   if (cmd)
-    Commands[cmd[1]].action()
+    Commands[cmd[1]]
 
 server = () =>
   @rooms.history @channel, (error, lines) ->
     if (error) then console.log(error)
     else if(lines)
-      store(lines.messages)
+      Cache.store(lines.messages)
 
   setInterval () =>
     @rooms.history @channel, (error, lines) ->
       if (error) then console.log(error)
       else if (lines)
         Async.each lines.messages, (line, cb) ->
-          if (not cached(line))
-            dispatch(line)
+          if (not Cache.cached(line))
+            dispatch(line.message).action()
           cb(null)
         , (err) ->
-          store(lines.messages)
+          Cache.store(lines.messages)
   , @frequency
 
-module.exports = server
+module.exports = {
+  dispatch: dispatch,
+  action: server
+}

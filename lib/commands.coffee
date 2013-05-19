@@ -25,13 +25,14 @@ pulls = () =>
             Async.each prs,
               Async.apply (pr, cb) =>
                 @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) ->
-                  Utils.display(details.mergeable, details.title, details.html_url, repo.name, details.comments)
+                  Utils.print(details.title, details.html_url, repo.name, details.comments + " comments", details.mergeable)
                   cb(error)
     , (err) ->
       console.log "An error occured #{JSON.stringify(err)}"
 
 module.exports = {
   pulls: {
+    name: "Pull Requests"
     description: "List all Pull Requests of the organisation",
     action: pulls
   }
