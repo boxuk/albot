@@ -16,6 +16,7 @@
     "async": "~0.2.8",
     "nconf": "~0.6.7",
     "hipchat": "0.0.2",
-    "underscore": "~1.4.4"
+    "underscore": "~1.4.4",
+    "styled": "0.0.1"
   }
 }
