@@ -8,18 +8,37 @@ HipchatApi = require 'hipchat'
 @channel = Nconf.get("hipchat").channel
 @nickname = Nconf.get("nickname")
 
-format = (status, title, url, infos, comments) =>
-  "test"
-  
-display = (status, title, url, infos, comments) =>
-  iconCmd = if status then Styled.green('✓') else Styled.red('✘')
-  icon = if status then "✓" else "✘"
-  statusColor = if status then "green" else "red"
+status_icon = (status) -> if status then "✓" else "✘"
+status_color = (status) -> if status then "green" else "red"
 
-  console.log "#{iconCmd} #{title} - #{infos} - #{comments} comments"
-  @rooms.message(@channel, @nickname, "#{icon} <a href='#{url}'>#{title}</a>: <strong>#{infos}</strong> - <i>#{comments} comments</i>", {message_format: "html", color: statusColor})
+format_term = (title, url, infos, comments, status) ->
+  icon = status_icon(status)
+  color = status_color(status)
+
+  text = ""
+  text += "#{Styled(color, icon)} " if status? and icon? and color?
+  text += "#{title}"
+  text += " - #{infos}" if infos?
+  text += " - #{comments}" if comments?
+  text
+ 
+format_html = (title, url, infos, comments, status) ->
+  html = ""
+  html += "#{status_icon(status)} " if status?
+  html += "<a href='#{url}'>" if url?
+  html += "#{title}"
+  html += "</a>" if url?
+  html += " - <strong>#{infos}</strong>" if infos?
+  html += " - <i>#{comments}</i>" if comments?
+  html
+
+print = (title, url, infos, comments, status) =>
+  console.log format_term(title, url, infos, comments, status)
+
+  @rooms.message @channel, @nickname, format_html(title, url, infos, comments, status), {message_format: "html", color: status_color(status)}
 
 module.exports = {
-  format: format,
-  display: display
+  format_term: format_term,
+  format_html: format_html,
+  print: print
 }

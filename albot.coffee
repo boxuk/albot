@@ -22,6 +22,6 @@ for key, value of Commands
 Program
   .command('server')
   .description('Start albot to listen on Hipchat instead of the command line')
-  .action(require './lib/server')
+  .action(require('./lib/server').action)
 
 Program.parse process.argv
