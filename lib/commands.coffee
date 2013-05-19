@@ -9,14 +9,15 @@ GitHubApi = require 'github'
 Utils = require './utils'
 
 @github = new GitHubApi { version: "3.0.0" }
-@github.authenticate { type: "oauth", token: Nconf.get("github_token") }
+@github.authenticate { type: "oauth", token: Nconf.get("github").token }
 
-@org = Nconf.get("organisation")
+@org = Nconf.get("github").organisation
+@repo_filter = Nconf.get("github").repo_filter
 
 pulls = () =>
   @github.repos.getFromOrg {org: @org, per_page: 100}, (error, repos) =>
     Async.each repos, (repo, callback) =>
-      if (repo.name.indexOf(Nconf.get("filter")) > -1)
+      if (repo.name.indexOf(@repo_filter) > -1)
         @github.pullRequests.getAll {user: @org, repo: repo.name}, (error, prs) =>
           if (error)
             callback(error)

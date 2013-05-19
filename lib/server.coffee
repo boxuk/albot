@@ -2,29 +2,44 @@ Nconf = require 'nconf'
 Nconf.env().file({file: '.albot.json'})
 
 Async = require 'async'
+Match = require 'match'
 _ = require('underscore')._
 
 HipchatApi = require 'hipchat'
 
-@rooms = new HipchatApi(Nconf.get("hipchat_token")).Rooms
+Commands = require './commands'
+
+@rooms = new HipchatApi(Nconf.get("hipchat").token).Rooms
+@channel = Nconf.get("hipchat").channel
+@frequency = Nconf.get("hipchat").frequency
+
+store = (messages) =>
+  @cache = _.map(messages, (message) -> JSON.stringify(message))
+cached = (line) =>
+  _.contains(@cache, JSON.stringify(line))
+
+dispatch = (line) ->
+  pattern = new RegExp("^#{Nconf.get("nickname")} ([a-z]+)$");
+  cmd = line.message.match(pattern)
+  if (cmd)
+    Commands[cmd[1]].action()
 
 server = () =>
-  @rooms.history "albot", (error, lines) =>
+  @rooms.history @channel, (error, lines) ->
     if (error) then console.log(error)
     else if(lines)
-      @cache = _.map(lines.messages, (m) -> JSON.stringify(m))
+      store(lines.messages)
 
   setInterval () =>
-    @rooms.history "albot", (error, lines) =>
+    @rooms.history @channel, (error, lines) ->
       if (error) then console.log(error)
       else if (lines)
-        Async.each lines.messages, (line, cb) =>
-          if (not _.contains(@cache, JSON.stringify(line)))
-            if (line.message is "albot pulls")
-              require('./commands').pulls.action()
+        Async.each lines.messages, (line, cb) ->
+          if (not cached(line))
+            dispatch(line)
           cb(null)
-        , (err) =>
-          @cache = _.map(lines.messages, (m) -> JSON.stringify(m))
-  , 5000
+        , (err) ->
+          store(lines.messages)
+  , @frequency
 
 module.exports = server
