@@ -1,0 +1,13 @@
+- Propagating server mode for display
+- Match Hipchat message for regexp
+- Easiest configuration
+- Clean code
+- Mocha testing
+
+Commands:
+- Diff between tags
+- Tag
+- Deployed version
+- Deploying
+- retest PR
+- shipit
