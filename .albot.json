@@ -1,6 +1,13 @@
 {
-  "organisation": "athieriot",
-  "github_token": "",
-  "hipchat_token": "",
-  "filter": "albot"
+  "nickname": "albot",
+  "github": {
+    "organisation": "athieriot",
+    "token": "",
+    "repo_filter": "albot"
+  },
+  "hipchat": {
+    "channel": "albot",
+    "token": "",
+    "frequency": 6000
+  }
 }
