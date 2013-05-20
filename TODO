@@ -4,6 +4,7 @@
 - Better Link customisation when printing
 - Multi arguments
 - Multi filter (cw + catalyst for example)
+- More filters for pulls + more than the first page
 
 Commands:
 - Diff between tags
