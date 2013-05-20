@@ -1,13 +1,12 @@
-Nconf = require 'nconf'
-Nconf.env().file({file: '.albot.json'})
+Configuration = require './configuration'
 
 Styled = require 'styled'
 _ = require('underscore')._
 HipchatApi = require 'hipchat'
 
-@rooms = new HipchatApi(Nconf.get("hipchat").token).Rooms
-@channel = Nconf.get("hipchat").channel
-@nickname = Nconf.get("nickname")
+@rooms = new HipchatApi(Configuration.get("hipchat").token).Rooms
+@channel = Configuration.get("hipchat").channel
+@nickname = Configuration.get("nickname")
 
 status_icon = (status) -> if status then "✓" else "✘"
 status_color = (status) -> 
