@@ -1,5 +1,4 @@
-Nconf = require 'nconf'
-Nconf.env().file({file: '.albot.json'})
+Configuration = require './configuration'
 
 Async = require 'async'
 _ = require('underscore')._
@@ -8,11 +7,11 @@ GitHubApi = require 'github'
 
 Utils = require './utils'
 
-@github = new GitHubApi { version: "3.0.0" }
-@github.authenticate { type: "oauth", token: Nconf.get("github").token }
+@github = new GitHubApi { version: "3.0.0", debug: Configuration.get("github").debug }
+@github.authenticate { type: "oauth", token: Configuration.get("github").token }
 
-@org = Nconf.get("github").organisation
-@repo_filter = Nconf.get("github").repo_filter
+@org = Configuration.get("github").organisation
+@repo_filter = Configuration.get("github").repo_filter
 
 pulls = (fallback) =>
   @github.repos.getFromOrg {org: @org, per_page: 100}, (error, repos) =>

@@ -1,5 +1,4 @@
-Nconf = require 'nconf'
-Nconf.env().file({file: '.albot.json'})
+Configuration = require './configuration'
 
 _ = require('underscore')._
 

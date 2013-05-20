@@ -1,0 +1,14 @@
+{
+  "nickname": "albot",
+  "github": {
+    "organisation": "",
+    "token": "",
+    "repo_filter": "",
+    "debug": false
+  },
+  "hipchat": {
+    "channel": "",
+    "token": "",
+    "frequency": 6000
+  }
+}

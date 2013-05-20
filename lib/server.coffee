@@ -1,5 +1,4 @@
-Nconf = require 'nconf'
-Nconf.env().file({file: '.albot.json'})
+Configuration = require './configuration'
 
 Async = require 'async'
 _ = require('underscore')._
@@ -9,12 +8,12 @@ HipchatApi = require 'hipchat'
 Commands = require './commands'
 Cache = require './cache'
 
-@rooms = new HipchatApi(Nconf.get("hipchat").token).Rooms
-@channel = Nconf.get("hipchat").channel
-@frequency = Nconf.get("hipchat").frequency
+@rooms = new HipchatApi(Configuration.get("hipchat").token).Rooms
+@channel = Configuration.get("hipchat").channel
+@frequency = Configuration.get("hipchat").frequency
 
 dispatch = (message) ->
-  pattern = new RegExp("^#{Nconf.get("nickname")} ([a-z]+)( ([a-z\-]+))?$");
+  pattern = new RegExp("^#{Configuration.get("nickname")} ([a-z]+)( ([a-z\-]+))?$");
   request = message.match(pattern)
   if (request and request.length > 1)
     cmd = Commands[request[1]]
