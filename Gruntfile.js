@@ -5,8 +5,14 @@
 module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-mocha-cli');
+  grunt.loadNpmTasks('grunt-env');
 
   grunt.initConfig({
+    env: {
+      test: {
+        NODE_ENV : 'test',
+      }
+    },
     mochacli: {
       options: {
         reporter: 'spec'
@@ -15,5 +21,5 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('test', ['mochacli']);
+  grunt.registerTask('test', ['env:test', 'mochacli']);
 };

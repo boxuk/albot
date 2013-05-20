@@ -22,6 +22,8 @@
     "chai": "~1.6.0",
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.8",
-    "grunt-mocha-cli": "~1.0.5"
+    "grunt-mocha-cli": "~1.0.5",
+    "nock": "~0.18.0",
+    "grunt-env": "~0.4.0"
   }
 }

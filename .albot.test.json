@@ -1,0 +1,13 @@
+{
+  "nickname": "testbot",
+  "github": {
+    "organisation": "testorg",
+    "token": "testtoken",
+    "repo_filter": ""
+  },
+  "hipchat": {
+    "channel": "testchan",
+    "token": "testtoken",
+    "frequency": 6000
+  }
+}
