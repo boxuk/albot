@@ -2,6 +2,7 @@ Nconf = require 'nconf'
 Nconf.env().file({file: '.albot.json'})
 
 Styled = require 'styled'
+_ = require('underscore')._
 HipchatApi = require 'hipchat'
 
 @rooms = new HipchatApi(Nconf.get("hipchat").token).Rooms
@@ -41,8 +42,12 @@ print = (title, url, infos, comments, status) =>
 
   @rooms.message @channel, @nickname, format_html(title, url, infos, comments, status), {message_format: "html", color: status_color(status)}
 
+printWithFallback = (fallback) ->
+  if _.isFunction(fallback) then fallback else print
+
 module.exports = {
   format_term: format_term,
   format_html: format_html,
-  print: print
+  print: print,
+  printWithFallback: printWithFallback
 }

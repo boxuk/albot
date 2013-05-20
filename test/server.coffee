@@ -16,6 +16,6 @@ describe 'Server', () ->
       should.not.exist cmd
 
     it 'should match argument', () ->
-      cmd = Server.dispatch("#{Nconf.get("nickname")} tag repository")
-      cmd.should.have.property('name').equal("Tag")
+      cmd = Server.dispatch("#{Nconf.get("nickname")} help repository")
+      cmd.should.have.property('name').equal("Help")
       cmd.should.have.property('arg').equal("repository")

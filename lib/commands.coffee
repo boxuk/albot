@@ -14,7 +14,7 @@ Utils = require './utils'
 @org = Nconf.get("github").organisation
 @repo_filter = Nconf.get("github").repo_filter
 
-pulls = () =>
+pulls = (fallback) =>
   @github.repos.getFromOrg {org: @org, per_page: 100}, (error, repos) =>
     Async.each repos, (repo, callback) =>
       if (repo.name.indexOf(@repo_filter) > -1)
@@ -25,7 +25,7 @@ pulls = () =>
             Async.each prs,
               Async.apply (pr, cb) =>
                 @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) ->
-                  Utils.print(details.title, details.html_url, repo.name, details.comments + " comments", details.mergeable)
+                  Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments", details.mergeable)
                   cb(error)
     , (err) ->
       console.log "An error occured #{JSON.stringify(err)}"
@@ -48,9 +48,9 @@ tag = (repo) =>
               if (not error)
                 Utils.print(next, null, repo, tag.object.sha)
 
-help = () ->
+help = (fallback) ->
   for key, value of list
-    Utils.print(key, null, null, value.description)
+    Utils.printWithFallback(fallback)(key, null, null, value.description)
 
 list = {
   pulls: {
