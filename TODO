@@ -1,10 +1,10 @@
 - Propagating server mode for display
-- Easiest configuration
-- Clean code
+- Clean code (More Async)
 - Better Link customisation when printing
 - Multi arguments
 - Multi filter (cw + catalyst for example)
-- More filters for pulls + more than the first page
+- Filter by dates too
+- Inspect more than the first page of PRs
 - Verbose mode
 
 Commands:
