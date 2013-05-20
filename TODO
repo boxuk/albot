@@ -1,8 +1,9 @@
 - Propagating server mode for display
-- Match Hipchat message for regexp
 - Easiest configuration
 - Clean code
-- Mocha testing
+- Better Link customisation when printing
+- Multi arguments
+- Multi filter (cw + catalyst for example)
 
 Commands:
 - Diff between tags

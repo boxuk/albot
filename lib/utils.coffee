@@ -9,7 +9,11 @@ HipchatApi = require 'hipchat'
 @nickname = Nconf.get("nickname")
 
 status_icon = (status) -> if status then "✓" else "✘"
-status_color = (status) -> if status then "green" else "red"
+status_color = (status) -> 
+  if (status?)
+    if status then "green" else "red"
+  else
+    "yellow"
 
 format_term = (title, url, infos, comments, status) ->
   icon = status_icon(status)
