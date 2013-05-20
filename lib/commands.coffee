@@ -29,24 +29,6 @@ pulls = (fallback) =>
     , (err) ->
       console.log "An error occured #{JSON.stringify(err)}"
 
-tag = (repo) =>
-  # Use Async here
-  @github.repos.getTags {user: "athieriot", repo: repo}, (error, tags) =>
-    current = tags[0]
-    next = if current then current.name.parseInt + 1 else 1
-    @github.repos.getBranches {user: "athieriot", repo: repo}, (error, branches) =>
-      if (not error)
-        master = _.find(branches, (b) -> b.name is "master")
-        @github.gitdata.createTag {
-          user: "athieriot", repo: repo,
-          message: next.toString, object: master.commit.sha, tag: next.toString, type: "commit",
-          tagger: { name: "Aurélien Thieriot", email: "a.thieriot@gmail.com", date: new Date().getTime() }
-        }, (error, tag) =>
-          if (not error)
-            @github.gitdata.createReference {user: "athieriot", repo: repo, ref: "refs/tags/#{tag.tag}", sha: tag.sha }, (error, tag) =>
-              if (not error)
-                Utils.print(next, null, repo, tag.object.sha)
-
 help = (fallback) ->
   for key, value of list
     Utils.printWithFallback(fallback)(key, null, null, value.description)
