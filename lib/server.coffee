@@ -2,7 +2,6 @@ Nconf = require 'nconf'
 Nconf.env().file({file: '.albot.json'})
 
 Async = require 'async'
-Match = require 'match'
 _ = require('underscore')._
 
 HipchatApi = require 'hipchat'
@@ -15,10 +14,12 @@ Cache = require './cache'
 @frequency = Nconf.get("hipchat").frequency
 
 dispatch = (message) ->
-  pattern = new RegExp("^#{Nconf.get("nickname")} ([a-z]+)$");
-  cmd = message.match(pattern)
-  if (cmd)
-    Commands[cmd[1]]
+  pattern = new RegExp("^#{Nconf.get("nickname")} ([a-z]+)( ([a-z\-]+))?$");
+  request = message.match(pattern)
+  if (request and request.length > 1)
+    cmd = Commands[request[1]]
+    cmd["arg"] = request[3] || "" if cmd
+    cmd
 
 server = () =>
   @rooms.history @channel, (error, lines) ->
@@ -32,7 +33,9 @@ server = () =>
       else if (lines)
         Async.each lines.messages, (line, cb) ->
           if (not Cache.cached(line))
-            dispatch(line.message).action()
+            command = dispatch(line.message)
+            if (command)
+              command.action(command.arg)
           cb(null)
         , (err) ->
           Cache.store(lines.messages)
