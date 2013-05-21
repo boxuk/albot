@@ -39,6 +39,7 @@ format_html = (title, url, infos, comments, status) ->
 print = (title, url, infos, comments, status) =>
   console.log format_term(title, url, infos, comments, status)
 
+render = (title, url, infos, comments, status) =>
   @rooms.message @channel, @nickname, format_html(title, url, infos, comments, status), {message_format: "html", color: status_color(status)}
 
 printWithFallback = (fallback) ->
@@ -48,5 +49,6 @@ module.exports = {
   format_term: format_term,
   format_html: format_html,
   print: print,
+  render: render,
   printWithFallback: printWithFallback
 }

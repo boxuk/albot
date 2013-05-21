@@ -2,6 +2,7 @@
 
 Program = require 'commander'
 Fs = require 'fs'
+_ = require('underscore')._
 
 # Configuration definition.
 # TODO: Exporting that in a specific module
@@ -17,7 +18,7 @@ for key, value of Commands
   Program
     .command(key)
     .description(value.description)
-    .action(value.action)
+    .action(_.partial(value.action, null))
 
 Program
   .command('server')

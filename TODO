@@ -1,10 +1,10 @@
-- Propagating server mode for display
+- Better currying of the fallback function in commands
 - Clean code (More Async)
 - Better Link customisation when printing
-- Multi arguments
 - Filter by dates too
 - Inspect more than the first page of PRs
 - Verbose mode
+- More server mode tests
 
 Commands:
 - Diff between tags
