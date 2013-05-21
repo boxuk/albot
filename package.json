@@ -6,7 +6,7 @@
   "scripts": {
     "test": "./node_modules/.bin/grunt test"
   },
-  "repository": "",
+  "repository": "https://github.com/boxuk/albot",
   "author": "Box UK",
   "license": "MIT",
   "dependencies": {
