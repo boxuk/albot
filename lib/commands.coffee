@@ -18,8 +18,13 @@ isRepoInFilters = (name) ->
     name.indexOf(filter) > -1
 
 shouldBeDisplayed = (keyword, filter, title) ->
-  if (keyword is 'without' and title.toLowerCase().indexOf(filter.toLowerCase()) > -1) then false
-  else true
+  if (not filter?) then return true
+
+  term = filter.toLowerCase()
+  query = title.toLowerCase()
+  if (keyword is 'without' and query.indexOf(term) > -1) then return false
+  else if (keyword is 'with' and query.indexOf(term) == -1) then return false
+  else return true
 
 buildStatus = (statuses) ->
   status = statuses[0] if statuses?
@@ -40,7 +45,8 @@ pulls = (fallback, keyword, filter) =>
               Async.apply (pr, cb) =>
                 @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) =>
                     @github.statuses.get {user: @org, repo: repo.name, sha: details.head.sha}, (error, statuses) ->
-                      if (shouldBeDisplayed(keyword, filter, details.title))
+                      query = details.title + repo.name + details.user.login
+                      if (shouldBeDisplayed(keyword, filter, query))
                         Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments" + needRebase(details.mergeable), buildStatus(statuses), details.user.gravatar_id)
                       cb(error)
     , (err) ->

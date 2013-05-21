@@ -17,6 +17,16 @@ describe 'Server', () ->
       cmd.should.have.property('name').equal("Help")
       cmd.should.have.property('arg1').equal("repository")
 
+    it 'should match arguments with upper cases', () ->
+      cmd = Server.dispatch("testbot help Repository")
+      cmd.should.have.property('name').equal("Help")
+      cmd.should.have.property('arg1').equal("Repository")
+
+    it 'should match arguments with some special characters', () ->
+      cmd = Server.dispatch("testbot help Do+not+merge")
+      cmd.should.have.property('name').equal("Help")
+      cmd.should.have.property('arg1').equal("Do+not+merge")
+
     it 'should match two arguments', () ->
       cmd = Server.dispatch("testbot help repository two")
       cmd.should.have.property('name').equal("Help")
