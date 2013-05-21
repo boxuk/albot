@@ -37,6 +37,8 @@ help = (fallback) ->
   for key, value of list
     Utils.printWithFallback(fallback)(key, null, null, value.description)
 
+# All the commands should have a fallback function or null as first argument
+# TODO: See if we can make that cleaner
 list = {
   pulls: {
     name: "Pull Requests"

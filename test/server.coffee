@@ -12,7 +12,22 @@ describe 'Server', () ->
       cmd = Server.dispatch("anything")
       should.not.exist cmd
 
-    it 'should match argument', () ->
+    it 'should match one argument', () ->
       cmd = Server.dispatch("testbot help repository")
       cmd.should.have.property('name').equal("Help")
-      cmd.should.have.property('arg').equal("repository")
+      cmd.should.have.property('arg1').equal("repository")
+
+    it 'should match two arguments', () ->
+      cmd = Server.dispatch("testbot help repository two")
+      cmd.should.have.property('name').equal("Help")
+      cmd.should.have.property('arg1').equal("repository")
+      cmd.should.have.property('arg2').equal("two")
+
+    it 'should match up to five arguments', () ->
+      cmd = Server.dispatch("testbot help repository two up to five")
+      cmd.should.have.property('name').equal("Help")
+      cmd.should.have.property('arg1').equal("repository")
+      cmd.should.have.property('arg2').equal("two")
+      cmd.should.have.property('arg3').equal("up")
+      cmd.should.have.property('arg4').equal("to")
+      cmd.should.have.property('arg5').equal("five")
