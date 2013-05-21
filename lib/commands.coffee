@@ -17,7 +17,18 @@ isRepoInFilters = (name) ->
   _.some repo_filters, (filter) ->
     name.indexOf(filter) > -1
 
-pulls = (fallback) =>
+shouldBeDisplayed = (keyword, filter, title) ->
+  if (keyword is 'without' and title.indexOf(filter) > -1) then false
+  else true
+
+buildStatus = (statuses) ->
+  status = statuses[0] if statuses?
+  if status? and status.state? and status.state is 'pending' then undefined else status.state is 'success'
+
+needRebase = (mergeable) ->
+  if mergeable then "" else " - *NEED REBASE*"
+
+pulls = (fallback, keyword, filter) =>
   @github.repos.getFromOrg {org: @org, per_page: 100}, (error, repos) =>
     Async.each repos, (repo, callback) =>
       if (isRepoInFilters(repo.name))
@@ -29,10 +40,8 @@ pulls = (fallback) =>
               Async.apply (pr, cb) =>
                 @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) =>
                     @github.statuses.get {user: @org, repo: repo.name, sha: details.head.sha}, (error, statuses) ->
-                      status = statuses[0] if statuses?
-                      mergeable = if status? and status.state is 'pending' then undefined else status.state is 'success'
-                      needRebase = if details.mergeable then "" else " - *NEED REBASE*"
-                      Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments" + needRebase, mergeable, details.user.gravatar_id)
+                      if (shouldBeDisplayed(keyword, filter, details.title))
+                        Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments" + needRebase(details.mergeable), buildStatus(statuses), details.user.gravatar_id)
                       cb(error)
     , (err) ->
       console.log "An error occured #{JSON.stringify(err)}"
@@ -48,7 +57,8 @@ list = {
     name: "Pull Requests"
     description: "List all Pull Requests of the organisation",
     action: pulls,
-    isRepoInFilters: isRepoInFilters
+    isRepoInFilters: isRepoInFilters,
+    shouldBeDisplayed: shouldBeDisplayed
   },
   help: {
     name: "Help"
