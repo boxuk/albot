@@ -29,7 +29,7 @@ pulls = (fallback) =>
               Async.apply (pr, cb) =>
                 @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) =>
                     @github.statuses.get {user: @org, repo: repo.name, sha: details.head.sha}, (error, statuses) ->
-                      status = statuses[0]
+                      status = statuses[0] if statuses?
                       mergeable = if status? and status.state is 'pending' then undefined else status.state is 'success'
                       needRebase = if details.mergeable then "" else " - *NEED REBASE*"
                       Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments" + needRebase, mergeable, details.user.gravatar_id)
