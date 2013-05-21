@@ -1,15 +1,20 @@
+Improvement:
+- Error handling
 - Better currying of the fallback function in commands
 - Clean code (More Async)
-- Better Link customisation when printing
-- Filter by dates too
-- Inspect more than the first page of PRs
 - Verbose mode
 - More server mode tests
 
+Maybe
+- Better Link customisation when printing
+- Filter by dates too
+- Inspect more than the first page of PRs
+
 Commands:
 - Diff between tags
-- Tag
-- Deployed version
-- Deploying
-- retest PR
-- shipit
+- Tagging
+- Launch Jenkins build
+- Show deployed version
+- Deploying (Capifony)
+- Retest PR
+- shipit (To mark the PR as being reviewed by someone)
