@@ -8,7 +8,12 @@ HipchatApi = require 'hipchat'
 @channel = Configuration.get("hipchat").channel
 @nickname = Configuration.get("nickname")
 
-status_icon = (status) -> if status then "✓" else "✘"
+status_icon = (status) ->
+  if (status?)
+    if status then "✓" else "✘"
+  else
+    "●"
+
 status_color = (status) -> 
   if (status?)
     if status then "green" else "red"
@@ -20,7 +25,7 @@ format_term = (title, url, infos, comments, status, gravatar) ->
   color = status_color(status)
 
   text = ""
-  text += "#{Styled(color, icon)} " if status? and icon? and color?
+  text += "#{Styled(color, icon)} " if icon? and color?
   text += "#{title}"
   text += " - #{infos}" if infos?
   text += " - #{comments}" if comments?
@@ -28,7 +33,7 @@ format_term = (title, url, infos, comments, status, gravatar) ->
  
 format_html = (title, url, infos, comments, status, gravatar) ->
   html = ""
-  html += "#{status_icon(status)} " if status?
+  html += "#{status_icon(status)} "
   html += "<img src='http://www.gravatar.com/avatar/#{gravatar}?s=20' /> - " if gravatar? and Configuration.get("github").gravatar
   html += "<a href='#{url}'>" if url?
   html += "#{title}"

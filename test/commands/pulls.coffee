@@ -26,9 +26,18 @@ describe 'Commands', () ->
               "mergeable": true,
               "comments": 10,
               "user": {
+              },
+              "head": {
+                "sha": "testsha"
               }
             }
           )
+        .get('/repos/testorg/test-repo/statuses/testsha?access_token=testtoken')
+        .reply(200, [
+            {
+              "state": "success"
+            }
+          ])
 
     it 'should list Pull Requests', (done) ->
       Commands.pulls.action (title, url, infos, comments, status) ->

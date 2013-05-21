@@ -27,9 +27,12 @@ pulls = (fallback) =>
           else
             Async.each prs,
               Async.apply (pr, cb) =>
-                @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) ->
-                  Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments", details.mergeable, details.user.gravatar_id)
-                  cb(error)
+                @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) =>
+                    @github.statuses.get {user: @org, repo: repo.name, sha: details.head.sha}, (error, statuses) ->
+                      status = statuses[0]
+                      mergeable = if status? and status.state is 'pending' then undefined else status.state is 'success'
+                      Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments", mergeable, details.user.gravatar_id)
+                      cb(error)
     , (err) ->
       console.log "An error occured #{JSON.stringify(err)}"
 
