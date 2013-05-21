@@ -13,7 +13,7 @@ describe 'Utils', () ->
 
     it 'should have only title mandatory', () ->
       text = Utils.format_term("title")
-      text.should.equal "title"
+      text.should.equal "\u001b[33m●\u001b[0m title"
 
   describe '#format_html()', () ->
     it 'should be nicely formatted', () ->
@@ -25,7 +25,7 @@ describe 'Utils', () ->
 
     it 'should have only title mandatory', () ->
       text = Utils.format_html("title")
-      text.should.equal "title"
+      text.should.equal "● title"
 
     it 'should be able to display gravatars', () ->
       test = Utils.format_html("title", "http://google.fr", "infos", "comments", false, "205e460b479e2e5b48aec07710c08d50")
