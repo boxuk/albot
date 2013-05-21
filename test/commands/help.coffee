@@ -1,7 +1,9 @@
+csrequire = require('covershot').require.bind(null, require)
+
 should = require('chai').should()
 _ = require('underscore')._
 
-Commands = require '../../lib/commands'
+Commands = csrequire '../../lib/commands'
 
 describe 'Commands', () ->
   describe '#help()', () ->

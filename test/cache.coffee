@@ -1,6 +1,8 @@
+csrequire = require('covershot').require.bind(null, require)
+
 should = require('chai').should()
 
-Cache = require '../lib/cache'
+Cache = csrequire '../lib/cache'
 
 describe 'Cache', () ->
   describe '#store()', () ->
