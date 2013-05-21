@@ -1,6 +1,8 @@
 Albot
 =====
 
+[![Build Status](https://secure.travis-ci.org/boxuk/albot.png)](http://travis-ci.org/boxuk/albot)
+
 Albot is a small command line tool built as an attempt to help us with our Developement process.
 
 Usage
