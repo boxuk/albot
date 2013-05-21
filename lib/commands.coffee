@@ -1,6 +1,7 @@
 Configuration = require './configuration'
 
 Async = require 'async'
+Moment = require 'moment'
 _ = require('underscore')._
 
 GitHubApi = require 'github'
@@ -17,7 +18,13 @@ isRepoInFilters = (name) ->
   _.some repo_filters, (filter) ->
     name.indexOf(filter) > -1
 
-shouldBeDisplayed = (keyword, filter, title) ->
+checkRecentDate = (createdAt, filter) ->
+  period = if not _.isString(filter) then 'weeks' else filter
+  thisUnit = Moment().subtract(period, 1)
+  Moment(createdAt).isAfter(thisUnit)
+
+shouldBeDisplayed = (keyword, filter, title, createdAt) ->
+  if(keyword is 'recent' and createdAt?) then return checkRecentDate(createdAt, filter)
   if (not filter?) then return true
 
   term = filter.toLowerCase()
@@ -46,7 +53,7 @@ pulls = (fallback, keyword, filter) =>
                 @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) =>
                     @github.statuses.get {user: @org, repo: repo.name, sha: details.head.sha}, (error, statuses) ->
                       query = details.title + repo.name + details.user.login
-                      if (shouldBeDisplayed(keyword, filter, query))
+                      if (shouldBeDisplayed(keyword, filter, query, details.created_at))
                         Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments" + needRebase(details.mergeable), buildStatus(statuses), details.user.gravatar_id)
                       cb(error)
     , (err) ->
@@ -61,7 +68,7 @@ help = (fallback) ->
 list = {
   pulls: {
     name: "Pull Requests"
-    description: "[without <filter>] List all Pull Requests of the organisation",
+    description: "[without <filter> | with <filter> | recent [<unit>]] List all Pull Requests of the organisation",
     action: pulls,
     isRepoInFilters: isRepoInFilters,
     shouldBeDisplayed: shouldBeDisplayed
