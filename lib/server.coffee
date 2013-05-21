@@ -18,11 +18,12 @@ dispatch = (message) ->
   request = message.match(pattern)
   if (request and request.length > 1)
     cmd = Commands[request[1]]
-    cmd["arg1"] = request[3] || "" if cmd
-    cmd["arg2"] = request[5] || "" if cmd
-    cmd["arg3"] = request[7] || "" if cmd
-    cmd["arg4"] = request[9] || "" if cmd
-    cmd["arg5"] = request[11] || "" if cmd
+    if (cmd)
+      cmd["arg1"] = request[3]
+      cmd["arg2"] = request[5]
+      cmd["arg3"] = request[7]
+      cmd["arg4"] = request[9]
+      cmd["arg5"] = request[11]
     cmd
 
 server = () =>

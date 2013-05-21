@@ -21,6 +21,7 @@ describe 'Server', () ->
       cmd = Server.dispatch("testbot help Repository")
       cmd.should.have.property('name').equal("Help")
       cmd.should.have.property('arg1').equal("Repository")
+      cmd.should.not.have.property('arg2')
 
     it 'should match arguments with some special characters', () ->
       cmd = Server.dispatch("testbot help Do+not+merge")
