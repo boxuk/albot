@@ -66,7 +66,7 @@ describe 'Commands', () ->
       test.should.be.true
 
     it 'should hide requested term', () ->
-      test = Commands.pulls.shouldBeDisplayed('without', 'stuff', 'Line with stuff in it')
+      test = Commands.pulls.shouldBeDisplayed('without', 'stufF', 'Line with Stuff in it')
       test.should.be.false
 
     it 'should display anything else', () ->
