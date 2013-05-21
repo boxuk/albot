@@ -14,7 +14,7 @@ Usage
 
         Commands:
 
-          pulls                  List all Pull Requests of the organisation
+          pulls                  [without <filter> | with <filter> | recent [<unit>]] List all Pull Requests of the organisation
           help                   Display a list of available commands
           server                 Start albot to listen on Hipchat instead of the command line
 
@@ -22,6 +22,34 @@ Usage
 
           -h, --help     output usage information
           -V, --version  output the version number
+
+Pulls
+=====
+
+This command display the Pull Requests of all the repositories in your organisation
+(For which the name correspond the filters you have configured)
+
+On top of that, you have access to more on-demand filters.
+
+To only display the Pull Request that contains a term (The search is case insensitive):
+
+      ./albot.coffee pulls with _term_
+
+You can use this feature to display the Pull Request of a particular user:
+
+      ./albot.coffee pulls with _athieriot_
+
+The opposite is also available. Show all the Pull Requests that do NOT correspond to a term:
+
+      ./albot.coffee pulls without _WIP_
+
+Finally, you can display only recent Pull Requests
+
+      ./albot.coffee pulls recent
+
+By default, it's a week. But you can ask for a month, a year and so on. (All usable keys are here: [Moment#add](http://momentjs.com/docs/#/manipulating/add/))
+
+      ./albot.coffee pulls recent months
 
 Server
 ======
@@ -35,6 +63,7 @@ The same commands can be used.
 
 Note that the Hipchat API is limited to 100 requests by 5 minutes.
 By default, 50 are used to poll the channel.
+Be careful, it's very short.
 
 Configuration
 =============
@@ -46,6 +75,17 @@ This file must be located either in the current directory (where you launch Albo
 
 If you are more comfortable with env variables. You can use that too.
 
+- __nickname__, The nickname of the bot. It/He/She will respond to it. Default: "albot"
+- __github__
+ - __organisation__, The name of your Github organisation
+ - __token__ , The Github API token
+ - __gravatar__, Display (or not) the gravatar of the Pull Request creators. Default: false
+ - __repo_filters__, An array of term used to display Pull Requests. The terms must be included in repos name. Default: [""]
+- __hipchat__
+ - __channel__, The Hipchat channel to listen to in server mode
+ - __token__, The Hipchat API token
+ - __frequency__, Polling frequency. Default: 6000
+
 Hacking
 =======
 
@@ -54,5 +94,4 @@ If not, submit an issue instead and tell us why!
 
 If you don't know where to start. Look at the TODO file for any ideas of improvement or new command
 
-Don't forget to add some tests.
-We use Mocha, Chai and Nock.
+Don't forget to add some tests. We use Mocha, Chai and Nock.

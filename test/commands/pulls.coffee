@@ -2,6 +2,7 @@ should = require('chai').should()
 
 Commands = require '../../lib/commands'
 Nock = require 'nock'
+Moment = require 'moment'
 
 describe 'Commands', () ->
   describe '#pulls()', () ->
@@ -80,6 +81,21 @@ describe 'Commands', () ->
 
     it '-with- criteria should hide if term is not present', () ->
       test = Commands.pulls.shouldBeDisplayed('with', 'stuff', 'Line with things')
+      test.should.be.false
+
+    it '-recent- criteria should hide older than a week', () ->
+      older = Moment().subtract('weeks', 3)
+      test = Commands.pulls.shouldBeDisplayed('recent', undefined, 'Line with things', older)
+      test.should.be.false
+
+    it '-recent- criteria should show younger than a week', () ->
+      younger = Moment().subtract('days', 1)
+      test = Commands.pulls.shouldBeDisplayed('recent', undefined, 'Line with things', younger)
+      test.should.be.true
+
+    it '-recent- criteria should hide older than a month', () ->
+      older = Moment().subtract('months', 5)
+      test = Commands.pulls.shouldBeDisplayed('recent', 'months', 'Line with things', older)
       test.should.be.false
 
     it 'should display if criteria unknown', () ->
