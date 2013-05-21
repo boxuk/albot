@@ -15,7 +15,7 @@ status_color = (status) ->
   else
     "yellow"
 
-format_term = (title, url, infos, comments, status) ->
+format_term = (title, url, infos, comments, status, gravatar) ->
   icon = status_icon(status)
   color = status_color(status)
 
@@ -26,9 +26,10 @@ format_term = (title, url, infos, comments, status) ->
   text += " - #{comments}" if comments?
   text
  
-format_html = (title, url, infos, comments, status) ->
+format_html = (title, url, infos, comments, status, gravatar) ->
   html = ""
   html += "#{status_icon(status)} " if status?
+  html += "<img src='http://www.gravatar.com/avatar/#{gravatar}?s=20' /> - " if gravatar? and Configuration.get("github").gravatar
   html += "<a href='#{url}'>" if url?
   html += "#{title}"
   html += "</a>" if url?
@@ -36,11 +37,11 @@ format_html = (title, url, infos, comments, status) ->
   html += " - <i>#{comments}</i>" if comments?
   html
 
-print = (title, url, infos, comments, status) =>
+print = (title, url, infos, comments, status, gravatar) =>
   console.log format_term(title, url, infos, comments, status)
 
-render = (title, url, infos, comments, status) =>
-  @rooms.message @channel, @nickname, format_html(title, url, infos, comments, status), {message_format: "html", color: status_color(status)}
+render = (title, url, infos, comments, status, gravatar) =>
+  @rooms.message @channel, @nickname, format_html(title, url, infos, comments, status, gravatar), {message_format: "html", color: status_color(status)}
 
 printWithFallback = (fallback) ->
   if _.isFunction(fallback) then fallback else print

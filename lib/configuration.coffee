@@ -19,6 +19,7 @@ Nconf
     "nickname": "albot",
     "github": {
       "repo_filter": "",
+      "gravatar": false,
       "debug": false
     },
     "hipchat": {

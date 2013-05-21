@@ -28,7 +28,7 @@ pulls = (fallback) =>
             Async.each prs,
               Async.apply (pr, cb) =>
                 @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) ->
-                  Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments", details.mergeable)
+                  Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments", details.mergeable, details.user.gravatar_id)
                   cb(error)
     , (err) ->
       console.log "An error occured #{JSON.stringify(err)}"

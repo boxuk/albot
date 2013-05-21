@@ -3,6 +3,7 @@
   "github": {
     "organisation": "testorg",
     "token": "testtoken",
+    "gravatar": true,
     "repo_filters": [
       "test-repo",
       "another-one"

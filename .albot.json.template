@@ -3,6 +3,7 @@
   "github": {
     "organisation": "",
     "token": "",
+    "gravatar": false,
     "repo_filters": [""],
     "debug": false
   },
