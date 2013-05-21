@@ -26,6 +26,7 @@ describe 'Commands', () ->
               "mergeable": false,
               "comments": 10,
               "user": {
+                "login": "test-user"
               },
               "head": {
                 "sha": "testsha"
@@ -65,16 +66,26 @@ describe 'Commands', () ->
       test = Commands.pulls.shouldBeDisplayed()
       test.should.be.true
 
-    it 'should hide requested term', () ->
+    it '-without- criteria should hide requested term', () ->
       test = Commands.pulls.shouldBeDisplayed('without', 'stufF', 'Line with Stuff in it')
       test.should.be.false
 
-    it 'should display anything else', () ->
+    it '-without- criteria should display if term is not present', () ->
       test = Commands.pulls.shouldBeDisplayed('without', 'stuff', 'Line with things in it')
       test.should.be.true
 
+    it '-with- criteria should display if term is present', () ->
+      test = Commands.pulls.shouldBeDisplayed('with', 'stuff', 'Line with stuff')
+      test.should.be.true
+
+    it '-with- criteria should hide if term is not present', () ->
+      test = Commands.pulls.shouldBeDisplayed('with', 'stuff', 'Line with things')
+      test.should.be.false
+
+    it 'should display if criteria unknown', () ->
       test = Commands.pulls.shouldBeDisplayed('truc', 'stuff', 'Line with things in it')
       test.should.be.true
 
-      test = Commands.pulls.shouldBeDisplayed('machin')
+    it 'should display if term is null', () ->
+      test = Commands.pulls.shouldBeDisplayed('without', undefined, 'Line with stuff')
       test.should.be.true
