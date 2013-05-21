@@ -18,7 +18,7 @@ isRepoInFilters = (name) ->
     name.indexOf(filter) > -1
 
 shouldBeDisplayed = (keyword, filter, title) ->
-  if (keyword is 'without' and title.indexOf(filter) > -1) then false
+  if (keyword is 'without' and title.toLowerCase().indexOf(filter.toLowerCase()) > -1) then false
   else true
 
 buildStatus = (statuses) ->
