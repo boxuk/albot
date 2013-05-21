@@ -1,6 +1,7 @@
 should = require('chai').should()
 
 Utils = require '../lib/utils'
+Nock = require 'nock'
 
 describe 'Utils', () ->
   describe '#format_term()', () ->
@@ -30,3 +31,22 @@ describe 'Utils', () ->
     it 'should be able to display gravatars', () ->
       test = Utils.format_html("title", "http://google.fr", "infos", "comments", false, "205e460b479e2e5b48aec07710c08d50")
       test.should.equal "✘ <img src='http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=20' /> - <a href='http://google.fr'>title</a> - <strong>infos</strong> - <i>comments</i>"
+
+  describe '#render()', () ->
+    it.skip 'should send a message to the Hipchat API', () ->
+      nock = Nock('http://api.hipchat.com')
+        .matchHeader('Content-Type', 'application/x-www-form-urlencoded')
+        .post('/v1/rooms/message?format=json&auth_token=testtoken', {
+          message_format: 'html',
+          color: 'yellow',
+          room_id: 'testchan',
+          from: 'testbot',
+          message: '● test message'
+        })
+        .reply(200, {
+          "status": "sent"
+        })
+
+      #TODO: Waiting for this PR: https://github.com/flatiron/nock/pull/108
+      Utils.render("test message")
+      nock.done()
