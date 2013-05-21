@@ -1,7 +1,9 @@
+csrequire = require('covershot').require.bind(null, require)
+
 should = require('chai').should()
 
-Utils = require '../lib/utils'
-Nock = require 'nock'
+Utils = csrequire '../lib/utils'
+Nock = csrequire 'nock'
 
 describe 'Utils', () ->
   describe '#format_term()', () ->

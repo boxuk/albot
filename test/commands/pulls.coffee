@@ -1,8 +1,10 @@
+csrequire = require('covershot').require.bind(null, require)
+
 should = require('chai').should()
 
-Commands = require '../../lib/commands'
-Nock = require 'nock'
-Moment = require 'moment'
+Commands = csrequire '../../lib/commands'
+Nock = csrequire 'nock'
+Moment = csrequire 'moment'
 
 describe 'Commands', () ->
   describe '#pulls()', () ->
