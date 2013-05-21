@@ -36,3 +36,14 @@ describe 'Commands', () ->
         comments.should.equal "10 comments"
         status.should.equal true
         done()
+
+  describe '#pulls()#isRepoInFilters()', () ->
+    it 'should not accept unfilterd name', () ->
+      test = Commands.pulls.isRepoInFilters("notinthelist")
+      test.should.be.false
+    it 'should accept any filter name', () ->
+      test = Commands.pulls.isRepoInFilters("test-repo")
+      test.should.be.true
+
+      test = Commands.pulls.isRepoInFilters("another-one")
+      test.should.be.true

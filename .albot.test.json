@@ -3,7 +3,10 @@
   "github": {
     "organisation": "testorg",
     "token": "testtoken",
-    "repo_filter": "test-repo"
+    "repo_filters": [
+      "test-repo",
+      "another-one"
+    ]
   },
   "hipchat": {
     "channel": "testchan",
