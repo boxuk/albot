@@ -31,7 +31,8 @@ pulls = (fallback) =>
                     @github.statuses.get {user: @org, repo: repo.name, sha: details.head.sha}, (error, statuses) ->
                       status = statuses[0]
                       mergeable = if status? and status.state is 'pending' then undefined else status.state is 'success'
-                      Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments", mergeable, details.user.gravatar_id)
+                      needRebase = if details.mergeable then "" else " - *NEED REBASE*"
+                      Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments" + needRebase, mergeable, details.user.gravatar_id)
                       cb(error)
     , (err) ->
       console.log "An error occured #{JSON.stringify(err)}"

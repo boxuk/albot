@@ -23,7 +23,7 @@ describe 'Commands', () ->
         .reply(200, {
               "html_url": "https://github.com/octocat/Hello-World/pulls/1",
               "title": "new-feature",
-              "mergeable": true,
+              "mergeable": false,
               "comments": 10,
               "user": {
               },
@@ -44,7 +44,7 @@ describe 'Commands', () ->
         title.should.equal "new-feature"
         url.should.equal "https://github.com/octocat/Hello-World/pulls/1"
         infos.should.equal "test-repo"
-        comments.should.equal "10 comments"
+        comments.should.equal "10 comments - *NEED REBASE*"
         status.should.equal true
         done()
 
