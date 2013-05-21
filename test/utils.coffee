@@ -26,3 +26,7 @@ describe 'Utils', () ->
     it 'should have only title mandatory', () ->
       text = Utils.format_html("title")
       text.should.equal "title"
+
+    it 'should be able to display gravatars', () ->
+      test = Utils.format_html("title", "http://google.fr", "infos", "comments", false, "205e460b479e2e5b48aec07710c08d50")
+      test.should.equal "✘ <img src='http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=20' /> - <a href='http://google.fr'>title</a> - <strong>infos</strong> - <i>comments</i>"

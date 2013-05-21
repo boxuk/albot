@@ -5,6 +5,7 @@
 - Inspect more than the first page of PRs
 - Verbose mode
 - More server mode tests
+- Bug in mergeable color (Mergeable does not mean what we think)
 
 Commands:
 - Diff between tags

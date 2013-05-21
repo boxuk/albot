@@ -25,6 +25,8 @@ describe 'Commands', () ->
               "title": "new-feature",
               "mergeable": true,
               "comments": 10,
+              "user": {
+              }
             }
           )
 
