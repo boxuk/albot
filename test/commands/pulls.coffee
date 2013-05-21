@@ -52,9 +52,29 @@ describe 'Commands', () ->
     it 'should not accept unfilterd name', () ->
       test = Commands.pulls.isRepoInFilters("notinthelist")
       test.should.be.false
+
     it 'should accept any filter name', () ->
       test = Commands.pulls.isRepoInFilters("test-repo")
       test.should.be.true
 
       test = Commands.pulls.isRepoInFilters("another-one")
+      test.should.be.true
+
+  describe '#pulls()#shouldBeDisplayed()', () ->
+    it 'should display normal request', () ->
+      test = Commands.pulls.shouldBeDisplayed()
+      test.should.be.true
+
+    it 'should hide requested term', () ->
+      test = Commands.pulls.shouldBeDisplayed('without', 'stuff', 'Line with stuff in it')
+      test.should.be.false
+
+    it 'should display anything else', () ->
+      test = Commands.pulls.shouldBeDisplayed('without', 'stuff', 'Line with things in it')
+      test.should.be.true
+
+      test = Commands.pulls.shouldBeDisplayed('truc', 'stuff', 'Line with things in it')
+      test.should.be.true
+
+      test = Commands.pulls.shouldBeDisplayed('machin')
       test.should.be.true
