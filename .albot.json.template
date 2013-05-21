@@ -3,7 +3,7 @@
   "github": {
     "organisation": "",
     "token": "",
-    "repo_filter": "",
+    "repo_filters": [""],
     "debug": false
   },
   "hipchat": {

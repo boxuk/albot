@@ -11,12 +11,16 @@ Utils = require './utils'
 @github.authenticate { type: "oauth", token: Configuration.get("github").token }
 
 @org = Configuration.get("github").organisation
-@repo_filter = Configuration.get("github").repo_filter
+
+isRepoInFilters = (name) ->
+  repo_filters = Configuration.get("github").repo_filters
+  _.some repo_filters, (filter) ->
+    name.indexOf(filter) > -1
 
 pulls = (fallback) =>
   @github.repos.getFromOrg {org: @org, per_page: 100}, (error, repos) =>
     Async.each repos, (repo, callback) =>
-      if (repo.name.indexOf(@repo_filter) > -1)
+      if (isRepoInFilters(repo.name))
         @github.pullRequests.getAll {user: @org, repo: repo.name}, (error, prs) =>
           if (error)
             callback(error)
@@ -37,7 +41,8 @@ list = {
   pulls: {
     name: "Pull Requests"
     description: "List all Pull Requests of the organisation",
-    action: pulls
+    action: pulls,
+    isRepoInFilters: isRepoInFilters
   },
   help: {
     name: "Help"

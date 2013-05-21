@@ -2,7 +2,6 @@
 - Clean code (More Async)
 - Better Link customisation when printing
 - Multi arguments
-- Multi filter (cw + catalyst for example)
 - Filter by dates too
 - Inspect more than the first page of PRs
 - Verbose mode
