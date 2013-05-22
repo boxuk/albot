@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/grunt test",
-    "coverage": "./node_modules/.bin/grunt coverage"
+    "coverage": "./node_modules/.bin/grunt coverage:travis"
   },
   "repository": "https://github.com/boxuk/albot",
   "author": "Box UK",
@@ -33,7 +33,8 @@
     "grunt-exec": "~0.4.0",
     "grunt-mocha-cli": "~1.0.5",
     "nock": "~0.18.0",
-    "covershot": "~0.1.1",
-    "grunt-coffee-coverage": "~0.1.1"
+    "covershot": "~0.2.0",
+    "grunt-coffee-coverage": "~0.1.1",
+    "coveralls": "~2.0.7"
   }
 }
