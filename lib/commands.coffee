@@ -68,7 +68,7 @@ help = (fallback) ->
 list = {
   pulls: {
     name: "Pull Requests"
-    description: "[without <filter> | with <filter> | recent [<unit>]] List all Pull Requests of the organisation",
+    description: "[without -filter- | with -filter- | recent [-unit-]] List all Pull Requests of the organisation",
     action: pulls,
     isRepoInFilters: isRepoInFilters,
     shouldBeDisplayed: shouldBeDisplayed
