@@ -1,14 +1,17 @@
-Albot
+Albot [![Build Status](https://secure.travis-ci.org/boxuk/albot.png)](http://travis-ci.org/boxuk/albot)
 =====
 
-[![Build Status](https://secure.travis-ci.org/boxuk/albot.png)](http://travis-ci.org/boxuk/albot)
+Albot is a small command line tool built as an attempt to help us with our Developement process
 
-Albot is a small command line tool built as an attempt to help us with our Developement process.
+Installation
+============
+
+      npm install -g albot
 
 Usage
 =====
  
-      ./albot.coffee --help                                                                                                                                                                                                           
+      $ albot --help                                                                                                                                                                                                           
 
         Usage: albot.coffee [options] [command]
 
@@ -33,30 +36,34 @@ On top of that, you have access to more on-demand filters.
 
 To only display the Pull Request that contains a term (The search is case insensitive):
 
-      ./albot.coffee pulls with _term_
+      $ albot pulls with term
 
 You can use this feature to display the Pull Request of a particular user:
 
-      ./albot.coffee pulls with _athieriot_
+      $ albot pulls with athieriot
 
 The opposite is also available. Show all the Pull Requests that do NOT correspond to a term:
 
-      ./albot.coffee pulls without _WIP_
+      $ albot pulls without WIP
 
 Finally, you can display only recent Pull Requests
 
-      ./albot.coffee pulls recent
+      $ albot pulls recent
 
 By default, it's a week. But you can ask for a month, a year and so on. (All usable keys are here: [Moment#add](http://momentjs.com/docs/#/manipulating/add/))
 
-      ./albot.coffee pulls recent months
+      $ albot pulls recent months
+      
+Example on Hipchat:
+
+![hipchat - web chat](https://f.cloud.github.com/assets/661901/550556/8410e2fe-c314-11e2-9c1f-eb2f56489e4b.png)
 
 Server
 ======
 
 Albot can also be use as an Hipchat bot.
 
-      ./albot.coffee server
+      $ albot server
 
 Will use the History API to poll the discussions and answer to his name.
 The same commands can be used.
