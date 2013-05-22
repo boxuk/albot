@@ -2,7 +2,11 @@
   "name": "albot",
   "version": "0.1.0",
   "description": "Automated Leverage Box Operation Tool",
+  "preferGlobal": "true",
   "main": "albot.coffee",
+  "bin": {
+    "albot" : "albot.coffee"
+  },
   "scripts": {
     "test": "./node_modules/.bin/grunt test"
   },
