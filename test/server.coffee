@@ -1,8 +1,8 @@
-csrequire = require('covershot').require.bind(null, require)
+Require = require('covershot').require.bind(null, require)
 
 should = require('chai').should()
 
-Server = csrequire '../lib/server'
+Server = Require '../lib/server'
 
 describe 'Server', () ->
   describe '#dispach()', () ->
