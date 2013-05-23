@@ -89,7 +89,7 @@ pulls = (fallback, keyword, filter) =>
 
 module.exports = {
   name: "Pull Requests"
-  description: "[without -filter- | with -filter- | recent [-unit-]] List all Pull Requests of the organisation",
+  description: "[without -filter- | with -filter- | recent [-unit-] | last [-number- | -filter-]] List all Pull Requests of the organisation",
   action: pulls,
   isRepoInFilters: isRepoInFilters,
   shouldBeDisplayed: shouldBeDisplayed,

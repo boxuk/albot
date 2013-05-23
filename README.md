@@ -17,7 +17,7 @@ Usage
 
         Commands:
 
-          pulls                  [without <filter> | with <filter> | recent [<unit>]] List all Pull Requests of the organisation
+          pulls                  [without <filter> | with <filter> | recent [<unit>] | last [<number> | <filter>]] List all Pull Requests of the organisation
           help                   Display a list of available commands
           server                 Start albot to listen on Hipchat instead of the command line
 
@@ -31,6 +31,7 @@ Pulls
 
 This command display the Pull Requests of all the repositories in your organisation
 (For which the name correspond the filters you have configured)
+The results are sorted by dates.
 
 On top of that, you have access to more on-demand filters.
 
@@ -46,7 +47,7 @@ The opposite is also available. Show all the Pull Requests that do NOT correspon
 
       $ albot pulls without WIP
 
-Finally, you can display only recent Pull Requests
+You can as well display only recent Pull Requests
 
       $ albot pulls recent
 
@@ -54,6 +55,18 @@ By default, it's a week. But you can ask for a month, a year and so on. (All usa
 
       $ albot pulls recent months
       
+Finally, you can quickly show the last Pull Requests
+
+      $ albot pulls last
+
+Or the last ones
+
+      $ albot pulls last 5
+
+You can even have the last Pull Request filtered like 'with'
+
+      $ albot pulls last athieriot
+
 Example on Hipchat:
 
 ![hipchat - web chat](https://f.cloud.github.com/assets/661901/550556/8410e2fe-c314-11e2-9c1f-eb2f56489e4b.png)
