@@ -1,6 +1,6 @@
 {
   "name": "albot",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Automated Leverage Box Operation Tool",
   "preferGlobal": "true",
   "main": "albot.coffee",
@@ -35,6 +35,7 @@
     "nock": "~0.18.0",
     "covershot": "~0.2.0",
     "grunt-coffee-coverage": "~0.1.1",
-    "coveralls": "~2.0.7"
+    "coveralls": "~2.0.7",
+    "grunt-release": "~0.3.3"
   }
 }
