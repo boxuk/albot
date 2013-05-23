@@ -42,22 +42,42 @@ needRebase = (mergeable) ->
 
 pulls = (fallback, keyword, filter) =>
   @github.repos.getFromOrg {org: @org, per_page: 100}, (error, repos) =>
-    Async.each repos, (repo, callback) =>
+    Async.concat repos, (repo, callback) =>
       if (isRepoInFilters(repo.name))
         @github.pullRequests.getAll {user: @org, repo: repo.name}, (error, prs) =>
           if (error)
             callback(error)
           else
-            Async.each prs,
+            Async.map prs,
               Async.apply (pr, cb) =>
                 @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) =>
                     @github.statuses.get {user: @org, repo: repo.name, sha: details.head.sha}, (error, statuses) ->
                       query = details.title + repo.name + details.user.login
                       if (shouldBeDisplayed(keyword, filter, query, details.created_at))
-                        Utils.printWithFallback(fallback)(details.title, details.html_url, repo.name, details.comments + " comments" + needRebase(details.mergeable), buildStatus(statuses), details.user.gravatar_id)
-                      cb(error)
-    , (err) ->
-      console.log "An error occured #{JSON.stringify(err)}"
+                        
+                        cb null, {
+                            title: details.title,
+                            url: details.html_url,
+                            repo: repo.name,
+                            comments: Moment(details.created_at).fromNow() + " - " + details.comments + " comments" + needRebase(details.mergeable),
+                            status: buildStatus(statuses),
+                            avatar: details.user.gravatar_id,
+                            date: details.created_at
+                        }
+                      else
+                        cb(error)
+            , (err, list) ->
+              callback(null, list)
+      else
+        callback(null, [])
+    , (err, list) ->
+      if (err)
+        console.log "An error occured"
+      else 
+        sorted = _.sortBy list, (e) -> Moment(e.date).unix()
+        #TODO: Need tests
+        _.each sorted.reverse(), (e) ->
+          Utils.printWithFallback(fallback)(e.title, e.url, e.repo, e.comments, e.status, e.avatar)
 
 help = (fallback) ->
   for key, value of list
