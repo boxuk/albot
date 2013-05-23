@@ -11,7 +11,7 @@ help = (fallback) ->
 #
 # TODO: See if we can make that cleaner
 list = {
-  pulls: require('./commands/pulls'),
+  pulls: require('./pulls'),
   help: {
     name: "Help"
     description: "Display a list of available commands",
