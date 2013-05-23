@@ -4,13 +4,16 @@ Improvement:
 - Clean code (More Async)
 - Verbose mode
 - More server mode tests
+- Accept PR URL
 
 Maybe
 - Better Link customisation when printing
 - Inspect more than the first page of PRs
 - Travis CI export coverage results
+- Limit the number of filters 
 
 Commands:
+- Github status: https://status.github.com/api
 - Diff between tags
 - Tagging
 - Launch Jenkins build

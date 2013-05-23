@@ -14,7 +14,7 @@ Utils = require './utils'
 @frequency = Configuration.get("hipchat").frequency
 
 dispatch = (message) ->
-  pattern = new RegExp("^#{Configuration.get("nickname")} ([a-zA-Z]+)( ([a-zA-Z\-\+]+))?( ([a-zA-Z\-\+]+))?( ([a-zA-Z\-\+]+))?( ([a-zA-Z\-\+]+))?( ([a-zA-Z\-\+]+))?$")
+  pattern = new RegExp("^#{Configuration.get("nickname")} ([a-zA-Z0-9]+)( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?$")
   request = message.match(pattern)
   if (request and request.length > 1)
     cmd = Commands[request[1]]
@@ -32,6 +32,7 @@ server = () =>
     else if(lines)
       Cache.store(lines.messages)
 
+  console.log "Bot listening to Hipchat channel: #{@channel}"
   setInterval () =>
     @rooms.history @channel, (error, lines) ->
       if (error) then console.log(error)

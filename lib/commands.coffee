@@ -19,19 +19,28 @@ isRepoInFilters = (name) ->
     name.indexOf(filter) > -1
 
 checkRecentDate = (createdAt, filter) ->
-  period = if not _.isString(filter) then 'weeks' else filter
+  period = if _.isString(filter) then filter else 'weeks'
+  #TODO: Check the different filter possibilities (weeks, days...)
   thisUnit = Moment().subtract(period, 1)
   Moment(createdAt).isAfter(thisUnit)
 
 shouldBeDisplayed = (keyword, filter, title, createdAt) ->
-  if(keyword is 'recent' and createdAt?) then return checkRecentDate(createdAt, filter)
-  if (not filter?) then return true
+  if (keyword is 'last' and _.isString(filter) and _.isNaN(parseInt(filter))) then keyword = 'with'
 
-  term = filter.toLowerCase()
-  query = title.toLowerCase()
-  if (keyword is 'without' and query.indexOf(term) > -1) then return false
-  else if (keyword is 'with' and query.indexOf(term) == -1) then return false
-  else return true
+  if (keyword is 'recent' and createdAt?) then checkRecentDate(createdAt, filter)
+  else if (not _.isString(filter)) then true
+  else 
+    term = filter.toLowerCase()
+    query = title.toLowerCase()
+    if (keyword is 'without' and query.indexOf(term) > -1) then false
+    else if (keyword is 'with' and query.indexOf(term) == -1) then false
+    else true
+
+pickLastIfNeeded = (keyword, filter, list) ->
+  if (keyword is 'last')
+    number = if (_.isString(filter) and not _.isNaN(parseInt(filter))) then parseInt(filter) else 1
+    _.first(list, number)
+  else list
 
 buildStatus = (statuses) ->
   status = statuses[0] if statuses?
@@ -40,6 +49,7 @@ buildStatus = (statuses) ->
 needRebase = (mergeable) ->
   if mergeable then "" else " - *NEED REBASE*"
 
+#TODO: Speeeeeeeeeeed
 pulls = (fallback, keyword, filter) =>
   @github.repos.getFromOrg {org: @org, per_page: 100}, (error, repos) =>
     Async.concat repos, (repo, callback) =>
@@ -48,42 +58,42 @@ pulls = (fallback, keyword, filter) =>
           if (error)
             callback(error)
           else
-            Async.map prs,
-              Async.apply (pr, cb) =>
-                @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) =>
-                  @github.statuses.get {user: @org, repo: repo.name, sha: details.head.sha}, (error, statuses) ->
-                    query = details.title + repo.name + details.user.login
-                    if (shouldBeDisplayed(keyword, filter, query, details.created_at))
-                       
-                      cb null, {
+            Async.reduce prs, [],
+              Async.apply (memo, pr, cb) =>
+                query = pr.title + repo.name + pr.user.login
+                if (shouldBeDisplayed(keyword, filter, query, pr.created_at))
+                  @github.pullRequests.get {user: @org, repo: repo.name, number: pr.number}, (error, details) =>
+                    @github.statuses.get {user: @org, repo: repo.name, sha: details.head.sha}, (error, statuses) ->
+
+                      memo.push {
                         title: details.title,
                         url: details.html_url,
-                        repo: repo.name,
+                        infos: repo.name,
                         comments: Moment(details.created_at).fromNow() + " - " + details.comments + " comments" + needRebase(details.mergeable),
                         status: buildStatus(statuses),
                         avatar: details.user.gravatar_id,
-                        date: details.created_at
+                        order: details.created_at
                       }
-                    else
-                      cb(error)
+                      cb null, memo
+                else
+                  cb(error, memo)
             , (err, list) ->
-              callback(null, list)
+              callback(err, list)
       else
         callback(null, [])
     , (err, list) ->
       if (err)
         console.log "An error occured"
       else 
-        sorted = _.sortBy list, 'date'
-        #TODO: Need tests
-        _.each sorted.reverse(), (e) ->
-          Utils.printWithFallback(fallback)(e.title, e.url, e.repo, e.comments, e.status, e.avatar)
+        Utils.printListWithFallback(fallback, list, _.partial(pickLastIfNeeded, keyword, filter))
 
 help = (fallback) ->
   for key, value of list
     Utils.printWithFallback(fallback)(key, null, null, value.description)
 
 # All the commands should have a fallback function or null as first argument
+# Due to some Commander weirdness, it's better to use _.isString to check if an argument exists
+#
 # TODO: See if we can make that cleaner
 list = {
   pulls: {
@@ -91,7 +101,8 @@ list = {
     description: "[without -filter- | with -filter- | recent [-unit-]] List all Pull Requests of the organisation",
     action: pulls,
     isRepoInFilters: isRepoInFilters,
-    shouldBeDisplayed: shouldBeDisplayed
+    shouldBeDisplayed: shouldBeDisplayed,
+    pickLastIfNeeded: pickLastIfNeeded
   },
   help: {
     name: "Help"
