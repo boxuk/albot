@@ -17,7 +17,7 @@ Usage
 
         Commands:
 
-          pulls                  [without <filter> | with <filter> | recent [<unit>] | last [<number> | <filter>]] List all Pull Requests of the organisation
+          pulls                  [ <url> | without <filter> | with <filter> | recent [<unit>] | last [<number> | <filter>]] List all Pull Requests of the organisation
           help                   Display a list of available commands
           server                 Start albot to listen on Hipchat instead of the command line
 
@@ -56,7 +56,7 @@ By default, it's a week. But you can ask for a month, a year and so on. (All usa
 
       $ albot pulls recent months
       
-Finally, you can quickly show the last Pull Requests
+I you need more, you can quickly show the last Pull Requests
 
       $ albot pulls last
 
@@ -67,6 +67,10 @@ Or the last ones
 You can even have the last Pull Request filtered like 'with'
 
       $ albot pulls last athieriot
+
+Finally, if you are lazy (like me), you can copy/paste an URL from your browser
+
+      $ albot pulls https://github.com/flatiron/nock/pull/110
 
 Example on Hipchat:
 
