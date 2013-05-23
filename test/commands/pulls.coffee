@@ -24,6 +24,7 @@ describe 'Commands', () ->
           ])
         .get('/repos/testorg/test-repo/pulls/1?access_token=testtoken')
         .reply(200, {
+              "created_at": Moment().subtract('years', 2).format(),
               "html_url": "https://github.com/octocat/Hello-World/pulls/1",
               "title": "new-feature",
               "mergeable": false,
@@ -45,10 +46,11 @@ describe 'Commands', () ->
 
     it 'should list Pull Requests', (done) ->
       Commands.pulls.action (title, url, infos, comments, status) ->
+        console.log(comments)
         title.should.equal "new-feature"
         url.should.equal "https://github.com/octocat/Hello-World/pulls/1"
         infos.should.equal "test-repo"
-        comments.should.equal "10 comments - *NEED REBASE*"
+        comments.should.equal "2 years ago - 10 comments - *NEED REBASE*"
         status.should.equal true
         done()
 
