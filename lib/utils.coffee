@@ -51,10 +51,21 @@ render = (title, url, infos, comments, status, gravatar) =>
 printWithFallback = (fallback) ->
   if _.isFunction(fallback) then fallback else print
 
+printListWithFallback = (fallback, list, filter) ->
+  if (_.every(list, (o) -> _.has(o, 'order')))
+    list = _.sortBy(list, 'order').reverse() 
+
+  if (filter?)
+    list = filter list
+
+  _.each list, (item) ->
+      printWithFallback(fallback)(item.title, item.url, item.infos, item.comments, item.status, item.avatar)
+
 module.exports = {
   format_term: format_term,
   format_html: format_html,
   print: print,
   render: render,
-  printWithFallback: printWithFallback
+  printWithFallback: printWithFallback,
+  printListWithFallback: printListWithFallback
 }

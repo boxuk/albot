@@ -26,9 +26,14 @@ describe 'Server', () ->
       cmd.should.not.have.property('arg2')
 
     it 'should match arguments with some special characters', () ->
-      cmd = Server.dispatch("testbot help Do+not+merge")
+      cmd = Server.dispatch("testbot help Do+not-merge")
       cmd.should.have.property('name').equal("Help")
-      cmd.should.have.property('arg1').equal("Do+not+merge")
+      cmd.should.have.property('arg1').equal("Do+not-merge")
+
+    it 'should match arguments with numbers', () ->
+      cmd = Server.dispatch("testbot help 24")
+      cmd.should.have.property('name').equal("Help")
+      cmd.should.have.property('arg1').equal("24")
 
     it 'should match two arguments', () ->
       cmd = Server.dispatch("testbot help repository two")

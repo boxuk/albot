@@ -20,12 +20,38 @@ describe 'Commands', () ->
         .reply(200, [
             {
               "number": 1,
+              "title": "old-feature",
+              "user": {
+                "login": "test-user"
+              }
+            },
+            {
+              "number": 2,
+              "title": "new-feature",
+              "user": {
+                "login": "test-user"
+              }
             }
           ])
         .get('/repos/testorg/test-repo/pulls/1?access_token=testtoken')
         .reply(200, {
               "created_at": Moment().subtract('years', 2).format(),
               "html_url": "https://github.com/octocat/Hello-World/pulls/1",
+              "title": "old-feature",
+              "mergeable": false,
+              "comments": 50,
+              "user": {
+                "login": "test-user"
+              },
+              "head": {
+                "sha": "testsha1"
+              }
+            }
+          )
+        .get('/repos/testorg/test-repo/pulls/2?access_token=testtoken')
+        .reply(200, {
+              "created_at": Moment().subtract('months', 2).format(),
+              "html_url": "https://github.com/octocat/Hello-World/pulls/2",
               "title": "new-feature",
               "mergeable": false,
               "comments": 10,
@@ -33,25 +59,34 @@ describe 'Commands', () ->
                 "login": "test-user"
               },
               "head": {
-                "sha": "testsha"
+                "sha": "testsha2"
               }
             }
           )
-        .get('/repos/testorg/test-repo/statuses/testsha?access_token=testtoken')
+        .get('/repos/testorg/test-repo/statuses/testsha1?access_token=testtoken')
+        .reply(200, [
+            {
+              "state": "success"
+            }
+          ])
+        .get('/repos/testorg/test-repo/statuses/testsha2?access_token=testtoken')
         .reply(200, [
             {
               "state": "success"
             }
           ])
 
-    it 'should list Pull Requests', (done) ->
+    it 'should list Pull Requests sorted by creation date', (done) ->
+      count = 0
       Commands.pulls.action (title, url, infos, comments, status) ->
-        title.should.equal "new-feature"
-        url.should.equal "https://github.com/octocat/Hello-World/pulls/1"
-        infos.should.equal "test-repo"
-        comments.should.equal "2 years ago - 10 comments - *NEED REBASE*"
-        status.should.equal true
-        done()
+        if (count is 0)
+          title.should.equal "new-feature"
+          url.should.equal "https://github.com/octocat/Hello-World/pulls/2"
+          infos.should.equal "test-repo"
+          comments.should.equal "2 months ago - 10 comments - *NEED REBASE*"
+          status.should.equal true
+        count += 1
+        if (count is 2) then done()
 
   describe '#pulls()#isRepoInFilters()', () ->
     it 'should not accept unfilterd name', () ->
@@ -101,6 +136,21 @@ describe 'Commands', () ->
       test = Commands.pulls.shouldBeDisplayed('recent', 'months', 'Line with things', older)
       test.should.be.false
 
+    it '-last- alongside a criteria should act like -with-', () ->
+      test = Commands.pulls.shouldBeDisplayed('last', 'stuff', 'Line with stuff')
+      test.should.be.true
+
+      test = Commands.pulls.shouldBeDisplayed('last', 'stuff', 'Line with things')
+      test.should.be.false
+
+    it '-last- alone should display', () ->
+      test = Commands.pulls.shouldBeDisplayed('last', undefined, 'Line with stuff')
+      test.should.be.true
+
+    it '-last- with a number should display', () ->
+      test = Commands.pulls.shouldBeDisplayed('last', '5', 'Line with stuff')
+      test.should.be.true
+
     it 'should display if criteria unknown', () ->
       test = Commands.pulls.shouldBeDisplayed('truc', 'stuff', 'Line with things in it')
       test.should.be.true
@@ -108,3 +158,27 @@ describe 'Commands', () ->
     it 'should display if term is null', () ->
       test = Commands.pulls.shouldBeDisplayed('without', undefined, 'Line with stuff')
       test.should.be.true
+
+  describe '#pulls()#pickLastIfNeeded()', () ->
+    list = ['stuff', 'things', 'truc', 'machin']
+
+    it 'should return the list if not -last-', () ->
+      test = Commands.pulls.pickLastIfNeeded(undefined, undefined, list)
+      test.should.be.list
+
+    it '-last- should return the first one', () ->
+      test = Commands.pulls.pickLastIfNeeded('last', undefined, list)
+      test.should.have.length 1
+      test.should.include 'stuff'
+
+    it '-last name- should return the first one', () ->
+      test = Commands.pulls.pickLastIfNeeded('last', 'name', list)
+      test.should.have.length 1
+      test.should.include 'stuff'
+
+    it '-last 3- should return the first three', () ->
+      test = Commands.pulls.pickLastIfNeeded('last', '3', list)
+      test.should.have.length 3
+      test.should.include 'stuff'
+      test.should.include 'things'
+      test.should.include 'truc'
