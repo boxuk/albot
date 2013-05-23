@@ -30,6 +30,11 @@ describe 'Server', () ->
       cmd.should.have.property('name').equal("Help")
       cmd.should.have.property('arg1').equal("Do+not-merge")
 
+    it 'should match url', () ->
+      cmd = Server.dispatch("testbot help http://github.com/testing")
+      cmd.should.have.property('name').equal("Help")
+      cmd.should.have.property('arg1').equal("http://github.com/testing")
+
     it 'should match arguments with numbers', () ->
       cmd = Server.dispatch("testbot help 24")
       cmd.should.have.property('name').equal("Help")

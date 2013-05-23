@@ -10,6 +10,7 @@ describe 'Commands', () ->
   describe '#pulls()', () ->
     before () ->
       Nock('https://api.github.com')
+        .persist()
         .get('/orgs/testorg/repos?per_page=100&access_token=testtoken')
         .reply(200, [
             {
@@ -39,6 +40,7 @@ describe 'Commands', () ->
               "html_url": "https://github.com/octocat/Hello-World/pulls/1",
               "title": "old-feature",
               "mergeable": false,
+              "state": "open",
               "comments": 50,
               "user": {
                 "login": "test-user"
@@ -54,12 +56,29 @@ describe 'Commands', () ->
               "html_url": "https://github.com/octocat/Hello-World/pulls/2",
               "title": "new-feature",
               "mergeable": false,
+              "state": "open",
               "comments": 10,
               "user": {
                 "login": "test-user"
               },
               "head": {
                 "sha": "testsha2"
+              }
+            }
+          )
+        .get('/repos/testorg/test-repo/pulls/3?access_token=testtoken')
+        .reply(200, {
+              "created_at": Moment().subtract('months', 2).format(),
+              "html_url": "https://github.com/octocat/Hello-World/pulls/3",
+              "title": "closed-feature",
+              "mergeable": false,
+              "state": "closed",
+              "comments": 10,
+              "user": {
+                "login": "test-user"
+              },
+              "head": {
+                "sha": "testsha3"
               }
             }
           )
@@ -70,6 +89,12 @@ describe 'Commands', () ->
             }
           ])
         .get('/repos/testorg/test-repo/statuses/testsha2?access_token=testtoken')
+        .reply(200, [
+            {
+              "state": "success"
+            }
+          ])
+        .get('/repos/testorg/test-repo/statuses/testsha3?access_token=testtoken')
         .reply(200, [
             {
               "state": "success"
@@ -87,6 +112,16 @@ describe 'Commands', () ->
           status.should.equal true
         count += 1
         if (count is 2) then done()
+
+    it 'should be able to resolve an URL', (done) ->
+      Commands.pulls.action (title, url, infos, comments, status) ->
+        title.should.equal "closed-feature"
+        url.should.equal "https://github.com/octocat/Hello-World/pulls/3"
+        infos.should.equal "test-repo"
+        comments.should.equal "2 months ago - 10 comments - *CLOSED*"
+        status.should.equal true
+        done()
+      , 'https://github.com/testorg/test-repo/pull/3'
 
   describe '#pulls()#isRepoInFilters()', () ->
     it 'should not accept unfilterd name', () ->

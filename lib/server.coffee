@@ -14,7 +14,7 @@ Utils = require './utils'
 @frequency = Configuration.get("hipchat").frequency
 
 dispatch = (message) ->
-  pattern = new RegExp("^#{Configuration.get("nickname")} ([a-zA-Z0-9]+)( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?$")
+  pattern = new RegExp("^#{Configuration.get("nickname")} ([a-zA-Z0-9]+)( ([a-zA-Z0-9\-\+\/\.\:]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?$")
   request = message.match(pattern)
   if (request and request.length > 1)
     cmd = Commands[request[1]]
