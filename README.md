@@ -30,7 +30,8 @@ Pulls
 =====
 
 This command display the Pull Requests of all the repositories in your organisation
-(For which the name correspond the filters you have configured)
+(For which the name correspond the filters you have configured).
+
 The results are sorted by dates.
 
 On top of that, you have access to more on-demand filters.
@@ -43,7 +44,7 @@ You can use this feature to display the Pull Request of a particular user:
 
       $ albot pulls with athieriot
 
-The opposite is also available. Show all the Pull Requests that do NOT correspond to a term:
+The opposite is also available. Show all the Pull Requests that does NOT correspond to a term:
 
       $ albot pulls without WIP
 
