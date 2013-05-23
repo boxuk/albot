@@ -46,7 +46,6 @@ describe 'Commands', () ->
 
     it 'should list Pull Requests', (done) ->
       Commands.pulls.action (title, url, infos, comments, status) ->
-        console.log(comments)
         title.should.equal "new-feature"
         url.should.equal "https://github.com/octocat/Hello-World/pulls/1"
         infos.should.equal "test-repo"
