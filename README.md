@@ -1,4 +1,4 @@
-Albot [![Build Status](https://secure.travis-ci.org/boxuk/albot.png)](http://travis-ci.org/boxuk/albot) [![Coverage Status](https://coveralls.io/repos/boxuk/albot/badge.png?branch=coveralls)](https://coveralls.io/r/boxuk/albot?branch=coveralls) [![Dependency Status](https://gemnasium.com/boxuk/albot.png)](https://gemnasium.com/boxuk/albot)
+Albot [![Build Status](https://secure.travis-ci.org/boxuk/albot.png)](http://travis-ci.org/boxuk/albot) [![Coverage Status](https://coveralls.io/repos/boxuk/albot/badge.png?branch=coveralls)](https://coveralls.io/r/boxuk/albot?branch=master) [![Dependency Status](https://gemnasium.com/boxuk/albot.png)](https://gemnasium.com/boxuk/albot)
 =====
 
 Albot is a small command line tool built as an attempt to help us with our Developement process
