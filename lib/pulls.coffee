@@ -1,4 +1,4 @@
-Configuration = require '../configuration'
+Configuration = require './configuration'
 
 Async = require 'async'
 Moment = require 'moment'
@@ -6,7 +6,7 @@ _ = require('underscore')._
 
 GitHubApi = require 'github'
 
-Utils = require '../utils'
+Utils = require './utils'
 
 @github = new GitHubApi { version: "3.0.0", debug: Configuration.get("github").debug }
 @github.authenticate { type: "oauth", token: Configuration.get("github").token }
