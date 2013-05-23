@@ -16,8 +16,12 @@ module.exports = (grunt) ->
         dest: 'lib-cov/'
 
     exec:
-      covershot:
+      html:
         cmd: 'mkdir -p covershot/data && ./node_modules/covershot/bin/covershot covershot/data -f html'
+      lcov:
+        cmd: 'mkdir -p covershot/data && ./node_modules/covershot/bin/covershot covershot/data -f lcov'
+      coveralls:
+        cmd: 'cat covershot/coverage.lcov | ./node_modules/coveralls/bin/coveralls.js'
 
     mochacli: 
       options: 
@@ -27,4 +31,5 @@ module.exports = (grunt) ->
   }
 
   grunt.registerTask 'test', ['env:test', 'mochacli']
-  grunt.registerTask 'coverage', ['env:test', 'coffeeCoverage:lib', 'mochacli', 'exec:covershot']
+  grunt.registerTask 'coverage:local', ['env:test', 'coffeeCoverage:lib', 'mochacli', 'exec:html']
+  grunt.registerTask 'coverage:travis', ['env:test', 'coffeeCoverage:lib', 'mochacli', 'exec:lcov', 'exec:coveralls']
