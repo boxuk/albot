@@ -119,8 +119,8 @@ describe 'Commands', () ->
         if (count is 0)
           title.should.equal "new-feature"
           url.should.equal "https://github.com/octocat/Hello-World/pulls/2"
-          infos.should.equal "test-repo (pr-branch -> master)"
-          comments.should.equal "2 months ago - 10 comments - *NEED REBASE*"
+          infos.should.equal "test-repo"
+          comments.should.equal "(pr-branch -> master) - 2 months ago - 10 comments - *NEED REBASE*"
           status.should.equal true
         count += 1
         if (count is 2) then done()
@@ -129,8 +129,8 @@ describe 'Commands', () ->
       Commands.pulls.action (title, url, infos, comments, status) ->
         title.should.equal "closed-feature"
         url.should.equal "https://github.com/octocat/Hello-World/pulls/3"
-        infos.should.equal "test-repo (pr-branch -> master)"
-        comments.should.equal "2 months ago - 10 comments - *CLOSED*"
+        infos.should.equal "test-repo"
+        comments.should.equal "(pr-branch -> master) - 2 months ago - 10 comments - *CLOSED*"
         status.should.equal true
         done()
       , 'https://github.com/testorg/test-repo/pull/3'
