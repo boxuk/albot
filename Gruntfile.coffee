@@ -1,15 +1,26 @@
 module.exports = (grunt) ->
 
-  grunt.loadNpmTasks 'grunt-env'
-  grunt.loadNpmTasks 'grunt-exec'
-  grunt.loadNpmTasks 'grunt-release'
-  grunt.loadNpmTasks 'grunt-mocha-cli'
-  grunt.loadNpmTasks 'grunt-coffee-coverage'
+  # Load all grunt tasks available
+  require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks)
 
   grunt.initConfig {
+    bin:
+      covershot: './node_modules/covershot/bin/covershot'
+      coveralls: './node_modules/coveralls/bin/coveralls.js'
+
     env:
-      test: 
+      test:
         NODE_ENV: 'test'
+
+    coffeelint:
+      app: [ '*.coffee', 'lib/**/*.coffee' ]
+
+    mochacli:
+      options:
+        reporter: 'spec',
+        globals: ['data']
+      
+      all: ['test/**/*.coffee']
 
     coffeeCoverage:
       lib:
@@ -17,23 +28,42 @@ module.exports = (grunt) ->
         dest: 'lib-cov/'
 
     exec:
-      html:
-        cmd: 'mkdir -p covershot/data && ./node_modules/covershot/bin/covershot covershot/data -f html'
+      prepcov:
+        cmd: 'mkdir -p covershot/data'
+      htmlcov:
+        cmd: '<%= bin.covershot %> covershot/data -f html'
       lcov:
-        cmd: 'mkdir -p covershot/data && ./node_modules/covershot/bin/covershot covershot/data -f lcov'
+        cmd: '<%= bin.covershot %> covershot/data -f lcov'
       coveralls:
-        cmd: 'cat covershot/coverage.lcov | ./node_modules/coveralls/bin/coveralls.js'
-      cleancov:
-        cmd: 'rm -R lib-cov'
+        cmd: 'cat covershot/coverage.lcov | <%= bin.coveralls %>'
 
-    mochacli: 
-      options: 
-        reporter: 'spec',
-        globals: ['data']
-      
-      all: ['test/**/*.coffee']
+    clean:
+      coverage: ['lib-cov']
   }
 
-  grunt.registerTask 'test', ['env:test', 'mochacli']
-  grunt.registerTask 'coverage:local', ['env:test', 'coffeeCoverage:lib', 'mochacli', 'exec:html', 'exec:cleancov']
-  grunt.registerTask 'coverage:travis', ['env:test', 'coffeeCoverage:lib', 'mochacli', 'exec:lcov', 'exec:coveralls']
+  grunt.registerTask 'test', [
+    'env:test',
+    'coffeelint',
+    'mochacli'
+  ]
+
+  grunt.registerTask 'coverage:instrument', [
+    'exec:prepcov',
+    'coffeeCoverage:lib',
+  ]
+
+  grunt.registerTask 'coverage:html', [
+    'coverage:instrument',
+    'test',
+    'exec:htmlcov',
+    'clean:coverage'
+  ]
+
+  grunt.registerTask 'coverage:travis', [
+    'coverage:instrument',
+    'test'
+    'exec:lcov',
+    'exec:coveralls'
+  ]
+
+  grunt.registerTask 'default', ['test']

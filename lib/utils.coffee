@@ -1,8 +1,8 @@
 Configuration = require './configuration'
 
 Styled = require 'styled'
-_ = require('underscore')._
 HipchatApi = require 'hipchat'
+_ = require('underscore')._
 
 @rooms = new HipchatApi(Configuration.get("hipchat").token).Rooms
 @channel = Configuration.get("hipchat").channel
@@ -14,13 +14,13 @@ status_icon = (status) ->
   else
     "●"
 
-status_color = (status) -> 
+status_color = (status) ->
   if (status?)
     if status then "green" else "red"
   else
     "yellow"
 
-format_term = (title, url, infos, comments, status, gravatar) ->
+format_term = (title, url, infos, comments, status, avatar) ->
   icon = status_icon(status)
   color = status_color(status)
 
@@ -31,10 +31,11 @@ format_term = (title, url, infos, comments, status, gravatar) ->
   text += " - #{comments}" if comments?
   text
  
-format_html = (title, url, infos, comments, status, gravatar) ->
+format_html = (title, url, infos, comments, status, avatar) ->
   html = ""
   html += "#{status_icon(status)} "
-  html += "<img src='http://www.gravatar.com/avatar/#{gravatar}?s=20' /> - " if gravatar? and Configuration.get("github").gravatar
+  if (avatar?) and Configuration.get("github").gravatar
+    html += "<img src='http://www.gravatar.com/avatar/#{avatar}?s=20' /> - "
   html += "<a href='#{url}'>" if url?
   html += "#{title}"
   html += "</a>" if url?
@@ -42,30 +43,55 @@ format_html = (title, url, infos, comments, status, gravatar) ->
   html += " - <i>#{comments}</i>" if comments?
   html
 
-print = (title, url, infos, comments, status, gravatar) =>
-  console.log format_term(title, url, infos, comments, status)
+print = (o) =>
+  console.log format_term(
+    o['title'],
+    o['url'],
+    o['infos'],
+    o['comments'],
+    o['status']
+  )
 
-render = (title, url, infos, comments, status, gravatar) =>
-  @rooms.message @channel, @nickname, format_html(title, url, infos, comments, status, gravatar), {message_format: "html", color: status_color(status)}
+render = (o) =>
+  @rooms.message @channel,
+    @nickname,
+    format_html(
+      o['title'],
+      o['url'],
+      o['infos'],
+      o['comments'],
+      o['status'],
+      o['avatar']
+    ), {
+      message_format: "html",
+      color: status_color(o['status'])
+    }
 
-printWithFallback = (fallback) ->
+fallback_print = (fallback) ->
   if _.isFunction(fallback) then fallback else print
 
-printListWithFallback = (fallback, list, filter) ->
+fallback_printList = (fallback, list, filter) ->
   if (_.every(list, (o) -> _.has(o, 'order')))
-    list = _.sortBy(list, 'order').reverse() 
+    list = _.sortBy(list, 'order').reverse()
 
   if (filter?)
     list = filter list
 
   _.each list, (item) ->
-      printWithFallback(fallback)(item.title, item.url, item.infos, item.comments, item.status, item.avatar)
+    fallback_print(fallback) {
+      title: item.title,
+      url: item.url,
+      infos: item.infos,
+      comments: item.comments,
+      status: item.status,
+      avatar: item.avatar
+    }
 
 module.exports = {
   format_term: format_term,
   format_html: format_html,
   print: print,
   render: render,
-  printWithFallback: printWithFallback,
-  printListWithFallback: printListWithFallback
+  fallback_print: fallback_print,
+  fallback_printList: fallback_printList
 }

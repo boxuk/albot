@@ -115,23 +115,23 @@ describe 'Commands', () ->
 
     it 'should list Pull Requests sorted by creation date', (done) ->
       count = 0
-      Commands.pulls.action (title, url, infos, comments, status) ->
+      Commands.pulls.action (object) ->
         if (count is 0)
-          title.should.equal "new-feature"
-          url.should.equal "https://github.com/octocat/Hello-World/pulls/2"
-          infos.should.equal "test-repo"
-          comments.should.equal "(pr-branch -> master) - 2 months ago - 10 comments - *NEED REBASE*"
-          status.should.equal true
+          object.title.should.equal "new-feature"
+          object.url.should.equal "https://github.com/octocat/Hello-World/pulls/2"
+          object.infos.should.equal "test-repo"
+          object.comments.should.equal "(pr-branch -> master) - 2 months ago - 10 comments - *NEED REBASE*"
+          object.status.should.equal true
         count += 1
         if (count is 2) then done()
 
     it 'should be able to resolve an URL', (done) ->
-      Commands.pulls.action (title, url, infos, comments, status) ->
-        title.should.equal "closed-feature"
-        url.should.equal "https://github.com/octocat/Hello-World/pulls/3"
-        infos.should.equal "test-repo"
-        comments.should.equal "(pr-branch -> master) - 2 months ago - 10 comments - *CLOSED*"
-        status.should.equal true
+      Commands.pulls.action (object) ->
+        object.title.should.equal "closed-feature"
+        object.url.should.equal "https://github.com/octocat/Hello-World/pulls/3"
+        object.infos.should.equal "test-repo"
+        object.comments.should.equal "(pr-branch -> master) - 2 months ago - 10 comments - *CLOSED*"
+        object.status.should.equal true
         done()
       , 'https://github.com/testorg/test-repo/pull/3'
 

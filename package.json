@@ -36,6 +36,13 @@
     "covershot": "~0.2.0",
     "grunt-coffee-coverage": "~0.1.1",
     "coveralls": "~2.0.7",
-    "grunt-release": "~0.3.3"
+    "grunt-release": "~0.3.3",
+    "grunt-coffeelint": "0.0.6",
+    "grunt-contrib-clean": "~0.4.1",
+    "matchdep": "~0.1.2"
+  },
+  "engines": {
+    "node": ">=0.10.x",
+    "npm": ">=1.2.x"
   }
 }
