@@ -60,7 +60,7 @@ getInfoPull = (org, reponame, number, callback) =>
       callback error, {
         title: details.title,
         url: details.html_url,
-        infos: reponame,
+        infos: "#{reponame} (#{details.head.ref} -> #{details.base.ref})",
         comments: Moment(details.created_at).fromNow() + " - " + details.comments + " comments" + needAttention(details.mergeable, details.state),
         status: buildStatus(statuses),
         avatar: details.user.gravatar_id,
