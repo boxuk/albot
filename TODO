@@ -2,7 +2,7 @@ Improvement:
 - Error handling (Again)
 - Better currying of the fallback function in commands
 - Clean code (More Async)
-- Verbose mode (Maybe to test console.log?)
+- Verbose mode (Maybe to test console.log?) (Winston !)
 
 Maybe
 - Better Link customisation when printing (template)

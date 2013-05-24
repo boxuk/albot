@@ -27,6 +27,11 @@ Nconf
     },
     "hipchat": {
       "frequency": 6000
+    },
+    "deploy": {
+      "args": [],
+      "env": [],
+      "aliases": {}
     }
   }
 

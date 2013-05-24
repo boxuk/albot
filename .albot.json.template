@@ -11,5 +11,13 @@
     "channel": "",
     "token": "",
     "frequency": 6000
+  },
+  "deploy": {
+    "exec": "",
+    "args": [],
+    "branchArg": "{{branch}}",
+    "env": [],
+    "aliases": {},
+    "gistId": ""
   }
 }
