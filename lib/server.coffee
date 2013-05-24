@@ -26,14 +26,15 @@ dispatch = (message) ->
       cmd["arg5"] = request[11]
     cmd
 
-server = () =>
+server = (frequency, testCallback) =>
+  freq = if _.isString(frequency) then frequency else @frequency
+
   @rooms.history @channel, (error, lines) ->
     if (error) then console.log(error)
     else if(lines)
       Cache.store(lines.messages)
 
-  console.log "Bot listening to Hipchat channel: #{@channel}"
-  setInterval () =>
+  intervalId = setInterval () =>
     @rooms.history @channel, (error, lines) ->
       if (error) then console.log(error)
       else if (lines)
@@ -41,11 +42,15 @@ server = () =>
           if (not Cache.cached(line))
             command = dispatch(line.message)
             if (command)
-              _.partial(command.action, Utils.render)(command.arg1, command.arg2, command.arg3, command.arg4, command.arg5)
+              if (testCallback? and _.isFunction(testCallback)) then testCallback(intervalId, command)
+              else _.partial(command.action, Utils.render)(command.arg1, command.arg2, command.arg3, command.arg4, command.arg5)
           cb(null)
         , (err) ->
           Cache.store(lines.messages)
-  , @frequency
+  , freq
+
+  if (not _.isFunction(testCallback))
+    console.log "Bot listening to Hipchat channel: #{@channel}"
 
 module.exports = {
   dispatch: dispatch,

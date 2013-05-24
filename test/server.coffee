@@ -1,10 +1,61 @@
 Require = require('covershot').require.bind(null, require)
 
 should = require('chai').should()
+Nock = require 'nock'
 
 Server = Require '../lib/server'
 
 describe 'Server', () ->
+  describe '#action()', () ->
+    it 'should detect only new commands', (done) ->
+      count = 0
+
+      Nock('http://api.hipchat.com')
+        .persist()
+        .filteringRequestBody(/.*/, '*')
+        .get('/v1/rooms/history?format=json&auth_token=testtoken&room_id=testchan&date=recent')
+        .reply 200, (uri, requestBody) ->
+          count += 1
+          if (count is 1)
+            {
+              "messages": [
+                {
+                  "date": "2010-11-19T15:48:19-0800",
+                  "from": {
+                    "name": "Garret Heaton",
+                    "user_id": 10
+                  },
+                  "message": "testbot pulls"
+                }
+              ]
+            }
+          else
+            {
+              "messages": [
+                {
+                  "date": "2010-11-19T15:48:19-0800",
+                  "from": {
+                    "name": "Garret Heaton",
+                    "user_id": 10
+                  },
+                  "message": "testbot pulls"
+                },
+                {
+                  "date": "2010-11-19T15:48:19-0800",
+                  "from": {
+                    "name": "Garret Heaton",
+                    "user_id": 10
+                  },
+                  "message": "testbot help"
+                }
+              ]
+            }
+
+      Server.action '10', (id, cmd) ->
+        clearInterval(id)
+        cmd.name.should.equal 'Help'
+        done()
+
   describe '#dispach()', () ->
     it 'should find the right command based on a message line', () ->
       cmd = Server.dispatch("testbot pulls")
