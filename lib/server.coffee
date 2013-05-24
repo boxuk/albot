@@ -14,16 +14,24 @@ Utils = require './utils'
 @frequency = Configuration.get("hipchat").frequency
 
 dispatch = (message) ->
-  pattern = new RegExp("^#{Configuration.get("nickname")} ([a-zA-Z0-9]+)( ([a-zA-Z0-9\-\+\/\.\:]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?( ([a-zA-Z0-9\-\+]+))?$")
+  # Loop
+  pattern = new RegExp "^#{Configuration.get("nickname")} ([a-zA-Z0-9]+)
+( ([a-zA-Z0-9\-\+\/\.\:]+))?
+( ([a-zA-Z0-9\-\+]+))?
+( ([a-zA-Z0-9\-\+]+))?
+( ([a-zA-Z0-9\-\+]+))?
+( ([a-zA-Z0-9\-\+]+))?$"
+
   request = message.match(pattern)
   if (request and request.length > 1)
     cmd = Commands[request[1]]
     if (cmd)
-      cmd["arg1"] = request[3]
-      cmd["arg2"] = request[5]
-      cmd["arg3"] = request[7]
-      cmd["arg4"] = request[9]
-      cmd["arg5"] = request[11]
+      cmd.args = []
+      cmd.args.push request[3]
+      cmd.args.push request[5]
+      cmd.args.push request[7]
+      cmd.args.push request[9]
+      cmd.args.push request[11]
     cmd
 
 server = (frequency, testCallback) =>
@@ -42,11 +50,13 @@ server = (frequency, testCallback) =>
           if (not Cache.cached(line))
             command = dispatch(line.message)
             if (command)
-              if (testCallback? and _.isFunction(testCallback)) then testCallback(intervalId, command)
-              else _.partial(command.action, Utils.render)(command.arg1, command.arg2, command.arg3, command.arg4, command.arg5)
+              if testCallback? and _.isFunction(testCallback)
+                testCallback(intervalId, command)
+              else
+                _.partial(command.action, Utils.render).apply null, command.args
           cb(null)
         , (err) ->
-          Cache.store(lines.messages)
+          Cache.store lines.messages
   , freq
 
   if (not _.isFunction(testCallback))

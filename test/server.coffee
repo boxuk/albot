@@ -68,40 +68,40 @@ describe 'Server', () ->
     it 'should match one argument', () ->
       cmd = Server.dispatch("testbot help repository")
       cmd.should.have.property('name').equal("Help")
-      cmd.should.have.property('arg1').equal("repository")
+      cmd.should.have.deep.property('args[0]').equal("repository")
 
     it 'should match arguments with upper cases', () ->
       cmd = Server.dispatch("testbot help Repository")
       cmd.should.have.property('name').equal("Help")
-      cmd.should.have.property('arg1').equal("Repository")
-      cmd.should.not.have.property('arg2')
+      cmd.should.have.deep.property('args[0]').equal("Repository")
+      cmd.should.not.have.deep.property('args[1]')
 
     it 'should match arguments with some special characters', () ->
       cmd = Server.dispatch("testbot help Do+not-merge")
       cmd.should.have.property('name').equal("Help")
-      cmd.should.have.property('arg1').equal("Do+not-merge")
+      cmd.should.have.deep.property('args[0]').equal("Do+not-merge")
 
     it 'should match url', () ->
       cmd = Server.dispatch("testbot help http://github.com/testing")
       cmd.should.have.property('name').equal("Help")
-      cmd.should.have.property('arg1').equal("http://github.com/testing")
+      cmd.should.have.deep.property('args[0]').equal("http://github.com/testing")
 
     it 'should match arguments with numbers', () ->
       cmd = Server.dispatch("testbot help 24")
       cmd.should.have.property('name').equal("Help")
-      cmd.should.have.property('arg1').equal("24")
+      cmd.should.have.deep.property('args[0]').equal("24")
 
     it 'should match two arguments', () ->
       cmd = Server.dispatch("testbot help repository two")
       cmd.should.have.property('name').equal("Help")
-      cmd.should.have.property('arg1').equal("repository")
-      cmd.should.have.property('arg2').equal("two")
+      cmd.should.have.deep.property('args[0]').equal("repository")
+      cmd.should.have.deep.property('args[1]').equal("two")
 
     it 'should match up to five arguments', () ->
       cmd = Server.dispatch("testbot help repository two up to five")
-      cmd.should.have.property('name').equal("Help")
-      cmd.should.have.property('arg1').equal("repository")
-      cmd.should.have.property('arg2').equal("two")
-      cmd.should.have.property('arg3').equal("up")
-      cmd.should.have.property('arg4').equal("to")
-      cmd.should.have.property('arg5').equal("five")
+      cmd.should.have.deep.property('name').equal("Help")
+      cmd.should.have.deep.property('args[0]').equal("repository")
+      cmd.should.have.deep.property('args[1]').equal("two")
+      cmd.should.have.deep.property('args[2]').equal("up")
+      cmd.should.have.deep.property('args[3]').equal("to")
+      cmd.should.have.deep.property('args[4]').equal("five")

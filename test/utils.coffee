@@ -49,5 +49,5 @@ describe 'Utils', () ->
           "status": "sent"
         })
 
-      Utils.render("test message")
+      Utils.render { title: "test message" }
       nock.done()
