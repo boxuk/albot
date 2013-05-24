@@ -46,7 +46,11 @@ describe 'Commands', () ->
                 "login": "test-user"
               },
               "head": {
-                "sha": "testsha1"
+                "sha": "testsha1",
+                "ref": "pr-branch"
+              },
+              "base": {
+                "ref": "master"
               }
             }
           )
@@ -62,7 +66,11 @@ describe 'Commands', () ->
                 "login": "test-user"
               },
               "head": {
-                "sha": "testsha2"
+                "sha": "testsha2",
+                "ref": "pr-branch"
+              },
+              "base": {
+                "ref": "master"
               }
             }
           )
@@ -78,7 +86,11 @@ describe 'Commands', () ->
                 "login": "test-user"
               },
               "head": {
-                "sha": "testsha3"
+                "sha": "testsha3",
+                "ref": "pr-branch"
+              },
+              "base": {
+                "ref": "master"
               }
             }
           )
@@ -107,7 +119,7 @@ describe 'Commands', () ->
         if (count is 0)
           title.should.equal "new-feature"
           url.should.equal "https://github.com/octocat/Hello-World/pulls/2"
-          infos.should.equal "test-repo"
+          infos.should.equal "test-repo (pr-branch -> master)"
           comments.should.equal "2 months ago - 10 comments - *NEED REBASE*"
           status.should.equal true
         count += 1
@@ -117,7 +129,7 @@ describe 'Commands', () ->
       Commands.pulls.action (title, url, infos, comments, status) ->
         title.should.equal "closed-feature"
         url.should.equal "https://github.com/octocat/Hello-World/pulls/3"
-        infos.should.equal "test-repo"
+        infos.should.equal "test-repo (pr-branch -> master)"
         comments.should.equal "2 months ago - 10 comments - *CLOSED*"
         status.should.equal true
         done()
