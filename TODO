@@ -2,14 +2,12 @@ Improvement:
 - Error handling
 - Better currying of the fallback function in commands
 - Clean code (More Async)
-- Verbose mode
+- Verbose mode (Maybe to test console.log?)
 - More server mode tests
-- Accept PR URL
 
 Maybe
 - Better Link customisation when printing
 - Inspect more than the first page of PRs
-- Travis CI export coverage results
 - Limit the number of filters 
 
 Commands:
