@@ -115,7 +115,7 @@ describe 'Commands', () ->
 
     it 'should list Pull Requests sorted by creation date', (done) ->
       count = 0
-      Commands.pulls.action (object) ->
+      Commands.pulls.action (object, cb) ->
         if (count is 0)
           object.title.should.equal "new-feature"
           object.url.should.equal "https://github.com/octocat/Hello-World/pulls/2"
@@ -124,6 +124,7 @@ describe 'Commands', () ->
           object.status.should.equal true
         count += 1
         if (count is 2) then done()
+        cb()
 
     it 'should be able to resolve an URL', (done) ->
       Commands.pulls.action (object) ->

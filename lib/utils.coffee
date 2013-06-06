@@ -2,6 +2,7 @@ Configuration = require './configuration'
 _ = require('underscore')._
 
 Hipchat = Configuration.Hipchat
+Async = require 'async'
 Styled = require 'styled'
 
 status_icon = (status) ->
@@ -26,7 +27,8 @@ format_term = (title, url, infos, comments, status, avatar) ->
   text += " - #{infos}" if infos?
   text += " - #{comments}" if comments?
   text
- 
+
+# TODO: Use templating
 format_html = (title, url, infos, comments, status, avatar) ->
   html = ""
   html += "#{status_icon(status)} "
@@ -47,8 +49,9 @@ print = (o) ->
     o['comments'],
     o['status']
   )
+  if (callback? and _.isFunction(callback)) then callback(null)
 
-render = (o) ->
+render = (o, callback) ->
   Hipchat.Rooms.message Hipchat.Channel,
     Configuration.Nickname,
     format_html(
@@ -61,19 +64,23 @@ render = (o) ->
     ), {
       message_format: "html",
       color: status_color(o['status'])
-    }
+    }, (error) ->
+      if (callback? and _.isFunction(callback)) then callback(error)
 
 fallback_print = (fallback) ->
-  if _.isFunction(fallback) then fallback else print
+  if fallback? and _.isFunction(fallback) then fallback else print
 
 fallback_printList = (fallback, list, filter) ->
+  if (_.isEmpty(list))
+    fallback_print(fallback) { title: "No result for your request" }
+
   if (_.every(list, (o) -> _.has(o, 'order')))
     list = _.sortBy(list, 'order').reverse()
 
   if (filter?)
     list = filter list
 
-  _.each list, (item) ->
+  Async.eachSeries list, (item, callback) ->
     fallback_print(fallback) {
       title: item.title,
       url: item.url,
@@ -81,7 +88,10 @@ fallback_printList = (fallback, list, filter) ->
       comments: item.comments,
       status: item.status,
       avatar: item.avatar
-    }
+    }, callback
+  , (error) ->
+    if (error?)
+      print { title: "An error occured while sending a message: #{JSON.stringify(error)}", status: false }
 
 module.exports = {
   format_term: format_term,

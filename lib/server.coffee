@@ -2,6 +2,7 @@ Configuration = require './configuration'
 _ = require('underscore')._
 
 Async = require 'async'
+Moment = require 'moment'
 
 Hipchat = Configuration.Hipchat
 Commands = require './commands'
@@ -33,13 +34,13 @@ server = (frequency, testCallback) ->
   freq = if _.isString(frequency) then frequency else Hipchat.Frequency
 
   Hipchat.Rooms.history Hipchat.Channel, (error, lines) ->
-    if (error) then console.log(error)
+    if (error?) then console.log("An error occured while fetching history: #{JSON.stringify(error)}")
     else if(lines)
       Cache.store(lines.messages)
 
   intervalId = setInterval () ->
     Hipchat.Rooms.history Hipchat.Channel, (error, lines) ->
-      if (error) then console.log(error)
+      if (error?) then console.log("An error occured while fetching history: #{JSON.stringify(error)}")
       else if (lines)
         Async.each lines.messages, (line, cb) ->
           if (not Cache.cached(line))
@@ -48,6 +49,7 @@ server = (frequency, testCallback) ->
               if testCallback? and _.isFunction(testCallback)
                 testCallback(intervalId, command)
               else
+                console.log("Command #{command.name} detected #{Moment().format()}")
                 _.partial(command.action, Utils.render).apply null, command.args
           cb(null)
         , (err) ->
