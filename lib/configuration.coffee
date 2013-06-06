@@ -1,4 +1,7 @@
 Nconf = require 'nconf'
+Fs = require 'fs'
+HipchatApi = require 'hipchat'
+GithubApi = require 'github'
 
 userHome = () ->
   process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE
@@ -27,4 +30,23 @@ Nconf
     }
   }
 
-module.exports = Nconf
+hipchat = new HipchatApi Nconf.get('hipchat').token
+
+github = new GithubApi { version: "3.0.0", debug: Nconf.get("github").debug }
+github.authenticate { type: "oauth", token: Nconf.get("github").token }
+
+module.exports =
+  Nconf: Nconf,
+  Nickname: Nconf.get('nickname'),
+  Github: {
+    Api: github,
+    Org: Nconf.get('github').organisation,
+    Filters: Nconf.get('github').repo_filters,
+    Gravatar: Nconf.get('github').gravatar
+  },
+  Hipchat: {
+    Rooms: hipchat.Rooms,
+    Channel: Nconf.get('hipchat').channel,
+    Frequency: Nconf.get('frequency')
+  },
+  Version: JSON.parse(Fs.readFileSync('./package.json', 'utf8')).version

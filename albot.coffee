@@ -1,17 +1,13 @@
 #!/usr/bin/env coffee
 
-Program = require 'commander'
-Fs = require 'fs'
+Configuration = require './lib/configuration'
 _ = require('underscore')._
 
-# Configuration definition.
-# TODO: Exporting that in a specific module
-Nconf = require 'nconf'
-Nconf.env().file({file: '.albot.json'})
+Program = require 'commander'
 
 Commands = require './lib/commands'
 
-Program.version JSON.parse(Fs.readFileSync('./package.json', 'utf8')).version
+Program.version Configuration.Version
 
 # Creating a Command entry for each corresponding JSON object
 for key, value of Commands
