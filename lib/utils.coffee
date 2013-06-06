@@ -1,12 +1,8 @@
 Configuration = require './configuration'
-
-Styled = require 'styled'
-HipchatApi = require 'hipchat'
 _ = require('underscore')._
 
-@rooms = new HipchatApi(Configuration.get("hipchat").token).Rooms
-@channel = Configuration.get("hipchat").channel
-@nickname = Configuration.get("nickname")
+Hipchat = Configuration.Hipchat
+Styled = require 'styled'
 
 status_icon = (status) ->
   if (status?)
@@ -34,7 +30,7 @@ format_term = (title, url, infos, comments, status, avatar) ->
 format_html = (title, url, infos, comments, status, avatar) ->
   html = ""
   html += "#{status_icon(status)} "
-  if (avatar?) and Configuration.get("github").gravatar
+  if (avatar?) and Configuration.Github.Gravatar
     html += "<img src='http://www.gravatar.com/avatar/#{avatar}?s=20' /> - "
   html += "<a href='#{url}'>" if url?
   html += "#{title}"
@@ -43,7 +39,7 @@ format_html = (title, url, infos, comments, status, avatar) ->
   html += " - <i>#{comments}</i>" if comments?
   html
 
-print = (o) =>
+print = (o) ->
   console.log format_term(
     o['title'],
     o['url'],
@@ -52,9 +48,9 @@ print = (o) =>
     o['status']
   )
 
-render = (o) =>
-  @rooms.message @channel,
-    @nickname,
+render = (o) ->
+  Hipchat.Rooms.message Hipchat.Channel,
+    Configuration.Nickname,
     format_html(
       o['title'],
       o['url'],

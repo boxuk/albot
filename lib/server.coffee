@@ -1,21 +1,16 @@
 Configuration = require './configuration'
-
-Async = require 'async'
 _ = require('underscore')._
 
-HipchatApi = require 'hipchat'
+Async = require 'async'
 
+Hipchat = Configuration.Hipchat
 Commands = require './commands'
 Cache = require './cache'
 Utils = require './utils'
 
-@rooms = new HipchatApi(Configuration.get("hipchat").token).Rooms
-@channel = Configuration.get("hipchat").channel
-@frequency = Configuration.get("hipchat").frequency
-
 dispatch = (message) ->
-  # Loop
-  pattern = new RegExp "^#{Configuration.get("nickname")} ([a-zA-Z0-9]+)
+  # TODO: Loop
+  pattern = new RegExp "^#{Configuration.Nickname} ([a-zA-Z0-9]+)
 ( ([a-zA-Z0-9\-\+\/\.\:]+))?
 ( ([a-zA-Z0-9\-\+]+))?
 ( ([a-zA-Z0-9\-\+]+))?
@@ -34,16 +29,16 @@ dispatch = (message) ->
       cmd.args.push request[11]
     cmd
 
-server = (frequency, testCallback) =>
-  freq = if _.isString(frequency) then frequency else @frequency
+server = (frequency, testCallback) ->
+  freq = if _.isString(frequency) then frequency else Hipchat.Frequency
 
-  @rooms.history @channel, (error, lines) ->
+  Hipchat.Rooms.history Hipchat.Channel, (error, lines) ->
     if (error) then console.log(error)
     else if(lines)
       Cache.store(lines.messages)
 
-  intervalId = setInterval () =>
-    @rooms.history @channel, (error, lines) ->
+  intervalId = setInterval () ->
+    Hipchat.Rooms.history Hipchat.Channel, (error, lines) ->
       if (error) then console.log(error)
       else if (lines)
         Async.each lines.messages, (line, cb) ->
@@ -60,7 +55,7 @@ server = (frequency, testCallback) =>
   , freq
 
   if (not _.isFunction(testCallback))
-    console.log "Bot listening to Hipchat channel: #{@channel}"
+    console.log "Bot listening to Hipchat channel: #{Hipchat.Channel}"
 
 module.exports = {
   dispatch: dispatch,

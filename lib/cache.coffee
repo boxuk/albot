@@ -1,5 +1,4 @@
 Configuration = require './configuration'
-
 _ = require('underscore')._
 
 cache = []

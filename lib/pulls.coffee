@@ -1,26 +1,14 @@
 Configuration = require './configuration'
-
-Async = require 'async'
-Moment = require 'moment'
 _ = require('underscore')._
 
-GitHubApi = require 'github'
+Github = Configuration.Github
+Async = require 'async'
+Moment = require 'moment'
 
 Utils = require './utils'
 
-@github = new GitHubApi {
-  version: "3.0.0",
-  debug: Configuration.get("github").debug
-}
-@github.authenticate { type: "oauth", token: Configuration.get("github").token }
-@org = Configuration.get("github").organisation
-
-@githubUrlPattern = new RegExp "(http|https):\/\/github.com+
-([a-z0-9\-\.,@\?^=%&;:\/~\+#]*[a-z0-9\-@\?^=%&;\/~\+#])?"
-, 'i'
-
 isRepoInFilters = (name) ->
-  repo_filters = Configuration.get("github").repo_filters
+  repo_filters = Configuration.Github.Filters
   _.some repo_filters, (filter) ->
     name.indexOf(filter) > -1
 
@@ -65,13 +53,13 @@ needAttention = (mergeable, state) ->
   warning = if state is 'closed' then " - *CLOSED*" else warning
   warning
 
-getInfoPull = (org, reponame, number, callback) =>
-  @github.pullRequests.get {
+getInfoPull = (org, reponame, number, callback) ->
+  Github.Api.pullRequests.get {
     user: org,
     repo: reponame,
     number: number
   }, (error, details) =>
-    @github.statuses.get {
+    Github.Api.statuses.get {
       user: org,
       repo: reponame,
       sha: details.head.sha
@@ -90,10 +78,14 @@ getInfoPull = (org, reponame, number, callback) =>
       }
 
 #TODO: Speeeeeeeeeeed
-pulls = (fallback, keyword, filter) =>
+pulls = (fallback, keyword, filter) ->
+
+  githubUrlPattern = new RegExp "(http|https):\/\/github.com+
+([a-z0-9\-\.,@\?^=%&;:\/~\+#]*[a-z0-9\-@\?^=%&;\/~\+#])?"
+  , 'i'
 
   # First we verify if the argument is an URL
-  matching = keyword.match(@githubUrlPattern) if _.isString(keyword)
+  matching = keyword.match(githubUrlPattern) if _.isString(keyword)
   if (matching and keyword.indexOf('pull') > -1)
     pull = matching[2].split('\/')
     getInfoPull pull[1], pull[2], pull[4], (error, result) ->
@@ -107,22 +99,25 @@ pulls = (fallback, keyword, filter) =>
           avatar: result.avatar
         }
   else
-    @github.repos.getFromOrg {org: @org, per_page: 100}, (error, repos) =>
-      Async.concat repos, (repo, callback) =>
+    Github.Api.repos.getFromOrg {
+      org: Github.Org,
+      per_page: 100
+    }, (error, repos) ->
+      Async.concat repos, (repo, callback) ->
         if (isRepoInFilters(repo.name))
-          @github.pullRequests.getAll {
-            user: @org,
+          Github.Api.pullRequests.getAll {
+            user: Github.Org,
             repo: repo.name
-          }, (error, prs) =>
+          }, (error, prs) ->
             if (error)
               callback(error)
             else
               Async.reduce prs, [],
-                Async.apply (memo, pr, cb) =>
+                Async.apply (memo, pr, cb) ->
                   query = pr.title + repo.name + pr.user.login
                   if (shouldBeDisplayed(keyword, filter, query, pr.created_at))
-                    getInfoPull @org, repo.name, pr.number, (error, result) ->
-                      memo.push result
+                    getInfoPull Github.Org, repo.name, pr.number, (error, r) ->
+                      memo.push r
                       cb null, memo
                   else
                     cb(error, memo)
