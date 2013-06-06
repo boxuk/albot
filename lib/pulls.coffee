@@ -84,9 +84,6 @@ getInfoPull = (org, reponame, number, callback) ->
             order: details.created_at
           }
 
-displayError = (fallback, error) ->
-  Utils.fallback_print(fallback) { title: "An error occured: #{JSON.stringify(error)}", status: false }
-
 githubUrlPattern = new RegExp "(http|https):\/\/github.com+([a-z0-9\-\.,@\?^=%&;:\/~\+#]*[a-z0-9\-@\?^=%&;\/~\+#])?",'i'
 
 #TODO: Speeeeeeeeeeed
@@ -98,7 +95,7 @@ pulls = (fallback, keyword, filter) ->
     pull = matching[2].split('\/')
     getInfoPull pull[1], pull[2], pull[4], (error, result) ->
       if (error?)
-        displayError(fallback, error)
+        Utils.fallback_printError(fallback, error)
       else
         Utils.fallback_print(fallback) {
           title: result.title,
@@ -115,7 +112,7 @@ pulls = (fallback, keyword, filter) ->
       per_page: 100
     }, (error, repos) ->
       if (error?)
-        displayError(fallback, error)
+        Utils.fallback_printError(fallback, error)
       else
         Async.concat repos, (repo, callback) ->
           if (isRepoInFilters(repo.name))
@@ -141,7 +138,7 @@ pulls = (fallback, keyword, filter) ->
             callback null, []
         , (err, list) ->
           if (err?)
-            displayError(fallback, err)
+            Utils.fallback_printError(fallback, err)
           else
             Utils.fallback_printList fallback,
               list, _.partial(pickLastIfNeeded, keyword, filter)

@@ -1,14 +1,12 @@
 Improvement:
-- Error handling
+- Error handling (Again)
 - Better currying of the fallback function in commands
 - Clean code (More Async)
 - Verbose mode (Maybe to test console.log?)
-- More server mode tests
 
 Maybe
-- Better Link customisation when printing
+- Better Link customisation when printing (template)
 - Inspect more than the first page of PRs
-- Limit the number of filters 
 
 Commands:
 - Github status: https://status.github.com/api

@@ -93,11 +93,15 @@ fallback_printList = (fallback, list, filter) ->
     if (error?)
       print { title: "An error occured while sending a message: #{JSON.stringify(error)}", status: false }
 
+fallback_printError = (fallback, error) ->
+  fallback_print(fallback) { title: "An error occured: #{JSON.stringify(error)}", status: false }
+
 module.exports = {
   format_term: format_term,
   format_html: format_html,
   print: print,
   render: render,
   fallback_print: fallback_print,
-  fallback_printList: fallback_printList
+  fallback_printList: fallback_printList,
+  fallback_printError: fallback_printError
 }
