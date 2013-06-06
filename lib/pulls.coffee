@@ -1,5 +1,7 @@
 Configuration = require './configuration'
 _ = require('underscore')._
+_.str = require 'underscore.string'
+_.mixin _.str.exports()
 
 Github = Configuration.Github
 Async = require 'async'
@@ -8,9 +10,8 @@ Moment = require 'moment'
 Utils = require './utils'
 
 isRepoInFilters = (name) ->
-  repo_filters = Configuration.Github.Filters
-  _.some repo_filters, (filter) ->
-    name.indexOf(filter) > -1
+  _.some Configuration.Github.Filters, (filter) ->
+    _.str.include name, filter
 
 checkRecentDate = (createdAt, filter) ->
   period = if _.isString(filter) then filter else 'weeks'
@@ -28,8 +29,8 @@ shouldBeDisplayed = (keyword, filter, title, createdAt) ->
   else
     term = filter.toLowerCase()
     query = title.toLowerCase()
-    if (keyword is 'without' and query.indexOf(term) > -1) then false
-    else if (keyword is 'with' and query.indexOf(term) == -1) then false
+    if (keyword is 'without' and _.str.include(query, term)) then false
+    else if (keyword is 'with' and not _.str.include(query, term)) then false
     else true
 
 pickLastIfNeeded = (keyword, filter, list) ->
@@ -86,7 +87,7 @@ pulls = (fallback, keyword, filter) ->
 
   # First we verify if the argument is an URL
   matching = keyword.match(githubUrlPattern) if _.isString(keyword)
-  if (matching and keyword.indexOf('pull') > -1)
+  if (matching and _.str.include(keyword, 'pull'))
     pull = matching[2].split('\/')
     getInfoPull pull[1], pull[2], pull[4], (error, result) ->
       if (not error)
