@@ -60,37 +60,46 @@ getInfoPull = (org, reponame, number, callback) ->
     repo: reponame,
     number: number
   }, (error, details) =>
-    Github.Api.statuses.get {
-      user: org,
-      repo: reponame,
-      sha: details.head.sha
-    }, (error, statuses) ->
-      callback error, {
-        title: details.title,
-        url: details.html_url,
-        infos: reponame,
-        comments: "(#{details.head.ref} -> #{details.base.ref}) - " +
-                  Moment(details.created_at).fromNow() + " - " +
-                  details.comments + " comments" +
-                  needAttention(details.mergeable, details.state),
-        status: buildStatus(statuses),
-        avatar: details.user.gravatar_id,
-        order: details.created_at
-      }
+    if (error?)
+      callback(error)
+    else
+      Github.Api.statuses.get {
+        user: org,
+        repo: reponame,
+        sha: details.head.sha
+      }, (error, statuses) ->
+        if (error?)
+          callback(error)
+        else
+          callback null, {
+            title: details.title,
+            url: details.html_url,
+            infos: reponame,
+            comments: "(#{details.head.ref} -> #{details.base.ref}) - " +
+                      Moment(details.created_at).fromNow() + " - " +
+                      details.comments + " comments" +
+                      needAttention(details.mergeable, details.state),
+            status: buildStatus(statuses),
+            avatar: details.user.gravatar_id,
+            order: details.created_at
+          }
+
+displayError = (fallback, error) ->
+  Utils.fallback_print(fallback) { title: "An error occured: #{JSON.stringify(error)}", status: false }
+
+githubUrlPattern = new RegExp "(http|https):\/\/github.com+([a-z0-9\-\.,@\?^=%&;:\/~\+#]*[a-z0-9\-@\?^=%&;\/~\+#])?",'i'
 
 #TODO: Speeeeeeeeeeed
 pulls = (fallback, keyword, filter) ->
-
-  githubUrlPattern = new RegExp "(http|https):\/\/github.com+
-([a-z0-9\-\.,@\?^=%&;:\/~\+#]*[a-z0-9\-@\?^=%&;\/~\+#])?"
-  , 'i'
 
   # First we verify if the argument is an URL
   matching = keyword.match(githubUrlPattern) if _.isString(keyword)
   if (matching and _.str.include(keyword, 'pull'))
     pull = matching[2].split('\/')
     getInfoPull pull[1], pull[2], pull[4], (error, result) ->
-      if (not error)
+      if (error?)
+        displayError(fallback, error)
+      else
         Utils.fallback_print(fallback) {
           title: result.title,
           url: result.url,
@@ -99,39 +108,43 @@ pulls = (fallback, keyword, filter) ->
           status: result.status,
           avatar: result.avatar
         }
+
   else
     Github.Api.repos.getFromOrg {
       org: Github.Org,
       per_page: 100
     }, (error, repos) ->
-      Async.concat repos, (repo, callback) ->
-        if (isRepoInFilters(repo.name))
-          Github.Api.pullRequests.getAll {
-            user: Github.Org,
-            repo: repo.name
-          }, (error, prs) ->
-            if (error)
-              callback(error)
-            else
-              Async.reduce prs, [],
-                Async.apply (memo, pr, cb) ->
-                  query = pr.title + repo.name + pr.user.login
-                  if (shouldBeDisplayed(keyword, filter, query, pr.created_at))
-                    getInfoPull Github.Org, repo.name, pr.number, (error, r) ->
-                      memo.push r
-                      cb null, memo
-                  else
-                    cb(error, memo)
-              , (err, list) ->
-                callback(err, list)
-        else
-          callback(null, [])
-      , (err, list) ->
-        if (err)
-          console.log "An error occured"
-        else
-          Utils.fallback_printList fallback,
-            list, _.partial(pickLastIfNeeded, keyword, filter)
+      if (error?)
+        displayError(fallback, error)
+      else
+        Async.concat repos, (repo, callback) ->
+          if (isRepoInFilters(repo.name))
+            Github.Api.pullRequests.getAll {
+              user: Github.Org,
+              repo: repo.name
+            }, (error, prs) ->
+              if (error?)
+                callback(error)
+              else
+                Async.reduce prs, [],
+                  Async.apply (memo, pr, cb) ->
+                    query = pr.title + repo.name + pr.user.login
+                    if (shouldBeDisplayed(keyword, filter, query, pr.created_at))
+                      getInfoPull Github.Org, repo.name, pr.number, (error, r) ->
+                        memo.push r
+                        cb error, memo
+                    else
+                      cb(error, memo)
+                , (err, list) ->
+                  callback(err, list)
+          else
+            callback null, []
+        , (err, list) ->
+          if (err?)
+            displayError(fallback, err)
+          else
+            Utils.fallback_printList fallback,
+              list, _.partial(pickLastIfNeeded, keyword, filter)
 
 module.exports = {
   name: "Pull Requests"

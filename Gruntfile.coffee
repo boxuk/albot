@@ -13,8 +13,11 @@ module.exports = (grunt) ->
         NODE_ENV: 'test'
 
     coffeelint:
-      app: [ '*.coffee', 'lib/**/*.coffee' ]
-
+      app: [ '*.coffee', 'lib/**/*.coffee' ],
+      options:
+        max_line_length:
+          value: 120
+        
     mochacli:
       options:
         reporter: 'spec',

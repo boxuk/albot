@@ -51,3 +51,10 @@ describe 'Utils', () ->
 
       Utils.render { title: "test message" }
       nock.done()
+
+  describe '#fallback_printList()', () ->
+    it 'should handle an empty list', (done) ->
+      Utils.fallback_printList (object) ->
+        object.title.should.be.equal "No result for your request"
+        done()
+      , []
