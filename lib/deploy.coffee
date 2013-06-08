@@ -51,7 +51,6 @@ deploy = (fallback, repo, branch) ->
         Utils.fallback_printError(fallback, "Deploy not configured.")
       else
 
-        #TODO: Do migrations and elasticsearch reboot in Capifony
         proc = Spawn Deploy.exec, Deploy.args, { cwd: dirPath }
 
         Utils.fallback_print(fallback)
@@ -86,13 +85,10 @@ gist = (log, logPath, callback) ->
     data = data.replace(new RegExp('✓', 'g'), '+')
 
     Github.Api.gists.edit { id: Deploy.gistId, files: {"history": { content: data } }}, (err, gist) ->
-      if (err?)
-        callback(err)
-      else
-        callback(null, gist.html_url)
+      if (err?) callback(err) else callback(null, gist.html_url)
 
 module.exports = {
   name: 'Deploy',
-  description: 'Deploy your projects with the configured command'
+  description: '-project- | -alias- [-branch-] Deploy your projects with the configured command'
   action: deploy
 }

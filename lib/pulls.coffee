@@ -145,7 +145,7 @@ pulls = (fallback, keyword, filter) ->
 
 module.exports = {
   name: "Pull Requests"
-  description: " [ -url- |
+  description: "[ -url- |
  without -filter- | with -filter- |
  recent [-unit-] |
  last [-number- | -filter-]

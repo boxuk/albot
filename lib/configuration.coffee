@@ -31,7 +31,8 @@ Nconf
     "deploy": {
       "args": [],
       "env": [],
-      "aliases": {}
+      "branchArg": "{{branch}}",
+      "aliases": {},
     }
   }
 

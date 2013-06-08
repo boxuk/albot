@@ -18,6 +18,7 @@ Usage
         Commands:
 
           pulls                  [ <url> | without <filter> | with <filter> | recent [<unit>] | last [<number> | <filter>]] List all Pull Requests of the organisation
+          deploy                 <project> | <alias> [<branch>] Deploy your projects with the configured command
           help                   Display a list of available commands
           server                 Start albot to listen on Hipchat instead of the command line
 
@@ -76,6 +77,44 @@ Example on Hipchat:
 
 ![hipchat - web chat](https://f.cloud.github.com/assets/661901/550556/8410e2fe-c314-11e2-9c1f-eb2f56489e4b.png)
 
+Deploy
+======
+
+This command will launch your favourite deployment script in a specific environement.
+Environnement which is created by downloading files on your Github repository.
+
+At the end, a Gist will be updated with the logs of the execution.
+
+      $ albot deploy webapp
+
+Will download the configured files ( __env__ property) from the branch master of __yourorg/webapp__ 
+Then launch the deploy script in this temporary directory.
+
+You can also specify a branch
+
+      $ albot deploy webapp feature
+
+Warning: This task requires quite more configuration.
+
+The standard stuff are the script name, the list of arguments and the list of the files you want to have for your environement.
+
+    "exec": "script",
+    "args": ["arg1"],
+    "env": ["README.md", "app/config/prod.json"],
+
+You can also specify the way the branch name is passed to the script. {{branch}} will be replaced by the argument value.
+
+    "branchArg": "-Sbranch={{branch}}",
+
+If you have big project names, you can set pairs of key/value as aliases
+
+    "webapp": "client-webapp-front"
+
+Don't forget to pre-create a Gist and set the id.
+We choose not to create a Gist automatically to avoid a ridiculously high number of those.
+
+    "gistId": "sha1"
+
 Server
 ======
 
@@ -110,6 +149,13 @@ If you are more comfortable with env variables. You can use that too.
  - __channel__, The Hipchat channel to listen to in server mode
  - __token__, The Hipchat API token
  - __frequency__, Polling frequency. Default: 6000
+- __deploy__
+ - __exec__, The script to execute as deployment
+ - __args__, A list of arguments to pass to. Default: []
+ - __branchArg__, Another argument with the branch name. Default: {{branch}}
+ - __env__, List of files do download from Github and create a directory with. Default: []
+ - __aliases__, Default: {}
+ - __gistId__, Gist id for the execution logs
 
 Hacking
 =======
