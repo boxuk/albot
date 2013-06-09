@@ -13,5 +13,14 @@
     "channel": "testchan",
     "token": "testtoken",
     "frequency": 6000
+  },
+  "deploy": {
+    "exec": "ls",
+    "args": ["-shR"],
+    "env": ["Capfile", "app/config/deploy.rb"],
+    "aliases": {
+      "t": "test-deployable"
+    },
+    "gistId": "test-gist"
   }
 }

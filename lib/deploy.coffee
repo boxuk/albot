@@ -65,16 +65,26 @@ deploy = (fallback, repo, branch) ->
           if (code is 0)
             gist log, logPath, (err, url) ->
               Utils.fallback_print(fallback)
-                title: "Successful deploy !", url: url, infos: repo, comments: "(#{branch})", status: true         
+                title: "Successful deploy !", url: url, infos: repo, comments: "(#{branch})", status: true
           else
             gist log, logPath, (err, url) ->
-              Utils.fallback_print(fallback)
-                title: "A problem occured during the deploy", url: url, infos: repo, comments: "(#{branch})", status: false
+              Utils.fallback_print(fallback) {
+                title: "A problem occured during the deploy",
+                url: url,
+                infos: repo,
+                comments: "(#{branch})",
+                status: false
+              }
 
         proc.on 'error', (error) ->
           gist log, logPath, (err, url) ->
-            Utils.fallback_print(fallback)
-              title: "A problem occured during the deploy: #{error}", url: url, infos: repo, comments: "(#{branch})", status: false
+            Utils.fallback_print(fallback) {
+              title: "A problem occured during the deploy: #{error}",
+              url: url,
+              infos: repo,
+              comments: "(#{branch})",
+              status: false
+            }
 
 gist = (log, logPath, callback) ->
   Fs.readFile logPath, (error, data) ->
@@ -85,10 +95,12 @@ gist = (log, logPath, callback) ->
     data = data.replace(new RegExp('✓', 'g'), '+')
 
     Github.Api.gists.edit { id: Deploy.gistId, files: {"history": { content: data } }}, (err, gist) ->
-      if (err?) callback(err) else callback(null, gist.html_url)
+      console.log err
+      if (err?) then callback(err) else callback(null, gist.html_url)
 
 module.exports = {
   name: 'Deploy',
   description: '-project- | -alias- [-branch-] Deploy your projects with the configured command'
-  action: deploy
+  action: deploy,
+  prepareEnv: prepareEnv
 }
