@@ -91,10 +91,13 @@ gist = (log, logPath, callback) ->
     data = data.toString()
     data = data.replace(new RegExp('\\\u001b\\[0m', 'g'), '')
     data = data.replace(new RegExp('\\\u001b\\[31m', 'g'), '')
+    data = data.replace(new RegExp('\\\u001b\\[32m', 'g'), '')
     data = data.replace(new RegExp('✘', 'g'), '-')
-    data = data.replace(new RegExp('✓', 'g'), '+')
+    data = data.replace(new RegExp('✔', 'g'), '+')
 
+    console.log data
     Github.Api.gists.edit { id: Deploy.gistId, files: {"history": { content: data } }}, (err, gist) ->
+      console.log err + JSON.stringify(gist)
       if (err?) then callback(err) else callback(null, gist.html_url)
 
 module.exports = {
