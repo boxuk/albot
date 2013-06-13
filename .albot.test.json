@@ -16,7 +16,7 @@
   },
   "deploy": {
     "exec": "ls",
-    "args": ["-shR"],
+    "args": ["-hR"],
     "env": ["Capfile", "app/config/deploy.rb"],
     "aliases": {
       "t": "test-deployable"

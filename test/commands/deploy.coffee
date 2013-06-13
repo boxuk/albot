@@ -24,7 +24,7 @@ describe 'Commands', () ->
         .intercept('/gists/test-gist?access_token=testtoken', 'PATCH', {
           files: {
             "history": {
-              content: ".:\ntotal 8,0K\n4,0K app\n4,0K Capfile\n\n./app:\ntotal 4,0K\n4,0K config\n\n./app/config:\ntotal 4,0K\n4,0K deploy.rb\n"
+              content: ".:\napp\nCapfile\n\n./app:\nconfig\n\n./app/config:\ndeploy.rb\n"
             }
           }
         })
