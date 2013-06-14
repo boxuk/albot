@@ -19,5 +19,8 @@
     "env": [],
     "aliases": {},
     "gistId": ""
+  },
+  "staff": {
+    "host": ""
   }
 }

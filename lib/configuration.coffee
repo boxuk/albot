@@ -54,4 +54,5 @@ module.exports =
     Channel: Nconf.get('hipchat').channel,
     Frequency: Nconf.get('hipchat').frequency
   },
+  Staff: Nconf.get('staff'),
   Version: JSON.parse(Fs.readFileSync('./package.json', 'utf8')).version

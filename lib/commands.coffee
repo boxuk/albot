@@ -14,14 +14,13 @@ help = (fallback) ->
 # it's better to use _.isString to check if an argument exists
 #
 # TODO: See if we can make that cleaner
-list = {
-  pulls: require('./pulls'),
-  deploy: require('./deploy'),
-  help: {
+list =
+  pulls: require('./pulls')
+  deploy: require('./deploy')
+  staff: require('./staff')
+  help: 
     name: "Help"
     description: "Display a list of available commands",
     action: help
-  }
-}
 
 module.exports = list
