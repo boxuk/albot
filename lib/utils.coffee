@@ -41,7 +41,7 @@ format_html = (title, url, infos, comments, status, avatar) ->
   html += " - <i>#{comments}</i>" if comments?
   html
 
-print = (o) ->
+print = (o, callback) ->
   console.log format_term(
     o['title'],
     o['url'],
