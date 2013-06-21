@@ -15,7 +15,7 @@ help = (fallback) ->
 #
 # TODO: See if we can make that cleaner
 list = {
-  pulls: require('./pulls'),  
+  pulls: require('./pulls'),
   deploy: require('./deploy'),
   changelog: require('./changelog')
   help: {
