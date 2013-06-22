@@ -61,6 +61,7 @@ display = (fallback, commits, save) ->
     {
       title: commit.commit.message
       comments: Moment(commit.commit.committer.date).fromNow()
+      avatar: commit.committer.gravatar_id
       order: commit.commit.committer.date
     }
 

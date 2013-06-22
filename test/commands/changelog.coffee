@@ -18,12 +18,16 @@ describe 'Commands', () ->
               "committer": {
                 "date": "2011-01-26T19:01:12Z"
               }
+            },
+            "committer": {
+              "gravatar_id": "lksajglkfdjg"
             }
           }])
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message'
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
+        object.avatar.should.be.equal "lksajglkfdjg"
         done()
       , 't', 'pr', '620'
 
@@ -39,6 +43,9 @@ describe 'Commands', () ->
               "committer": {
                 "date": "2011-01-26T19:01:12Z"
               }
+            },
+            "committer": {
+              "gravatar_id": "lksajglkfdjg"
             }
           }])
         .intercept('/gists/test-gist-cl?access_token=testtoken', 'PATCH', {
@@ -70,12 +77,16 @@ describe 'Commands', () ->
               "committer": {
                 "date": "2011-01-26T19:01:12Z"
               }
+            },
+            "committer": {
+              "gravatar_id": "lksajglkfdjg"
             }
           }])
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message from master'
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
+        object.avatar.should.be.equal "lksajglkfdjg"
         done()
       , 't', 'since', '2', 'weeks'
 
@@ -90,6 +101,9 @@ describe 'Commands', () ->
                 "committer": {
                   "date": "2011-01-26T19:01:12Z"
                 }
+              },
+              "committer": {
+                "gravatar_id": "lksajglkfdjg"
               }
             }, {
               "commit": {
@@ -97,6 +111,9 @@ describe 'Commands', () ->
                 "committer": {
                   "date": "2011-01-26T19:01:12Z"
                 }
+              },
+              "committer": {
+                "gravatar_id": "lksajglkfdjg"
               }
             }]
           })
@@ -104,5 +121,6 @@ describe 'Commands', () ->
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message from master'
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
+        object.avatar.should.be.equal "lksajglkfdjg"
         done()
       , 't', 'between', '46..47'
