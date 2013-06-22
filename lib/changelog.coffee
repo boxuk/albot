@@ -57,11 +57,13 @@ changelog = (fallback, repo, keyword, filter, period, save) ->
         display(fallback, diff.commits, period)
 
 display = (fallback, commits, save) ->
-  list = _.map commits, (commit) -> {
-    title: commit.commit.message
-    comments: Moment(commit.commit.committer.date).fromNow()
-    order: commit.commit.committer.date
-  }
+  list = _.map commits, (commit) ->
+    {
+      title: commit.commit.message
+      comments: Moment(commit.commit.committer.date).fromNow()
+      order: commit.commit.committer.date
+    }
+
   list = _.filter list, (object) ->
     not object.title.match(new RegExp '^Merge')
 
@@ -88,9 +90,9 @@ gist = (list, callback) ->
     if (err?) then callback(err) else callback(null, gist.html_url)
 
 module.exports = {
-  name: "Changelog"
+  name: "Changelog",
   description: "-project- | -alias- [-pr- [-number-]
-  | -since- [-number-] [-period-] | -between- [-tag-range-]
-  ] [-save-] List changelog for a given PR, period, range ",
+ | -since- [-number-] [-period-] | -between- [-tag-range-]
+ ] [-save-] List changelog for a given PR, period, range ",
   action: changelog
 }

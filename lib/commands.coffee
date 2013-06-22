@@ -17,7 +17,7 @@ help = (fallback) ->
 list = {
   pulls: require('./pulls'),
   deploy: require('./deploy'),
-  changelog: require('./changelog')
+  changelog: require('./changelog'),
   help: {
     name: "Help"
     description: "Display a list of available commands",
