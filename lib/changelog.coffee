@@ -24,7 +24,7 @@ changelog = (fallback, repo, keyword, filter, period, save) ->
       if (error?)
         Utils.fallback_printError(fallback, error)
       else
-        display(fallback, commits, period)        
+        display(fallback, commits, period)
 
   if (keyword == 'since')
     Github.Api.repos.getCommits {
@@ -43,7 +43,7 @@ changelog = (fallback, repo, keyword, filter, period, save) ->
       last = _.last filter.split("...")
     else
       first = _.first filter.split("..")
-      last = _.last filter.split("..")      
+      last = _.last filter.split("..")
 
     Github.Api.repos.compareCommits {
       user: Github.Org
@@ -54,7 +54,7 @@ changelog = (fallback, repo, keyword, filter, period, save) ->
       if (error?)
         Utils.fallback_printError(fallback, error)
       else
-        display(fallback, diff.commits, period)        
+        display(fallback, diff.commits, period)
 
 display = (fallback, commits, save) ->
   list = _.map commits, (commit) -> {
@@ -85,7 +85,7 @@ gist = (list, callback) ->
   , ""
 
   Github.Api.gists.edit { id: Changelog.gistId, files: {"history.md": { content: data } }}, (err, gist) ->
-    if (err?) then callback(err) else callback(null, gist.html_url)                 
+    if (err?) then callback(err) else callback(null, gist.html_url)
 
 module.exports = {
 	name: "Changelog"
