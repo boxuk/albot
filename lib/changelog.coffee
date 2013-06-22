@@ -88,9 +88,9 @@ gist = (list, callback) ->
     if (err?) then callback(err) else callback(null, gist.html_url)
 
 module.exports = {
-	name: "Changelog"
-	description: "-project- | -alias- [-pr- [-number-] 
+  name: "Changelog"
+  description: "-project- | -alias- [-pr- [-number-]
   | -since- [-number-] [-period-] | -between- [-tag-range-]
   ] [-save-] List changelog for a given PR, period, range ",
-	action: changelog
+  action: changelog
 }
