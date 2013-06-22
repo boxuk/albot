@@ -100,7 +100,7 @@ gist = (log, logPath, callback) ->
 
 module.exports = {
   name: 'Deploy',
-  description: '-project- | -alias- [-branch-] Deploy your projects with the configured command'
+  description: '-project- [ | -alias-] [-branch-] Deploy your projects with the configured command'
   action: deploy,
   prepareEnv: prepareEnv
 }

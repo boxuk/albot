@@ -2,3 +2,4 @@ node_modules/
 covershot/
 lib-cov/
 .idea/
+.albot.json

@@ -18,7 +18,8 @@ Usage
         Commands:
 
           pulls                  [ <url> | without <filter> | with <filter> | recent [<unit>] | last [<number> | <filter>]] List all Pull Requests of the organisation
-          deploy                 <project> | <alias> [<branch>] Deploy your projects with the configured command
+          deploy                 <project> [ | <alias>] [<branch>] Deploy your projects with the configured command
+          changelog              <project> [ | <alias>] <pr> <number> | <since> <number> <period> | <between> <tag-range> ["save"] List changelog for a given PR, period, range
           help                   Display a list of available commands
           server                 Start albot to listen on Hipchat instead of the command line
 
@@ -115,6 +116,30 @@ We choose not to create a Gist automatically to avoid a ridiculously high number
 
     "gistId": "sha1"
 
+Changelog
+=========
+
+Changelog allows you to generate the change log of you Git commits history.
+All the commit messages that start by "Merge" will be discarded.
+
+You can get the changes for a specified Pull Request 
+
+     $ albot changelog webapp pr 620
+
+The changes of the master branch since a certain period
+Like in the Pulls command, all usable keys comes from Moment.js here: [Moment#add](http://momentjs.com/docs/#/manipulating/add/)
+
+     $ albot changelog webapp since 2 months
+
+And the difference between two git references
+
+     $ albot changelog webapp between 43..45
+
+If you want to store the result in a Gist instead, just use the "save" keyword at the end.
+Available in all flavour
+
+     $ albot changelog webapp between 43..45 save
+
 Server
 ======
 
@@ -156,6 +181,8 @@ If you are more comfortable with env variables. You can use that too.
  - __env__, List of files do download from Github and create a directory with. Default: []
  - __aliases__, Default: {}
  - __gistId__, Gist id for the execution logs
+- __changelog__,
+ - __gistId__, Gist id for the saved changelogs
 
 Hacking
 =======
