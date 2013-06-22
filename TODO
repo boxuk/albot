@@ -18,3 +18,4 @@ Commands:
 - Show deployed version
 - Retest PR
 - shipit (To mark the PR as being reviewed by someone)
+- Amazon EC2 listing

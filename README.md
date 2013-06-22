@@ -181,6 +181,8 @@ If you are more comfortable with env variables. You can use that too.
  - __env__, List of files do download from Github and create a directory with. Default: []
  - __aliases__, Default: {}
  - __gistId__, Gist id for the execution logs
+- __changelog__,
+ - __gistId__, Gist id for the saved changelogs
 
 Hacking
 =======
