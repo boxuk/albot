@@ -60,6 +60,7 @@ display = (fallback, commits, save) ->
   list = _.map commits, (commit) -> {
     title: commit.commit.message
     comments: Moment(commit.commit.committer.date).fromNow()
+    order: commit.commit.committer.date
   }
   list = _.filter list, (object) ->
     not object.title.match(new RegExp '^Merge')
@@ -75,8 +76,8 @@ display = (fallback, commits, save) ->
           comments: url
           status: true
         }
-
-  Utils.fallback_printList fallback, list
+  else
+    Utils.fallback_printList fallback, list
 
 gist = (list, callback) ->
   data = _.reduce list, (memo, o) ->
@@ -88,6 +89,8 @@ gist = (list, callback) ->
 
 module.exports = {
 	name: "Changelog"
-	description: "",
+	description: "-project- | -alias- [-pr- [-number-] 
+  | -since- [-number-] [-period-] | -between- [-tag-range-]
+  ] [-save-] List changelog for a given PR, period, range ",
 	action: changelog
 }
