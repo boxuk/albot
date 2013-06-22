@@ -3,6 +3,7 @@ Improvement:
 - Better currying of the fallback function in commands
 - Clean code (More Async)
 - Verbose mode (Maybe to test console.log?) (Winston !)
+- Display the ID of a PR
 
 Maybe
 - Better Link customisation when printing (template)
