@@ -77,9 +77,9 @@ describe 'Server', () ->
       cmd.should.not.have.deep.property('args[1]')
 
     it 'should match arguments with some special characters', () ->
-      cmd = Server.dispatch("testbot help Do+not-merge")
+      cmd = Server.dispatch("testbot help -Do+not.merge_:")
       cmd.should.have.property('name').equal("Help")
-      cmd.should.have.deep.property('args[0]').equal("Do+not-merge")
+      cmd.should.have.deep.property('args[0]').equal("-Do+not.merge_:")
 
     it 'should match url', () ->
       cmd = Server.dispatch("testbot help http://github.com/testing")

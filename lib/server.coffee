@@ -12,12 +12,12 @@ Utils = require './utils'
 dispatch = (message) ->
   # TODO: Loop
   pattern = new RegExp "^#{Configuration.Nickname} ([a-zA-Z0-9]+)
-( ([a-zA-Z0-9\-\+\/\.\:]+))?
-( ([a-zA-Z0-9\-\+\/\.\:]+))?
-( ([a-zA-Z0-9\-\+\/\.\:]+))?
-( ([a-zA-Z0-9\-\+\/\.\:]+))?
-( ([a-zA-Z0-9\-\+\/\.\:]+))?
-( ([a-zA-Z0-9\-\+\/\.\:]+))?$"
+( ([a-zA-Z0-9\-\+\/\.\:\_]+))?
+( ([a-zA-Z0-9\-\+\/\.\:\_]+))?
+( ([a-zA-Z0-9\-\+\/\.\:\_]+))?
+( ([a-zA-Z0-9\-\+\/\.\:\_]+))?
+( ([a-zA-Z0-9\-\+\/\.\:\_]+))?
+( ([a-zA-Z0-9\-\+\/\.\:\_]+))?$"
 
   request = message.match(pattern)
   if (request and request.length > 1)
