@@ -1,15 +1,12 @@
-Albot [![Build Status](https://secure.travis-ci.org/boxuk/albot.png)](http://travis-ci.org/boxuk/albot) [![Coverage Status](https://coveralls.io/repos/boxuk/albot/badge.png?branch=master)](https://coveralls.io/r/boxuk/albot?branch=master) [![Dependency Status](https://gemnasium.com/boxuk/albot.png)](https://gemnasium.com/boxuk/albot)
-=====
+# Albot [![Build Status](https://secure.travis-ci.org/boxuk/albot.png)](http://travis-ci.org/boxuk/albot) [![Coverage Status](https://coveralls.io/repos/boxuk/albot/badge.png?branch=master)](https://coveralls.io/r/boxuk/albot?branch=master) [![Dependency Status](https://gemnasium.com/boxuk/albot.png)](https://gemnasium.com/boxuk/albot)
 
 Albot is a small command line tool built as an attempt to help us with our Developement process
 
-Installation
-============
+## Installation
 
       npm install -g albot
 
-Usage
-=====
+## Usage
  
       $ albot --help                                                                                                                                                                                                           
 
@@ -28,8 +25,9 @@ Usage
           -h, --help     output usage information
           -V, --version  output the version number
 
-Pulls
-=====
+## Commands
+
+### Pulls
 
 This command display the Pull Requests of all the repositories in your organisation
 (For which the name correspond the filters you have configured).
@@ -78,8 +76,7 @@ Example on Hipchat:
 
 ![hipchat - web chat](https://f.cloud.github.com/assets/661901/550556/8410e2fe-c314-11e2-9c1f-eb2f56489e4b.png)
 
-Deploy
-======
+### Deploy
 
 This command will launch your favourite deployment script in a specific environement.
 Environnement which is created by downloading files on your Github repository.
@@ -116,8 +113,7 @@ We choose not to create a Gist automatically to avoid a ridiculously high number
 
     "gistId": "sha1"
 
-Changelog
-=========
+### Changelog
 
 Changelog allows you to generate the change log of you Git commits history.
 All the commit messages that start by "Merge" will be discarded.
@@ -140,8 +136,7 @@ Available in all flavour
 
      $ albot changelog webapp between 43..45 save
 
-Server
-======
+### Server
 
 Albot can also be use as an Hipchat bot.
 
@@ -154,8 +149,7 @@ Note that the Hipchat API is limited to 100 requests by 5 minutes.
 By default, 50 are used to poll the channel.
 Be careful, it's very short.
 
-Configuration
-=============
+## Configuration
 
 The default configuration is not very useful as you will need tokens for Hipchat and Github.
 
@@ -184,8 +178,7 @@ If you are more comfortable with env variables. You can use that too.
 - __changelog__,
  - __gistId__, Gist id for the saved changelogs
 
-Hacking
-=======
+## Hacking
 
 Don't hesitate to submit a Pull Request if you find it useful.
 If not, submit an issue instead and tell us why!
