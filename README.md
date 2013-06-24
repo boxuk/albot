@@ -2,6 +2,8 @@
 
 Albot is a small command line tool built as an attempt to help us with our Developement process
 
+You can find a better version of this documentation here: [http://documentup.com/boxuk/albot](http://documentup.com/boxuk/albot)
+
 ## Installation
 
       npm install -g albot
