@@ -13,10 +13,11 @@ dispatch = (message) ->
   # TODO: Loop
   pattern = new RegExp "^#{Configuration.Nickname} ([a-zA-Z0-9]+)
 ( ([a-zA-Z0-9\-\+\/\.\:]+))?
-( ([a-zA-Z0-9\-\+]+))?
-( ([a-zA-Z0-9\-\+]+))?
-( ([a-zA-Z0-9\-\+]+))?
-( ([a-zA-Z0-9\-\+]+))?$"
+( ([a-zA-Z0-9\-\+\/\.\:]+))?
+( ([a-zA-Z0-9\-\+\/\.\:]+))?
+( ([a-zA-Z0-9\-\+\/\.\:]+))?
+( ([a-zA-Z0-9\-\+\/\.\:]+))?
+( ([a-zA-Z0-9\-\+\/\.\:]+))?$"
 
   request = message.match(pattern)
   if (request and request.length > 1)

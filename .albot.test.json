@@ -22,5 +22,8 @@
       "t": "test-deployable"
     },
     "gistId": "test-gist"
+  },
+  "changelog": {
+    "gistId": "test-gist-cl"
   }
 }

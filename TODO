@@ -3,6 +3,9 @@ Improvement:
 - Better currying of the fallback function in commands
 - Clean code (More Async)
 - Verbose mode (Maybe to test console.log?) (Winston !)
+- Display the ID of a PR in Pulls
+- Status of commits in Changelog
+- More human redeable queries
 
 Maybe
 - Better Link customisation when printing (template)
@@ -10,10 +13,9 @@ Maybe
 
 Commands:
 - Github status: https://status.github.com/api
-- Diff between tags
 - Tagging
 - Launch Jenkins build
 - Show deployed version
-- Deploying (Capifony)
 - Retest PR
 - shipit (To mark the PR as being reviewed by someone)
+- Amazon EC2 listing
