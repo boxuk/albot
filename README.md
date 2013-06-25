@@ -2,7 +2,7 @@
 
 Albot is a small command line tool built as an attempt to help us with our Developement process
 
-You can find a better version of this documentation here: [http://documentup.com/boxuk/albot](http://documentup.com/boxuk/albot)
+You can find a better version of this documentation here: [http://boxuk.github.io/albot/](http://boxuk.github.io/albot/)
 
 ## Installation
 
