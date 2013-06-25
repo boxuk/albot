@@ -8,6 +8,7 @@ Async = require 'async'
 Moment = require 'moment'
 
 Utils = require './utils'
+GhHelpers = require './gh_helpers'
 
 isRepoInFilters = (name) ->
   _.some Configuration.Github.Filters, (filter) ->
@@ -42,12 +43,6 @@ pickLastIfNeeded = (keyword, filter, list) ->
     _.first(list, number)
   else list
 
-buildStatus = (statuses) ->
-  status = statuses[0] if statuses?
-  if not status? or not status.state? or status.state is 'pending'
-    undefined
-  else status.state is 'success'
-
 needAttention = (mergeable, state) ->
   warning = ""
   warning = if not mergeable then " - *NEED REBASE*" else warning
@@ -79,7 +74,7 @@ getInfoPull = (org, reponame, number, callback) ->
                       Moment(details.created_at).fromNow() + " - " +
                       details.comments + " comments" +
                       needAttention(details.mergeable, details.state),
-            status: buildStatus(statuses),
+            status: GhHelpers.buildStatus(statuses),
             avatar: details.user.gravatar_id,
             order: details.created_at
           }
@@ -88,7 +83,7 @@ getInfoPull = (org, reponame, number, callback) ->
 pulls = (fallback, keyword, filter) ->
 
   # First we verify if the argument is an URL
-  match = Utils.githubPRUrlMatching keyword
+  match = GhHelpers.githubPRUrlMatching keyword
   if (match?)
     getInfoPull match.org, match.repo, match.number, (error, result) ->
       if (error?)
