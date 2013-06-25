@@ -14,10 +14,19 @@ Utils = require './utils'
 
 changelog = (fallback, repo, keyword, filter, period, save) ->
   repo = Deploy.aliases[repo] || repo
+  org = Github.Org
+
+  # First we verify if the first argument is an URL
+  match = Utils.githubPRUrlMatching repo
+  if (match?)
+    org = match.org
+    repo = match.repo
+    keyword = 'pr'
+    filter = match.number
 
   if (keyword == 'pr')
     Github.Api.pullRequests.getCommits {
-      user: Github.Org
+      user: org
       repo: repo
       number: filter
     }, (error, commits) ->
@@ -28,7 +37,7 @@ changelog = (fallback, repo, keyword, filter, period, save) ->
 
   if (keyword == 'since')
     Github.Api.repos.getCommits {
-      user: Github.Org
+      user: org
       repo: repo
       since: Moment().subtract(period, filter).format()
     }, (error, commits) ->
@@ -46,7 +55,7 @@ changelog = (fallback, repo, keyword, filter, period, save) ->
       last = _.last filter.split("..")
 
     Github.Api.repos.compareCommits {
-      user: Github.Org
+      user: org
       repo: repo
       base: first
       head: last

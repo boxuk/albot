@@ -5,6 +5,18 @@ Hipchat = Configuration.Hipchat
 Async = require 'async'
 Styled = require 'styled'
 
+githubUrlPattern = new RegExp "(http|https):\/\/github.com+([a-z0-9\-\.,@\?^=%&;:\/~\+#]*[a-z0-9\-@\?^=%&;\/~\+#])?",'i'
+
+githubPRUrlMatching = (url) ->
+  matching = url.match(githubUrlPattern) if _.isString(url)
+  if (matching and _.str.include(url, 'pull'))
+    pull = matching[2].split('\/')
+    {
+      org: pull[1]
+      repo: pull[2]
+      number: pull[4]
+    }
+
 status_icon = (status) ->
   if (status?)
     if status then "✓" else "✘"
@@ -97,6 +109,7 @@ fallback_printError = (fallback, error) ->
   fallback_print(fallback) { title: "An error occured: #{JSON.stringify(error)}", status: false }
 
 module.exports = {
+  githubPRUrlMatching: githubPRUrlMatching,
   format_term: format_term,
   format_html: format_html,
   print: print,

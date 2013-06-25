@@ -84,16 +84,13 @@ getInfoPull = (org, reponame, number, callback) ->
             order: details.created_at
           }
 
-githubUrlPattern = new RegExp "(http|https):\/\/github.com+([a-z0-9\-\.,@\?^=%&;:\/~\+#]*[a-z0-9\-@\?^=%&;\/~\+#])?",'i'
-
 #TODO: Speeeeeeeeeeed
 pulls = (fallback, keyword, filter) ->
 
   # First we verify if the argument is an URL
-  matching = keyword.match(githubUrlPattern) if _.isString(keyword)
-  if (matching and _.str.include(keyword, 'pull'))
-    pull = matching[2].split('\/')
-    getInfoPull pull[1], pull[2], pull[4], (error, result) ->
+  match = Utils.githubPRUrlMatching keyword
+  if (match?)
+    getInfoPull match.org, match.repo, match.number, (error, result) ->
       if (error?)
         Utils.fallback_printError(fallback, error)
       else
