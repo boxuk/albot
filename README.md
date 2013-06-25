@@ -70,7 +70,7 @@ You can even have the last Pull Request filtered like 'with'
 
       $ albot pulls last athieriot
 
-Finally, if you are lazy (like me), you can copy/paste an URL from your browser
+Finally, if you are lazy (like me), you can copy/paste a URL from your browser
 
       $ albot pulls https://github.com/flatiron/nock/pull/110
 
@@ -123,6 +123,10 @@ All the commit messages that start by "Merge" will be discarded.
 You can get the changes for a specified Pull Request 
 
      $ albot changelog webapp pr 620
+
+Or copy/paste a URL from your browser
+
+      $ albot changelog https://github.com/flatiron/nock/pull/110
 
 The changes of the master branch since a certain period
 Like in the Pulls command, all usable keys comes from Moment.js here: [Moment#add](http://momentjs.com/docs/#/manipulating/add/)

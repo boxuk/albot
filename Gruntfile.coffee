@@ -20,7 +20,7 @@ module.exports = (grunt) ->
         
     mochacli:
       options:
-        reporter: 'spec',
+        reporter: 'nyan',
         globals: ['data']
       
       all: ['test/**/*.coffee']

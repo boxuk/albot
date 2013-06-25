@@ -10,6 +10,7 @@ Improvement:
 Maybe
 - Better Link customisation when printing (template)
 - Inspect more than the first page of PRs
+- Add usage statistics for each commands
 
 Commands:
 - Github status: https://status.github.com/api
