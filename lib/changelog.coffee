@@ -11,13 +11,14 @@ Async = require 'async'
 Moment = require 'moment'
 
 Utils = require './utils'
+GhHelpers = require './gh_helpers'
 
 changelog = (fallback, repo, keyword, filter, period, save) ->
   repo = Deploy.aliases[repo] || repo
   org = Github.Org
 
   # First we verify if the first argument is an URL
-  match = Utils.githubPRUrlMatching repo
+  match = GhHelpers.githubPRUrlMatching repo
   if (match?)
     org = match.org
     repo = match.repo
@@ -25,71 +26,92 @@ changelog = (fallback, repo, keyword, filter, period, save) ->
     filter = match.number
 
   if (keyword == 'pr')
-    Github.Api.pullRequests.getCommits {
-      user: org
-      repo: repo
-      number: filter
-    }, (error, commits) ->
-      if (error?)
-        Utils.fallback_printError(fallback, error)
-      else
-        display(fallback, commits, period)
+    forPullRequests(fallback, org, repo, filter, period, save)
 
   if (keyword == 'since')
-    Github.Api.repos.getCommits {
-      user: org
-      repo: repo
-      since: Moment().subtract(period, filter).format()
-    }, (error, commits) ->
-      if (error?)
-        Utils.fallback_printError(fallback, error)
-      else
-        display(fallback, commits, save)
+    forSince(fallback, org, repo, filter, period, save)
 
   if (keyword == 'between')
-    if (_.str.include filter, "...")
-      first = _.first filter.split("...")
-      last = _.last filter.split("...")
+    forBetween(fallback, org, repo, filter, period, save)
+
+forPullRequests = (fallback, org, repo, filter, period, save) ->
+  Github.Api.pullRequests.getCommits {
+    user: org
+    repo: repo
+    number: filter
+  }, (error, commits) ->
+    if (error?)
+      Utils.fallback_printError(fallback, error)
     else
-      first = _.first filter.split("..")
-      last = _.last filter.split("..")
+      display(fallback, org, repo, commits, period)
 
-    Github.Api.repos.compareCommits {
-      user: org
-      repo: repo
-      base: first
-      head: last
-    }, (error, diff) ->
-      if (error?)
-        Utils.fallback_printError(fallback, error)
-      else
-        display(fallback, diff.commits, period)
+forSince = (fallback, org, repo, filter, period, save) ->
+  Github.Api.repos.getCommits {
+    user: org
+    repo: repo
+    since: Moment().subtract(period, filter).format()
+  }, (error, commits) ->
+    if (error?)
+      Utils.fallback_printError(fallback, error)
+    else
+      display(fallback, org, repo, commits, save)
 
-display = (fallback, commits, save) ->
-  list = _.map commits, (commit) ->
-    {
-      title: commit.commit.message
-      comments: Moment(commit.commit.committer.date).fromNow()
-      avatar: commit.committer.gravatar_id
-      order: commit.commit.committer.date
-    }
-
-  list = _.filter list, (object) ->
-    not object.title.match(new RegExp '^Merge')
-
-  if (save == "save")
-    gist list, (error, url) ->
-      if (error?)
-        Utils.fallback_printError(fallback, error)
-      else
-        Utils.fallback_print(fallback) {
-          title: "View the changelog"
-          url: url
-          comments: url
-          status: true
-        }
+forBetween = (fallback, org, repo, filter, period, save) ->
+  if (_.str.include filter, "...")
+    first = _.first filter.split("...")
+    last = _.last filter.split("...")
   else
-    Utils.fallback_printList fallback, list
+    first = _.first filter.split("..")
+    last = _.last filter.split("..")
+
+  Github.Api.repos.compareCommits {
+    user: org
+    repo: repo
+    base: first
+    head: last
+  }, (error, diff) ->
+    if (error?)
+      Utils.fallback_printError(fallback, error)
+    else
+      display(fallback, org, repo, diff.commits, period)
+
+display = (fallback, org, repo, commits, save) ->
+  Async.map commits, (commit, callback) ->
+    Github.Api.statuses.get {
+      user: org,
+      repo: repo,
+      sha: commit.sha
+    }, (error, statuses) ->
+      callback error, {
+        title: commit.commit.message
+        comments: Moment(commit.commit.committer.date).fromNow()
+        avatar: commit.committer.gravatar_id
+        order: commit.commit.committer.date
+        status: GhHelpers.buildStatus(statuses)
+      }
+  , (err, list) ->
+    if (err?)
+      Utils.fallback_printError(fallback, err)
+    else
+      list = _.filter list, (object) ->
+        not object.title.match(new RegExp '^Merge')
+
+      if (save == "save")
+        saving(fallback, list)
+      else
+        Utils.fallback_printList fallback, list
+
+saving = (fallback, list) ->
+  gist list, (error, url) ->
+    if (error?)
+      Utils.fallback_printError(fallback, error)
+    else
+      Utils.fallback_print(fallback) {
+        title: "View the changelog"
+        url: url
+        comments: url
+        status: true
+      }
 
 gist = (list, callback) ->
   data = _.reduce list, (memo, o) ->

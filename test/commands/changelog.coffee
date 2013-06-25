@@ -13,6 +13,7 @@ describe 'Commands', () ->
         .persist()
         .get('/repos/testorg-ext/god/pulls/156/commits?access_token=testtoken')
         .reply(200, [{
+            "sha": "shaman1",
             "commit": {
               "message": "Commit message"
               "committer": {
@@ -23,11 +24,18 @@ describe 'Commands', () ->
               "gravatar_id": "lksajglkfdjg"
             }
           }])
+        .get('/repos/testorg-ext/god/statuses/shaman1?access_token=testtoken')
+        .reply(200, [
+            {
+              "state": "success"
+            }
+          ])
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message'
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
         object.avatar.should.be.equal "lksajglkfdjg"
+        object.status.should.be.equal true
         done()
       , 'https://github.com/testorg-ext/god/pull/156'
 
@@ -36,6 +44,7 @@ describe 'Commands', () ->
         .persist()
         .get('/repos/testorg/test-deployable/pulls/620/commits?access_token=testtoken')
         .reply(200, [{
+            "sha": "shaman2",
             "commit": {
               "message": "Commit message"
               "committer": {
@@ -46,11 +55,18 @@ describe 'Commands', () ->
               "gravatar_id": "lksajglkfdjg"
             }
           }])
+        .get('/repos/testorg/test-deployable/statuses/shaman2?access_token=testtoken')
+        .reply(200, [
+            {
+              "state": "success"
+            }
+          ])
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message'
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
         object.avatar.should.be.equal "lksajglkfdjg"
+        object.status.should.be.equal true
         done()
       , 't', 'pr', '620'
 
@@ -61,6 +77,7 @@ describe 'Commands', () ->
         .persist()
         .get('/repos/testorg/test-deployable/pulls/620/commits?access_token=testtoken')
         .reply(200, [{
+            "sha": "shaman3",
             "commit": {
               "message": "Commit message"
               "committer": {
@@ -71,6 +88,12 @@ describe 'Commands', () ->
               "gravatar_id": "lksajglkfdjg"
             }
           }])
+        .get('/repos/testorg/test-deployable/statuses/shaman3?access_token=testtoken')
+        .reply(200, [
+            {
+              "state": "success"
+            }
+          ])
         .intercept('/gists/test-gist-cl?access_token=testtoken', 'PATCH', {
           files: {
             "history.md": {
@@ -95,6 +118,7 @@ describe 'Commands', () ->
         .persist()
         .get("/repos/testorg/test-deployable/commits?since=#{dateArg}&access_token=testtoken")
         .reply(200, [{
+            "sha": "shaman4",
             "commit": {
               "message": "Commit message from master"
               "committer": {
@@ -105,11 +129,18 @@ describe 'Commands', () ->
               "gravatar_id": "lksajglkfdjg"
             }
           }])
+        .get('/repos/testorg/test-deployable/statuses/shaman4?access_token=testtoken')
+        .reply(200, [
+            {
+              "state": "failure"
+            }
+          ])
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message from master'
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
         object.avatar.should.be.equal "lksajglkfdjg"
+        object.status.should.be.equal false
         done()
       , 't', 'since', '2', 'weeks'
 
@@ -119,6 +150,7 @@ describe 'Commands', () ->
         .get("/repos/testorg/test-deployable/compare/46...47?access_token=testtoken")
         .reply(200, {
             "commits": [{
+              "sha": "shaman5",
               "commit": {
                 "message": "Merge should appear"
                 "committer": {
@@ -129,6 +161,7 @@ describe 'Commands', () ->
                 "gravatar_id": "lksajglkfdjg"
               }
             }, {
+              "sha": "shaman5",
               "commit": {
                 "message": "Commit message from master"
                 "committer": {
@@ -140,10 +173,17 @@ describe 'Commands', () ->
               }
             }]
           })
+        .get('/repos/testorg/test-deployable/statuses/shaman5?access_token=testtoken')
+        .reply(200, [
+            {
+              "state": "failure"
+            }
+          ])
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message from master'
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
         object.avatar.should.be.equal "lksajglkfdjg"
+        object.status.should.be.equal false
         done()
       , 't', 'between', '46..47'

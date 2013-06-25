@@ -6,6 +6,7 @@ Improvement:
 - Display the ID of a PR in Pulls
 - Status of commits in Changelog
 - More human redeable queries
+- Save changelog into a real file in the repo
 
 Maybe
 - Better Link customisation when printing (template)
