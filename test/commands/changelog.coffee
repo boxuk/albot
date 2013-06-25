@@ -8,6 +8,29 @@ Querystring = require 'querystring'
 
 describe 'Commands', () ->
   describe '#changelog()', () ->
+    it 'Can display the commits of a PR based on an URL', (done) ->
+      Nock('https://api.github.com')
+        .persist()
+        .get('/repos/testorg-ext/god/pulls/156/commits?access_token=testtoken')
+        .reply(200, [{
+            "commit": {
+              "message": "Commit message"
+              "committer": {
+                "date": "2011-01-26T19:01:12Z"
+              }
+            },
+            "committer": {
+              "gravatar_id": "lksajglkfdjg"
+            }
+          }])
+
+      Commands.changelog.action (object) ->
+        object.title.should.be.equal 'Commit message'
+        object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
+        object.avatar.should.be.equal "lksajglkfdjg"
+        done()
+      , 'https://github.com/testorg-ext/god/pull/156'
+
     it 'Can display the commits of a PR', (done) ->
       Nock('https://api.github.com')
         .persist()
