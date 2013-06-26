@@ -1,5 +1,6 @@
 Nconf = require 'nconf'
 Fs = require 'fs'
+Path = require 'path'
 HipchatApi = require 'hipchat'
 GithubApi = require 'github'
 
@@ -54,4 +55,4 @@ module.exports =
     Channel: Nconf.get('hipchat').channel,
     Frequency: Nconf.get('hipchat').frequency
   },
-  Version: JSON.parse(Fs.readFileSync('./package.json', 'utf8')).version
+  Version: JSON.parse(Fs.readFileSync(Path.resolve(__dirname, '../package.json'), 'utf8')).version

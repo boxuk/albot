@@ -21,3 +21,4 @@ Commands:
 - Retest PR
 - shipit (To mark the PR as being reviewed by someone)
 - Amazon EC2 listing
+- Varnish logs

@@ -8,6 +8,10 @@ You can find a better version of this documentation here: [http://boxuk.github.i
 
       npm install -g albot
 
+You will just need Coffeescript
+
+      npm install -g coffee-script
+
 ## Usage
  
       $ albot --help                                                                                                                                                                                                           
