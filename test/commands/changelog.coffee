@@ -33,6 +33,7 @@ describe 'Commands', () ->
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message'
+        object.url.should.be.equal "https://github.com/testorg-ext/god/commit/shaman1"
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
         object.avatar.should.be.equal "lksajglkfdjg"
         object.status.should.be.equal true
@@ -64,6 +65,7 @@ describe 'Commands', () ->
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message'
+        object.url.should.be.equal "https://github.com/testorg/test-deployable/commit/shaman2"
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
         object.avatar.should.be.equal "lksajglkfdjg"
         object.status.should.be.equal true
@@ -138,6 +140,7 @@ describe 'Commands', () ->
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message from master'
+        object.url.should.be.equal "https://github.com/testorg/test-deployable/commit/shaman4"
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
         object.avatar.should.be.equal "lksajglkfdjg"
         object.status.should.be.equal false
@@ -182,6 +185,7 @@ describe 'Commands', () ->
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'Commit message from master'
+        object.url.should.be.equal "https://github.com/testorg/test-deployable/commit/shaman5"
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
         object.avatar.should.be.equal "lksajglkfdjg"
         object.status.should.be.equal false

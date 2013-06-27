@@ -84,6 +84,7 @@ display = (fallback, org, repo, commits, save) ->
     }, (error, statuses) ->
       callback error, {
         title: commit.commit.message
+        url: "https://github.com/#{org}/#{repo}/commit/#{commit.sha}"
         comments: Moment(commit.commit.committer.date).fromNow()
         avatar: commit.committer.gravatar_id
         order: commit.commit.committer.date
