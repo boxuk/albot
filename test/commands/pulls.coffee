@@ -11,12 +11,20 @@ describe 'Commands', () ->
     before () ->
       Nock('https://api.github.com')
         .persist()
-        .get('/orgs/testorg/repos?per_page=100&access_token=testtoken')
+        .get('/orgs/testorg/repos?page=1&per_page=100&access_token=testtoken')
         .reply(200, [
             {
               "name": "test-repo",
             }
           ])
+        .get('/orgs/testorg/repos?page=2&per_page=100&access_token=testtoken')
+        .reply(200, [
+            {
+              "name": "test-repo",
+            }
+        ])
+        .get('/orgs/testorg/repos?page=3&per_page=100&access_token=testtoken')
+        .reply(200, [])
         .get('/repos/testorg/test-repo/pulls?access_token=testtoken')
         .reply(200, [
             {
@@ -123,7 +131,7 @@ describe 'Commands', () ->
           object.comments.should.equal "(pr-branch -> master) - 2 months ago - 10 comments - *NEED REBASE*"
           object.status.should.equal true
         count += 1
-        if (count is 2) then done()
+        if (count is 4) then done()
         cb()
 
     it 'should be able to resolve an URL', (done) ->

@@ -99,41 +99,42 @@ pulls = (fallback, keyword, filter) ->
         }
 
   else
-    Github.Api.repos.getFromOrg {
-      org: Github.Org,
-      per_page: 100
-    }, (error, repos) ->
-      if (error?)
-        Utils.fallback_printError(fallback, error)
+    getAllRepos keyword, filter, Github.Org, 1, [], (err, list) ->
+      if (err?)
+        Utils.fallback_printError(fallback, err)
       else
-        Async.concat repos, (repo, callback) ->
-          if (isRepoInFilters(repo.name))
-            Github.Api.pullRequests.getAll {
-              user: Github.Org,
-              repo: repo.name
-            }, (error, prs) ->
-              if (error?)
-                callback(error)
-              else
-                Async.reduce prs, [],
-                  Async.apply (memo, pr, cb) ->
-                    query = pr.title + repo.name + pr.user.login
-                    if (shouldBeDisplayed(keyword, filter, query, pr.created_at))
-                      getInfoPull Github.Org, repo.name, pr.number, (error, r) ->
-                        memo.push r
-                        cb error, memo
-                    else
-                      cb(error, memo)
-                , (err, list) ->
-                  callback(err, list)
-          else
-            callback null, []
-        , (err, list) ->
-          if (err?)
-            Utils.fallback_printError(fallback, err)
-          else
-            Utils.fallback_printList fallback,
-              list, _.partial(pickLastIfNeeded, keyword, filter)
+        Utils.fallback_printList fallback,
+          list, _.partial(pickLastIfNeeded, keyword, filter)
+
+getAllRepos = (keyword, filter, org, page, acc, globalCb) ->
+  Github.Api.repos.getFromOrg { org: org, page: page, per_page: 100 }, (error, repos) ->
+    if (error? or _.isEmpty(repos))
+      globalCb(error, acc)
+    else
+      Async.concat repos, (repo, callback) ->
+        if (isRepoInFilters(repo.name))
+          Github.Api.pullRequests.getAll { user: Github.Org, repo: repo.name }, (error, prs) ->
+            if (error?)
+              callback error, []
+            else
+              Async.reduce prs, [],
+                Async.apply (memo, pr, cb) ->
+                  query = pr.title + repo.name + pr.user.login
+                  if (shouldBeDisplayed(keyword, filter, query, pr.created_at))
+                    getInfoPull Github.Org, repo.name, pr.number, (error, r) ->
+                      memo.push r
+                      cb error, memo
+                  else
+                    cb(error, memo)
+              , (err, list) ->
+                callback(err, list)
+        else
+          callback null, []
+      , (err, result) ->
+        if (err?)
+          globalCb(err, null)
+        else
+          getAllRepos(keyword, filter, org, parseInt(page) + 1, acc.concat(result), globalCb)
 
 module.exports = {
   name: "Pull Requests"
