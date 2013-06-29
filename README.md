@@ -12,6 +12,10 @@ You will just need Coffeescript
 
       npm install -g coffee-script
 
+## Example on Hipchat:
+
+![hipchat - web chat](https://f.cloud.github.com/assets/661901/550556/8410e2fe-c314-11e2-9c1f-eb2f56489e4b.png)
+
 ## Usage
  
       $ albot --help                                                                                                                                                                                                           
@@ -77,10 +81,6 @@ You can even have the last Pull Request filtered like 'with'
 Finally, if you are lazy (like me), you can copy/paste a URL from your browser
 
       $ albot pulls https://github.com/flatiron/nock/pull/110
-
-Example on Hipchat:
-
-![hipchat - web chat](https://f.cloud.github.com/assets/661901/550556/8410e2fe-c314-11e2-9c1f-eb2f56489e4b.png)
 
 ### Deploy
 
