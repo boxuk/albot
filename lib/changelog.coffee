@@ -1,5 +1,5 @@
 Configuration = require './configuration'
-Deploy = Configuration.Nconf.get('deploy')
+Aliases = Configuration.Nconf.get('aliases')
 Changelog = Configuration.Nconf.get('changelog')
 
 _ = require('underscore')._
@@ -14,7 +14,7 @@ Utils = require './utils'
 GhHelpers = require './gh_helpers'
 
 changelog = (fallback, repo, keyword, filter, period, save) ->
-  repo = Deploy.aliases[repo] || repo
+  repo = Aliases[repo] || repo
   org = Github.Org
 
   # First we verify if the first argument is an URL

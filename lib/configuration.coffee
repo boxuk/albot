@@ -21,6 +21,7 @@ Nconf
 Nconf
   .defaults {
     "nickname": "albot",
+    "aliases": {},
     "github": {
       "repo_filter": "",
       "gravatar": false,
@@ -31,8 +32,7 @@ Nconf
     },
     "deploy": {
       "args": [],
-      "env": [],
-      "aliases": {},
+      "env": []
     }
   }
 

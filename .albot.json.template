@@ -1,5 +1,6 @@
 {
   "nickname": "albot",
+  "aliases": {},
   "github": {
     "organisation": "",
     "token": "",
@@ -17,7 +18,6 @@
     "args": [],
     "branchArg": "{{branch}}",
     "env": [],
-    "aliases": {},
     "gistId": ""
   },
   "changelog": {

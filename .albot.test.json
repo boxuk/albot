@@ -1,5 +1,8 @@
 {
   "nickname": "testbot",
+  "aliases": {
+    "t": "test-deployable"
+  },
   "github": {
     "organisation": "testorg",
     "token": "testtoken",
@@ -18,9 +21,6 @@
     "exec": "ls",
     "args": ["-hR"],
     "env": ["Capfile", "app/config/deploy.rb"],
-    "aliases": {
-      "t": "test-deployable"
-    },
     "gistId": "test-gist"
   },
   "changelog": {

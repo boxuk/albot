@@ -3,6 +3,7 @@ _ = require('underscore')._
 
 Github = Configuration.Github
 Deploy = Configuration.Nconf.get('deploy')
+Aliases = Configuration.Nconf.get('aliases')
 Async = require 'async'
 Spawn = require('child_process').spawn
 Mkdirp = require 'mkdirp'
@@ -39,7 +40,7 @@ prepareEnv = (repo, ref, callback) ->
         callback(err, dirPath)
 
 deploy = (fallback, repo, branch) ->
-  repo = Deploy.aliases[repo] || repo
+  repo = Aliases[repo] || repo
   branch = if branch? and _.isString(branch) then branch else "master"
   if branch? and Deploy.branchArg? then Deploy.args.push(Deploy.branchArg.replace("{{branch}}", branch))
 
