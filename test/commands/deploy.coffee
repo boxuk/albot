@@ -29,7 +29,10 @@ describe 'Commands', () ->
           }
         })
         .reply(200, {
-            "html_url": "https://gist.github.com/1"
+            "html_url": "https://gist.github.com/1",
+            "history": [{
+              "version": "123456"
+            }] 
           })
     it 'Must download files, execute the command and Gist the logs', (done) ->
       count = 1
@@ -42,7 +45,7 @@ describe 'Commands', () ->
           count += 1
         else
           object.title.should.be.equal 'Successful deploy !'
-          object.url.should.be.equal 'https://gist.github.com/1'
+          object.url.should.be.equal 'https://gist.github.com/1/123456'
           object.infos.should.be.equal 'test-deployable'
           object.comments.should.be.equal '(branche)'
           object.status.should.be.equal true

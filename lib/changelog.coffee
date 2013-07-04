@@ -120,7 +120,7 @@ gist = (list, callback) ->
   , ""
 
   Github.Api.gists.edit { id: Changelog.gistId, files: {"history.md": { content: data } }}, (err, gist) ->
-    if (err?) then callback(err) else callback(null, gist.html_url)
+    if (err?) then callback(err) else callback(null, gist.html_url + "/" + gist.history[0].version)
 
 module.exports = {
   name: "Changelog",

@@ -104,12 +104,15 @@ describe 'Commands', () ->
           }
         })
         .reply(200, {
-            "html_url": "https://gist.github.com/2"
+            "html_url": "https://gist.github.com/2",
+            "history": [{
+              "version": "123456"
+            }] 
           })
 
       Commands.changelog.action (object) ->
         object.title.should.be.equal 'View the changelog'
-        object.url.should.be.equal 'https://gist.github.com/2'
+        object.url.should.be.equal 'https://gist.github.com/2/123456'
         done()
       , 't', 'pr', '620', 'save'
 

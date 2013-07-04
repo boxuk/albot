@@ -96,7 +96,7 @@ gist = (log, logPath, callback) ->
     data = data.replace(new RegExp('✔', 'g'), '+')
 
     Github.Api.gists.edit { id: Deploy.gistId, files: {"history": { content: data } }}, (err, gist) ->
-      if (err?) then callback(err) else callback(null, gist.html_url)
+      if (err?) then callback(err) else callback(null, gist.html_url + "/" + gist.history[0].version)
 
 module.exports = {
   name: 'Deploy',
