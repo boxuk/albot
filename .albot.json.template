@@ -1,6 +1,7 @@
 {
   "nickname": "albot",
   "aliases": {},
+  "disabledCommands": [],
   "github": {
     "organisation": "",
     "token": "",

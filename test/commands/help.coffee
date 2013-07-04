@@ -7,9 +7,10 @@ Commands = Require '../../lib/commands'
 
 describe 'Commands', () ->
   describe '#help()', () ->
-    it 'should list the available commands', (done) ->
+    it 'should list the available commands (non-ommitted)', (done) ->
       count = 0
       Commands.help.action (object) ->
         object.title.should.be.a('string')
+        object.title.should.not.equal('Pulls')
         count += 1
-        if (count is _.size(Commands)) then done()
+        if (count is parseInt(_.size(Commands)) - 1) then done()

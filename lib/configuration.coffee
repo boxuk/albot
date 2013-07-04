@@ -22,6 +22,7 @@ Nconf
   .defaults {
     "nickname": "albot",
     "aliases": {},
+    "disabledCommands": [],
     "github": {
       "repo_filter": "",
       "gravatar": false,

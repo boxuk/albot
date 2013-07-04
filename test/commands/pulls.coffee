@@ -2,7 +2,7 @@ Require = require('covershot').require.bind(null, require)
 
 should = require('chai').should()
 
-Commands = Require '../../lib/commands'
+Pulls = Require '../../lib/pulls'
 Nock = Require 'nock'
 Moment = Require 'moment'
 
@@ -123,7 +123,7 @@ describe 'Commands', () ->
 
     it 'should list Pull Requests sorted by creation date', (done) ->
       count = 0
-      Commands.pulls.action (object, cb) ->
+      Pulls.action (object, cb) ->
         if (count is 0)
           object.title.should.equal "new-feature"
           object.url.should.equal "https://github.com/octocat/Hello-World/pulls/2"
@@ -135,7 +135,7 @@ describe 'Commands', () ->
         cb()
 
     it 'should be able to resolve an URL', (done) ->
-      Commands.pulls.action (object) ->
+      Pulls.action (object) ->
         object.title.should.equal "closed-feature"
         object.url.should.equal "https://github.com/octocat/Hello-World/pulls/3"
         object.infos.should.equal "test-repo"
@@ -146,94 +146,94 @@ describe 'Commands', () ->
 
   describe '#pulls()#isRepoInFilters()', () ->
     it 'should not accept unfilterd name', () ->
-      test = Commands.pulls.isRepoInFilters("notinthelist")
+      test = Pulls.isRepoInFilters("notinthelist")
       test.should.be.false
 
     it 'should accept any filter name', () ->
-      test = Commands.pulls.isRepoInFilters("test-repo")
+      test = Pulls.isRepoInFilters("test-repo")
       test.should.be.true
 
-      test = Commands.pulls.isRepoInFilters("another-one")
+      test = Pulls.isRepoInFilters("another-one")
       test.should.be.true
 
   describe '#pulls()#shouldBeDisplayed()', () ->
     it 'should display normal request', () ->
-      test = Commands.pulls.shouldBeDisplayed()
+      test = Pulls.shouldBeDisplayed()
       test.should.be.true
 
     it '-without- criteria should hide requested term', () ->
-      test = Commands.pulls.shouldBeDisplayed('without', 'stufF', 'Line with Stuff in it')
+      test = Pulls.shouldBeDisplayed('without', 'stufF', 'Line with Stuff in it')
       test.should.be.false
 
     it '-without- criteria should display if term is not present', () ->
-      test = Commands.pulls.shouldBeDisplayed('without', 'stuff', 'Line with things in it')
+      test = Pulls.shouldBeDisplayed('without', 'stuff', 'Line with things in it')
       test.should.be.true
 
     it '-with- criteria should display if term is present', () ->
-      test = Commands.pulls.shouldBeDisplayed('with', 'stuff', 'Line with stuff')
+      test = Pulls.shouldBeDisplayed('with', 'stuff', 'Line with stuff')
       test.should.be.true
 
     it '-with- criteria should hide if term is not present', () ->
-      test = Commands.pulls.shouldBeDisplayed('with', 'stuff', 'Line with things')
+      test = Pulls.shouldBeDisplayed('with', 'stuff', 'Line with things')
       test.should.be.false
 
     it '-recent- criteria should hide older than a week', () ->
       older = Moment().subtract('weeks', 3)
-      test = Commands.pulls.shouldBeDisplayed('recent', undefined, 'Line with things', older)
+      test = Pulls.shouldBeDisplayed('recent', undefined, 'Line with things', older)
       test.should.be.false
 
     it '-recent- criteria should show younger than a week', () ->
       younger = Moment().subtract('days', 1)
-      test = Commands.pulls.shouldBeDisplayed('recent', undefined, 'Line with things', younger)
+      test = Pulls.shouldBeDisplayed('recent', undefined, 'Line with things', younger)
       test.should.be.true
 
     it '-recent- criteria should hide older than a month', () ->
       older = Moment().subtract('months', 5)
-      test = Commands.pulls.shouldBeDisplayed('recent', 'months', 'Line with things', older)
+      test = Pulls.shouldBeDisplayed('recent', 'months', 'Line with things', older)
       test.should.be.false
 
     it '-last- alongside a criteria should act like -with-', () ->
-      test = Commands.pulls.shouldBeDisplayed('last', 'stuff', 'Line with stuff')
+      test = Pulls.shouldBeDisplayed('last', 'stuff', 'Line with stuff')
       test.should.be.true
 
-      test = Commands.pulls.shouldBeDisplayed('last', 'stuff', 'Line with things')
+      test = Pulls.shouldBeDisplayed('last', 'stuff', 'Line with things')
       test.should.be.false
 
     it '-last- alone should display', () ->
-      test = Commands.pulls.shouldBeDisplayed('last', undefined, 'Line with stuff')
+      test = Pulls.shouldBeDisplayed('last', undefined, 'Line with stuff')
       test.should.be.true
 
     it '-last- with a number should display', () ->
-      test = Commands.pulls.shouldBeDisplayed('last', '5', 'Line with stuff')
+      test = Pulls.shouldBeDisplayed('last', '5', 'Line with stuff')
       test.should.be.true
 
     it 'should display if criteria unknown', () ->
-      test = Commands.pulls.shouldBeDisplayed('truc', 'stuff', 'Line with things in it')
+      test = Pulls.shouldBeDisplayed('truc', 'stuff', 'Line with things in it')
       test.should.be.true
 
     it 'should display if term is null', () ->
-      test = Commands.pulls.shouldBeDisplayed('without', undefined, 'Line with stuff')
+      test = Pulls.shouldBeDisplayed('without', undefined, 'Line with stuff')
       test.should.be.true
 
   describe '#pulls()#pickLastIfNeeded()', () ->
     list = ['stuff', 'things', 'truc', 'machin']
 
     it 'should return the list if not -last-', () ->
-      test = Commands.pulls.pickLastIfNeeded(undefined, undefined, list)
+      test = Pulls.pickLastIfNeeded(undefined, undefined, list)
       test.should.be.list
 
     it '-last- should return the first one', () ->
-      test = Commands.pulls.pickLastIfNeeded('last', undefined, list)
+      test = Pulls.pickLastIfNeeded('last', undefined, list)
       test.should.have.length 1
       test.should.include 'stuff'
 
     it '-last name- should return the first one', () ->
-      test = Commands.pulls.pickLastIfNeeded('last', 'name', list)
+      test = Pulls.pickLastIfNeeded('last', 'name', list)
       test.should.have.length 1
       test.should.include 'stuff'
 
     it '-last 3- should return the first three', () ->
-      test = Commands.pulls.pickLastIfNeeded('last', '3', list)
+      test = Pulls.pickLastIfNeeded('last', '3', list)
       test.should.have.length 3
       test.should.include 'stuff'
       test.should.include 'things'

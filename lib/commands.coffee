@@ -1,5 +1,7 @@
 Configuration = require './configuration'
+_ = require('underscore')._
 
+DisabledCommands = Configuration.Nconf.get('disabledCommands')
 Utils = require './utils'
 
 help = (fallback) ->
@@ -25,4 +27,4 @@ list = {
   }
 }
 
-module.exports = list
+module.exports = _.omit(list, DisabledCommands)

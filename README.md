@@ -169,6 +169,8 @@ This file must be located either in the current directory (where you launch Albo
 If you are more comfortable with env variables. You can use that too.
 
 - __nickname__, The nickname of the bot. It/He/She will respond to it. Default: "albot"
+- __aliases__, Default: {}
+- __disabledCommands__, A list of commands you don't want to use. Default: []
 - __github__
  - __organisation__, The name of your Github organisation
  - __token__ , The Github API token
@@ -183,7 +185,6 @@ If you are more comfortable with env variables. You can use that too.
  - __args__, A list of arguments to pass to. Default: []
  - __branchArg__, Another argument with the branch name. Default: {{branch}}
  - __env__, List of files do download from Github and create a directory with. Default: []
- - __aliases__, Default: {}
  - __gistId__, Gist id for the execution logs
 - __changelog__,
  - __gistId__, Gist id for the saved changelogs

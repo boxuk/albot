@@ -25,7 +25,7 @@ describe 'Server', () ->
                     "name": "Garret Heaton",
                     "user_id": 10
                   },
-                  "message": "testbot pulls"
+                  "message": "testbot changelog"
                 }
               ]
             }
@@ -38,7 +38,7 @@ describe 'Server', () ->
                     "name": "Garret Heaton",
                     "user_id": 10
                   },
-                  "message": "testbot pulls"
+                  "message": "testbot changelog"
                 },
                 {
                   "date": "2010-11-19T15:48:19-0800",
@@ -58,8 +58,8 @@ describe 'Server', () ->
 
   describe '#dispach()', () ->
     it 'should find the right command based on a message line', () ->
-      cmd = Server.dispatch("testbot pulls")
-      cmd.should.have.property('name').equal("Pull Requests")
+      cmd = Server.dispatch("testbot changelog")
+      cmd.should.have.property('name').equal("Changelog")
 
     it 'should not dispatch for anything', () ->
       cmd = Server.dispatch("anything")
