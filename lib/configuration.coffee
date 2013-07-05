@@ -3,6 +3,7 @@ Fs = require 'fs'
 Path = require 'path'
 HipchatApi = require 'hipchat'
 GithubApi = require 'github'
+Winston = require 'winston'
 
 userHome = () ->
   process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE
@@ -42,6 +43,18 @@ hipchat = new HipchatApi Nconf.get('hipchat').token
 github = new GithubApi { version: "3.0.0", debug: Nconf.get("github").debug }
 github.authenticate { type: "oauth", token: Nconf.get("github").token }
 
+initLogger =
+  (verbose = false) ->
+    mode = if verbose then 'verbose' else 'info'
+
+    @logger = new Winston.Logger({
+      transports: [
+        new (Winston.transports.Console)({ level: mode })
+      ]
+    }).cli()
+
+    @logger
+
 module.exports =
   Nconf: Nconf,
   Nickname: Nconf.get('nickname'),
@@ -55,5 +68,9 @@ module.exports =
     Rooms: hipchat.Rooms,
     Channel: Nconf.get('hipchat').channel,
     Frequency: Nconf.get('hipchat').frequency
+  },
+  Winston: {
+    initLogger: initLogger,
+    logger: @logger || initLogger
   },
   Version: JSON.parse(Fs.readFileSync(Path.resolve(__dirname, '../package.json'), 'utf8')).version
