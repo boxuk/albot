@@ -126,6 +126,6 @@ module.exports = {
   name: "Changelog",
   description: "-project- [ | -alias-] -pr- -number-
  | -since- -number- -period- | -between- -tag-range-
- [\"save\"] List changelog for a given PR, period, range ",
+ [save] List changelog for a given PR, period, range ",
   action: changelog
 }

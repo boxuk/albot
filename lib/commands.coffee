@@ -20,6 +20,7 @@ list = {
   pulls: require('./pulls'),
   deploy: require('./deploy'),
   changelog: require('./changelog'),
+  amazon: require('./amazon'),
   help: {
     name: "Help"
     description: "Display a list of available commands",
