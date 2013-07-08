@@ -5,6 +5,7 @@ Async = require 'async'
 Moment = require 'moment'
 
 Hipchat = Configuration.Hipchat
+Winston = Configuration.Winston
 Commands = require './commands'
 Cache = require './cache'
 Utils = require './utils'
@@ -50,7 +51,9 @@ server = (frequency, testCallback) ->
               if testCallback? and _.isFunction(testCallback)
                 testCallback(intervalId, command)
               else
-                console.log("Command #{command.name} detected #{Moment().format()}")
+                Winston.logger.info "Command #{command.name} detected #{Moment().format()}"
+                Winston.logger.verbose "With arguments: #{JSON.strinfigy(commands.args)}"
+
                 _.partial(command.action, Utils.render).apply null, command.args
           cb(null)
         , (err) ->
@@ -58,7 +61,8 @@ server = (frequency, testCallback) ->
   , freq
 
   if (not _.isFunction(testCallback))
-    console.log "Bot listening to Hipchat channel: #{Hipchat.Channel}"
+    Winston.logger.info "Bot listening to Hipchat channel: #{Hipchat.Channel}"
+    Winston.logger.verbose "Verbose mode activated"
 
 module.exports = {
   dispatch: dispatch,
