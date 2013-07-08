@@ -11,7 +11,8 @@ Commands = require './lib/commands'
 initLoggerBefore = (fonction) ->
   _.wrap fonction, (f) ->
     Configuration.Winston.initLogger Program.verbose
-    f.apply null, arguments
+    properArgs = _.initial(_.rest(_.values(arguments)))
+    f.apply null, properArgs
 
 # Defining available options
 Program
