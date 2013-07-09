@@ -52,7 +52,7 @@ server = (frequency, testCallback) ->
                 testCallback(intervalId, command)
               else
                 Winston.logger.info "Command #{command.name} detected #{Moment().format()}"
-                Winston.logger.verbose "With arguments: #{JSON.strinfigy(commands.args)}"
+                Winston.logger.verbose "With arguments: #{JSON.stringify(command.args)}"
 
                 _.partial(command.action, Utils.render).apply null, command.args
           cb(null)
