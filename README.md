@@ -206,6 +206,10 @@ If you are more comfortable with env variables. You can use that too.
  - __gistId__, Gist id for the execution logs
 - __changelog__,
  - __gistId__, Gist id for the saved changelogs
+- __amazon__,
+ - __key__, The Amazon Key
+ - __secret__, Amazon Secret
+ - __region__, The region of your instances
 
 ## Hacking
 
