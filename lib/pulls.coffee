@@ -15,18 +15,18 @@ isRepoInFilters = (name) ->
     _.str.include name, filter
 
 checkRecentDate = (createdAt, filter) ->
-  period = if _.isString(filter) then filter else 'weeks'
+  period = if filter? then filter else 'weeks'
   #TODO: Check the different filter possibilities (weeks, days...)
   thisUnit = Moment().subtract(period, 1)
   Moment(createdAt).isAfter(thisUnit)
 
 shouldBeDisplayed = (keyword, filter, title, createdAt) ->
-  if (keyword is 'last' and _.isString(filter) and _.isNaN(parseInt(filter)))
+  if (keyword is 'last' and filter? and _.isNaN(parseInt(filter)))
     keyword = 'with'
 
   if (keyword is 'recent' and createdAt?)
     checkRecentDate(createdAt, filter)
-  else if (not _.isString(filter)) then true
+  else if (not filter?) then true
   else
     term = filter.toLowerCase()
     query = title.toLowerCase()
@@ -36,7 +36,7 @@ shouldBeDisplayed = (keyword, filter, title, createdAt) ->
 
 pickLastIfNeeded = (keyword, filter, list) ->
   if (keyword is 'last')
-    number = if (_.isString(filter) and not _.isNaN(parseInt(filter)))
+    number = if (filter? and not _.isNaN(parseInt(filter)))
       parseInt(filter)
     else 1
 

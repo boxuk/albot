@@ -33,7 +33,7 @@ dispatch = (message) ->
     cmd
 
 server = (frequency, testCallback) ->
-  freq = if _.isString(frequency) then frequency else Hipchat.Frequency
+  freq = if frequency? then frequency else Hipchat.Frequency
 
   Hipchat.Rooms.history Hipchat.Channel, (error, lines) ->
     if (error?) then Winston.logger.error("An error occured while fetching history: #{JSON.stringify(error)}")

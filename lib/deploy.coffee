@@ -41,7 +41,7 @@ prepareEnv = (repo, ref, callback) ->
 
 deploy = (fallback, repo, branch) ->
   repo = Aliases[repo] || repo
-  branch = if branch? and _.isString(branch) then branch else "master"
+  branch = if branch? then branch else "master"
   if branch? and Deploy.branchArg? then Deploy.args.push(Deploy.branchArg.replace("{{branch}}", branch))
 
   prepareEnv repo, branch, (error, dirPath) ->
