@@ -17,19 +17,24 @@ status_color = (status) ->
   else
     "yellow"
 
-format_term = (title, url, infos, comments, status, avatar) ->
+format_term = (title, url, infos, comments, status, avatar, tails) ->
   icon = status_icon(status)
   color = status_color(status)
 
   text = ""
   text += "#{Styled(color, icon)} " if icon? and color?
   text += "#{title}"
-  text += " - #{infos}" if infos?
-  text += " - #{comments}" if comments?
+  text += " - #{Styled('bold', infos)}" if infos?
+  text += " - #{Styled('italic', comments)}" if comments?
+  if (tails?)
+    for tail in tails
+      do (tail) ->
+        text += "\n\t ↳ #{tail}"
+
   text
 
 # TODO: Use templating
-format_html = (title, url, infos, comments, status, avatar) ->
+format_html = (title, url, infos, comments, status, avatar, tails) ->
   html = ""
   html += "#{status_icon(status)} "
   if (avatar?) and Configuration.Github.Gravatar
@@ -39,6 +44,11 @@ format_html = (title, url, infos, comments, status, avatar) ->
   html += "</a>" if url?
   html += " - <strong>#{infos}</strong>" if infos?
   html += " - <i>#{comments}</i>" if comments?
+  if (tails?)
+    for tail in tails
+      do (tail) ->
+        html += "<br />&nbsp; ↳ #{tail}"
+
   html
 
 print = (o, callback) ->
@@ -48,6 +58,8 @@ print = (o, callback) ->
     o['infos'],
     o['comments'],
     o['status']
+    o['avatar']
+    o['tails']
   )
   if (callback? and _.isFunction(callback)) then callback(null)
 
@@ -61,6 +73,7 @@ render = (o, callback) ->
       o['comments'],
       o['status'],
       o['avatar']
+      o['tails']
     ), {
       message_format: "html",
       color: status_color(o['status'])
@@ -87,7 +100,8 @@ fallback_printList = (fallback, list, filter) ->
       infos: item.infos,
       comments: item.comments,
       status: item.status,
-      avatar: item.avatar
+      avatar: item.avatar,
+      tails: item.tails
     }, callback
   , (error) ->
     if (error?)

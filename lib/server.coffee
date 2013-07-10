@@ -36,13 +36,13 @@ server = (frequency, testCallback) ->
   freq = if _.isString(frequency) then frequency else Hipchat.Frequency
 
   Hipchat.Rooms.history Hipchat.Channel, (error, lines) ->
-    if (error?) then console.log("An error occured while fetching history: #{JSON.stringify(error)}")
+    if (error?) then Winston.logger.error("An error occured while fetching history: #{JSON.stringify(error)}")
     else if(lines)
       Cache.store(lines.messages)
 
   intervalId = setInterval () ->
     Hipchat.Rooms.history Hipchat.Channel, (error, lines) ->
-      if (error?) then console.log("An error occured while fetching history: #{JSON.stringify(error)}")
+      if (error?) then Winston.logger.error("An error occured while fetching history: #{JSON.stringify(error)}")
       else if (lines)
         Async.each lines.messages, (line, cb) ->
           if (not Cache.cached(line))

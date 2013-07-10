@@ -9,10 +9,10 @@ describe 'Utils', () ->
   describe '#format_term()', () ->
     it 'should have styled status', () ->
       ok = Utils.format_term("title", null, "infos", "comments", true)
-      ok.should.equal "\u001b[32m✓\u001b[0m title - infos - comments"
+      ok.should.equal "\u001b[32m✓\u001b[0m title - \u001b[1minfos\u001b[0m - \u001b[3mcomments\u001b[0m"
 
       nok = Utils.format_term("title", null, "infos", "comments", false)
-      nok.should.equal "\u001b[31m✘\u001b[0m title - infos - comments"
+      nok.should.equal "\u001b[31m✘\u001b[0m title - \u001b[1minfos\u001b[0m - \u001b[3mcomments\u001b[0m"
 
     it 'should have only title mandatory', () ->
       text = Utils.format_term("title")
@@ -33,6 +33,10 @@ describe 'Utils', () ->
     it 'should be able to display gravatars', () ->
       test = Utils.format_html("title", "http://google.fr", "infos", "comments", false, "205e460b479e2e5b48aec07710c08d50")
       test.should.equal "✘ <img src='http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=20' /> - <a href='http://google.fr'>title</a> - <strong>infos</strong> - <i>comments</i>"
+
+    it 'should display tails as multi-line', () ->
+      test = Utils.format_html("title", null, "infos", "comments", false, null, ["this is not a tail recursion"])
+      test.should.equal "✘ title - <strong>infos</strong> - <i>comments</i><br />&nbsp; ↳ this is not a tail recursion"
 
   describe '#render()', () ->
     it 'should send a message to the Hipchat API', () ->
