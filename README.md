@@ -35,6 +35,7 @@ You will just need Coffeescript
 
           -h, --help     output usage information
           -V, --version  output the version number
+          -v, --verbose  Enable the verbose mode
 
 ## Commands
 
