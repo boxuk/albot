@@ -4,6 +4,7 @@ Path = require 'path'
 HipchatApi = require 'hipchat'
 GithubApi = require 'github'
 Winston = require 'winston'
+AWS = require 'aws-sdk'
 
 userHome = () ->
   process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE
@@ -35,6 +36,11 @@ Nconf
     "deploy": {
       "args": [],
       "env": []
+    },
+    "amazon": {
+      "key": "",
+      "secret": "",
+      "region": ""
     }
   }
 
@@ -55,6 +61,23 @@ initLogger =
 
     @logger
 
+initAws =
+  (aws) ->
+    if (aws?)
+      @aws = aws
+    else
+      credentials =
+        {
+          accessKeyId: Nconf.get("amazon").key,
+          secretAccessKey: Nconf.get("amazon").secret,
+          region: Nconf.get("amazon").region
+        }
+
+      AWS.config.update credentials
+      @aws = AWS
+
+    @aws
+
 module.exports =
   Nconf: Nconf,
   Nickname: Nconf.get('nickname'),
@@ -69,8 +92,12 @@ module.exports =
     Channel: Nconf.get('hipchat').channel,
     Frequency: Nconf.get('hipchat').frequency
   },
+  Amazon: {
+    initAws: initAws,
+    aws: @aws || initAws()
+  },
   Winston: {
     initLogger: initLogger,
-    logger: @logger || initLogger
+    logger: @logger || initLogger()
   },
   Version: JSON.parse(Fs.readFileSync(Path.resolve(__dirname, '../package.json'), 'utf8')).version

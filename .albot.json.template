@@ -23,5 +23,10 @@
   },
   "changelog": {
     "gistId": ""
+  },
+  "amazon": {
+    "key": "",
+    "secret": "",
+    "region": ""
   }
 }

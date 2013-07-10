@@ -26,7 +26,8 @@ You will just need Coffeescript
 
           pulls                  [ <url> | without <filter> | with <filter> | recent [<unit>] | last [<number> | <filter>]] List all Pull Requests of the organisation
           deploy                 <project> [ | <alias>] [<branch>] Deploy your projects with the configured command
-          changelog              <project> [ | <alias>] <pr> <number> | <since> <number> <period> | <between> <tag-range> ["save"] List changelog for a given PR, period, range
+          changelog              <project> [ | <alias>] <pr> <number> | <since> <number> <period> | <between> <tag-range> [save] List changelog for a given PR, period, range
+          amazon                 [ instances [ with <term> ] ] Display various informations about your Amazon infrastructure
           help                   Display a list of available commands
           server                 Start albot to listen on Hipchat instead of the command line
 
@@ -145,6 +146,23 @@ If you want to store the result in a Gist instead, just use the "save" keyword a
 Available in all flavour
 
      $ albot changelog webapp between 43..45 save
+
+### Amazon
+
+Display substantial informations about your Amazon infrastructure.
+Like the list of your EC2 instances.
+
+     $ albot amazon instances
+
+Will display all the instances available on your account.
+
+Interestingly, if you have DNS configured in Route53, this route will be displayed instead of the Public DNS.
+
+If some of your instances are behind an ElasticLoadBalancer, more details will be provided for it.
+
+You can, as always, filter the result list
+
+     $ albot amazon instances with live
 
 ### Server
 
