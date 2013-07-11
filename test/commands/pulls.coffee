@@ -102,6 +102,26 @@ describe 'Commands', () ->
               }
             }
           )
+        .get('/repos/secondorg/second-repo/pulls/4?access_token=testtoken')
+        .reply(200, {
+              "created_at": Moment().subtract('months', 2).format(),
+              "html_url": "https://github.com/octocat/Hello-World/pulls/4",
+              "title": "closed-feature",
+              "mergeable": false,
+              "state": "closed",
+              "comments": 10,
+              "user": {
+                "login": "test-user"
+              },
+              "head": {
+                "sha": "testsha4",
+                "ref": "pr-branch"
+              },
+              "base": {
+                "ref": "master"
+              }
+            }
+          )
         .get('/repos/testorg/test-repo/statuses/testsha1?access_token=testtoken')
         .reply(200, [
             {
@@ -118,6 +138,12 @@ describe 'Commands', () ->
         .reply(200, [
             {
               "state": "success"
+            }
+          ])
+        .get('/repos/secondorg/second-repo/statuses/testsha4?access_token=testtoken')
+        .reply(200, [
+            {
+              "state": "failure"
             }
           ])
 
@@ -143,6 +169,26 @@ describe 'Commands', () ->
         object.status.should.equal true
         done()
       , 'https://github.com/testorg/test-repo/pull/3'
+
+    it 'should be able to resolve more than one URL', (done) ->
+      count = 0
+      Pulls.action (object, cb) ->
+        count += 1
+        if (object.infos == "test-repo")
+          object.title.should.equal "closed-feature"
+          object.url.should.equal "https://github.com/octocat/Hello-World/pulls/3"
+          object.infos.should.equal "test-repo"
+          object.comments.should.equal "(pr-branch -> master) - 2 months ago - 10 comments - *CLOSED*"
+          object.status.should.equal true
+        else
+          object.title.should.equal "closed-feature"
+          object.url.should.equal "https://github.com/octocat/Hello-World/pulls/4"
+          object.infos.should.equal "second-repo"
+          object.comments.should.equal "(pr-branch -> master) - 2 months ago - 10 comments - *CLOSED*"
+          object.status.should.equal false
+        if count == 2 then done()
+        cb()
+      , 'https://github.com/testorg/test-repo/pull/3', 'https://github.com/secondorg/second-repo/pull/4'
 
   describe '#pulls()#isRepoInFilters()', () ->
     it 'should not accept unfilterd name', () ->

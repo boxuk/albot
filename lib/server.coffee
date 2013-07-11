@@ -47,6 +47,7 @@ server = (frequency, testCallback) ->
         Async.each lines.messages, (line, cb) ->
           if (not Cache.cached(line))
             command = dispatch(line.message)
+
             if (command)
               if testCallback? and _.isFunction(testCallback)
                 testCallback(intervalId, command)

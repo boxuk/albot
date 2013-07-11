@@ -24,7 +24,7 @@ You will just need Coffeescript
 
         Commands:
 
-          pulls                  [ <url> | without <filter> | with <filter> | recent [<unit>] | last [<number> | <filter>]] List all Pull Requests of the organisation
+          pulls                  [ <url[s]> | without <filter> | with <filter> | recent [<unit>] | last [<number> | <filter>]] List all Pull Requests of the organisation
           deploy                 <project> [ | <alias>] [<branch>] Deploy your projects with the configured command
           changelog              <project> [ | <alias>] <pr> <number> | <since> <number> <period> | <between> <tag-range> [save] List changelog for a given PR, period, range
           amazon                 [ instances [ with <term> ] ] Display various informations about your Amazon infrastructure
@@ -80,9 +80,13 @@ You can even have the last Pull Request filtered like 'with'
 
       $ albot pulls last athieriot
 
-Finally, if you are lazy (like me), you can copy/paste a URL from your browser
+Finally, if you are lazy (like me), you can copy/paste one URL from your browser
 
       $ albot pulls https://github.com/flatiron/nock/pull/110
+
+Or more
+
+      $ albot pulls https://github.com/flatiron/nock/pull/110 https://github.com/flatiron/nock/pull/109
 
 ### Deploy
 
