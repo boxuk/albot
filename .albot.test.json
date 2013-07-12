@@ -19,9 +19,10 @@
     "frequency": 6000
   },
   "deploy": {
-    "exec": "ls",
-    "args": ["-hR"],
+    "exec": "cat",
+    "args": ["Capfile", "app/config/deploy.rb"],
     "env": ["Capfile", "app/config/deploy.rb"],
+    "postProcessFile": "function(path, content, callback) { callback(null, \"- PROCESSED: \" + content); }",
     "gistId": "test-gist"
   },
   "changelog": {
