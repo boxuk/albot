@@ -182,6 +182,8 @@ Note that the Hipchat API is limited to 100 requests by 5 minutes.
 By default, 50 are used to poll the channel.
 Be careful, it's very short.
 
+As a special feature in server mode, if any Pull Request URL is detected anywhere in a message (even not prefixed by the name of the bot) then, the details of this PR will be printed the same way than "albot pulls <url>"
+
 ## Configuration
 
 The default configuration is not very useful as you will need tokens for Hipchat and Github.
