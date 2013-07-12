@@ -3,7 +3,7 @@
   "aliases": {
     "t": "test-deployable"
   },
-  "disabledCommands": ["pulls"],
+  "disabledCommands": ["changelog"],
   "github": {
     "organisation": "testorg",
     "token": "testtoken",

@@ -85,12 +85,6 @@ mappingDnsWithRoute = (recordSets) ->
       ]
   , []
 
-filterByUrl = (dnsRoutePairs, url) ->
-  if (url?)
-    _.filter dnsRoutePairs, (name) -> name.Route.indexOf(url) > -1
-  else
-    dnsRoutePairs
-
 findInstancesBehindLoadBalancer = (Elb, routes, callback) ->
   names = _.reduce routes, (memo, dnsRoutePair) ->
     match = dnsRoutePair.Dns.match("^(.*lb)-")

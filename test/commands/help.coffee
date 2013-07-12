@@ -11,6 +11,6 @@ describe 'Commands', () ->
       count = 0
       Commands.help.action (object) ->
         object.title.should.be.a('string')
-        object.title.should.not.equal('Pulls')
+        object.title.should.not.equal('Changelog')
         count += 1
         if (count is parseInt(_.size(Commands)) - 1) then done()

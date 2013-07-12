@@ -20,10 +20,10 @@ changelog = (fallback, repo, keyword, filter, period, save) ->
   # First we verify if the first argument is an URL
   match = GhHelpers.githubPRUrlMatching repo
   if (match?)
-    org = match.org
-    repo = match.repo
+    org = match[0].org
+    repo = match[0].repo
+    filter = match[0].number
     keyword = 'pr'
-    filter = match.number
 
   if (keyword == 'pr')
     forPullRequests(fallback, org, repo, filter, period, save)
