@@ -10,9 +10,8 @@ Commands = require './commands'
 Cache = require './cache'
 Utils = require './utils'
 
-dispatch = (message) ->
-  # TODO: Loop
-  pattern = new RegExp "^#{Configuration.Nickname} ([a-zA-Z0-9]+)
+# TODO: Loop or XRegExp
+pattern = new RegExp "^#{Configuration.Nickname} ([a-zA-Z0-9]+)
 ( ([a-zA-Z0-9\-\+\/\.\:\_]+))?
 ( ([a-zA-Z0-9\-\+\/\.\:\_]+))?
 ( ([a-zA-Z0-9\-\+\/\.\:\_]+))?
@@ -20,17 +19,29 @@ dispatch = (message) ->
 ( ([a-zA-Z0-9\-\+\/\.\:\_]+))?
 ( ([a-zA-Z0-9\-\+\/\.\:\_]+))?$"
 
-  request = message.match(pattern)
-  if (request and request.length > 1)
-    cmd = Commands[request[1]]
-    if (cmd)
-      cmd.args = []
-      cmd.args.push request[3]
-      cmd.args.push request[5]
-      cmd.args.push request[7]
-      cmd.args.push request[9]
-      cmd.args.push request[11]
-    cmd
+dispatch = (message, from) ->
+  if (not from? or from.name != Configuration.Nickname)
+
+    if (not message.match(new RegExp "#{Configuration.Nickname}"))
+      #TODO: This definitively need NOT to be a special case hard coded
+      if (require('./gh_helpers').githubPRUrlMatching(message))
+        cmd = Commands.pulls
+        if (cmd)
+          cmd.args = []
+          cmd.args.push message
+        cmd
+    else
+      request = message.match(pattern)
+      if (request and request.length > 1)
+        cmd = Commands[request[1]]
+        if (cmd)
+          cmd.args = []
+          cmd.args.push request[3]
+          cmd.args.push request[5]
+          cmd.args.push request[7]
+          cmd.args.push request[9]
+          cmd.args.push request[11]
+        cmd
 
 server = (frequency, testCallback) ->
   freq = if frequency? then frequency else Hipchat.Frequency
@@ -46,7 +57,8 @@ server = (frequency, testCallback) ->
       else if (lines)
         Async.each lines.messages, (line, cb) ->
           if (not Cache.cached(line))
-            command = dispatch(line.message)
+            command = dispatch(line.message, line.from)
+
             if (command)
               if testCallback? and _.isFunction(testCallback)
                 testCallback(intervalId, command)

@@ -1,7 +1,7 @@
 Require = require('covershot').require.bind(null, require)
 should = require('chai').should()
 
-Commands = Require '../../lib/commands'
+Changelog = Require '../../lib/changelog'
 Nock = Require 'nock'
 Moment = require 'moment'
 Querystring = require 'querystring'
@@ -31,7 +31,7 @@ describe 'Commands', () ->
             }
           ])
 
-      Commands.changelog.action (object) ->
+      Changelog.action (object) ->
         object.title.should.be.equal 'Commit message'
         object.url.should.be.equal "https://github.com/testorg-ext/god/commit/shaman1"
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
@@ -63,7 +63,7 @@ describe 'Commands', () ->
             }
           ])
 
-      Commands.changelog.action (object) ->
+      Changelog.action (object) ->
         object.title.should.be.equal 'Commit message'
         object.url.should.be.equal "https://github.com/testorg/test-deployable/commit/shaman2"
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
@@ -110,7 +110,7 @@ describe 'Commands', () ->
             }] 
           })
 
-      Commands.changelog.action (object) ->
+      Changelog.action (object) ->
         object.title.should.be.equal 'View the changelog'
         object.url.should.be.equal 'https://gist.github.com/2/123456'
         done()
@@ -141,7 +141,7 @@ describe 'Commands', () ->
             }
           ])
 
-      Commands.changelog.action (object) ->
+      Changelog.action (object) ->
         object.title.should.be.equal 'Commit message from master'
         object.url.should.be.equal "https://github.com/testorg/test-deployable/commit/shaman4"
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()
@@ -186,7 +186,7 @@ describe 'Commands', () ->
             }
           ])
 
-      Commands.changelog.action (object) ->
+      Changelog.action (object) ->
         object.title.should.be.equal 'Commit message from master'
         object.url.should.be.equal "https://github.com/testorg/test-deployable/commit/shaman5"
         object.comments.should.be.equal Moment("2011-01-26T19:01:12Z").fromNow()

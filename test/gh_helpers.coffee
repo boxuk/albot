@@ -36,9 +36,25 @@ describe 'GhHelpers', () ->
 
 describe 'GhHelpers', () ->
   describe '#githubPRUrlMatching:()', () ->
+    it 'should not match any URL', () ->
+      url = "http://anyurl.not"
+      match = GhHelpers.githubPRUrlMatching(url)
+      should.not.exist match
+
     it 'should match parts of a PR url', () ->
       url = "https://github.com/boxuk/albot/pull/7"
       match = GhHelpers.githubPRUrlMatching(url)
-      match.org.should.be.equal "boxuk"
-      match.repo.should.be.equal "albot"
-      match.number.should.be.equal "7"
+      match[0].org.should.be.equal "boxuk"
+      match[0].repo.should.be.equal "albot"
+      match[0].number.should.be.equal "7"
+
+    it 'should match more than one PR', () ->
+      url = "PR: https://github.com/boxuk/albot/pull/7 https://github.com/boxuk/albot/pull/8"
+      match = GhHelpers.githubPRUrlMatching(url)
+      match[0].org.should.be.equal "boxuk"
+      match[0].repo.should.be.equal "albot"
+      match[0].number.should.be.equal "7"
+
+      match[1].org.should.be.equal "boxuk"
+      match[1].repo.should.be.equal "albot"
+      match[1].number.should.be.equal "8"

@@ -3,6 +3,7 @@ Require = require('covershot').require.bind(null, require)
 should = require('chai').should()
 Nock = require 'nock'
 
+Configuration = Require '../lib/configuration'
 Server = Require '../lib/server'
 
 describe 'Server', () ->
@@ -25,7 +26,7 @@ describe 'Server', () ->
                     "name": "Garret Heaton",
                     "user_id": 10
                   },
-                  "message": "testbot changelog"
+                  "message": "testbot pulls"
                 }
               ]
             }
@@ -38,7 +39,7 @@ describe 'Server', () ->
                     "name": "Garret Heaton",
                     "user_id": 10
                   },
-                  "message": "testbot changelog"
+                  "message": "testbot pulls"
                 },
                 {
                   "date": "2010-11-19T15:48:19-0800",
@@ -58,11 +59,15 @@ describe 'Server', () ->
 
   describe '#dispach()', () ->
     it 'should find the right command based on a message line', () ->
-      cmd = Server.dispatch("testbot changelog")
-      cmd.should.have.property('name').equal("Changelog")
+      cmd = Server.dispatch("testbot pulls")
+      cmd.should.have.property('name').equal("Pull Requests")
 
     it 'should not dispatch for anything', () ->
       cmd = Server.dispatch("anything")
+      should.not.exist cmd
+
+    it 'should not answer to himself', () ->
+      cmd = Server.dispatch("albot pulls", "#{Configuration.Nickname}")
       should.not.exist cmd
 
     it 'should match one argument', () ->
@@ -105,3 +110,8 @@ describe 'Server', () ->
       cmd.should.have.deep.property('args[2]').equal("up")
       cmd.should.have.deep.property('args[3]').equal("to")
       cmd.should.have.deep.property('args[4]').equal("five")
+
+    it 'should match PR url anywhere in a message', () ->
+      cmd = Server.dispatch("PR: https://github.com/me/albot/pull/25 https://github.com/you/albot/pull/42")
+      cmd.should.have.property('name').equal("Pull Requests")
+      cmd.should.have.deep.property('args[0]').equal("PR: https://github.com/me/albot/pull/25 https://github.com/you/albot/pull/42")

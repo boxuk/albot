@@ -10,6 +10,62 @@ Moment = require 'moment'
 Utils = require './utils'
 GhHelpers = require './gh_helpers'
 
+#TODO: Speeeeeeeeeeed
+pulls = (fallback, keyword, filter, extra) ->
+
+  # First we verify if the arguments are URLs
+  # TODO: Handle more than 3
+  args = keyword + ' ' + filter + ' ' + extra
+  match = GhHelpers.githubPRUrlMatching(args)
+  if (match?)
+    getInfoPulls match, (error, results) ->
+      if (error?)
+        Utils.fallback_printError(fallback, error)
+      else
+        Utils.fallback_printList fallback, results
+
+  else
+    getAllRepos keyword, filter, Github.Org, 1, [], (err, list) ->
+      if (err?)
+        Utils.fallback_printError(fallback, err)
+      else
+        Utils.fallback_printList fallback,
+          list, _.partial(pickLastIfNeeded, keyword, filter)
+
+getInfoPulls = (list, callback) ->
+  Async.map list, (match, cb) ->
+    getInfoPull match.org, match.repo, match.number, cb
+  , callback
+
+getInfoPull = (org, reponame, number, callback) ->
+  Github.Api.pullRequests.get {
+    user: org,
+    repo: reponame,
+    number: number
+  }, (error, details) =>
+    if (error?)
+      callback(error)
+    else
+      Github.Api.statuses.get {
+        user: org,
+        repo: reponame,
+        sha: details.head.sha
+      }, (error, statuses) ->
+        if (error?)
+          callback(error)
+        else
+          callback null, {
+            title: details.title,
+            url: details.html_url,
+            infos: reponame,
+            comments: "(#{details.head.ref} -> #{details.base.ref}) - " +
+                      Moment(details.created_at).fromNow() + " - " +
+                      details.comments + " comments" +
+                      needAttention(details.mergeable, details.state),
+            status: GhHelpers.buildStatus(statuses),
+            avatar: details.user.gravatar_id,
+            order: details.created_at
+          }
 isRepoInFilters = (name) ->
   _.some Configuration.Github.Filters, (filter) ->
     _.str.include name, filter
@@ -49,63 +105,6 @@ needAttention = (mergeable, state) ->
   warning = if state is 'closed' then " - *CLOSED*" else warning
   warning
 
-getInfoPull = (org, reponame, number, callback) ->
-  Github.Api.pullRequests.get {
-    user: org,
-    repo: reponame,
-    number: number
-  }, (error, details) =>
-    if (error?)
-      callback(error)
-    else
-      Github.Api.statuses.get {
-        user: org,
-        repo: reponame,
-        sha: details.head.sha
-      }, (error, statuses) ->
-        if (error?)
-          callback(error)
-        else
-          callback null, {
-            title: details.title,
-            url: details.html_url,
-            infos: reponame,
-            comments: "(#{details.head.ref} -> #{details.base.ref}) - " +
-                      Moment(details.created_at).fromNow() + " - " +
-                      details.comments + " comments" +
-                      needAttention(details.mergeable, details.state),
-            status: GhHelpers.buildStatus(statuses),
-            avatar: details.user.gravatar_id,
-            order: details.created_at
-          }
-
-#TODO: Speeeeeeeeeeed
-pulls = (fallback, keyword, filter) ->
-
-  # First we verify if the argument is an URL
-  match = GhHelpers.githubPRUrlMatching keyword
-  if (match?)
-    getInfoPull match.org, match.repo, match.number, (error, result) ->
-      if (error?)
-        Utils.fallback_printError(fallback, error)
-      else
-        Utils.fallback_print(fallback) {
-          title: result.title,
-          url: result.url,
-          infos: result.infos,
-          comments: result.comments,
-          status: result.status,
-          avatar: result.avatar
-        }
-
-  else
-    getAllRepos keyword, filter, Github.Org, 1, [], (err, list) ->
-      if (err?)
-        Utils.fallback_printError(fallback, err)
-      else
-        Utils.fallback_printList fallback,
-          list, _.partial(pickLastIfNeeded, keyword, filter)
-
 getAllRepos = (keyword, filter, org, page, acc, globalCb) ->
   Github.Api.repos.getFromOrg { org: org, page: page, per_page: 100 }, (error, repos) ->
     if (error? or _.isEmpty(repos))
@@ -138,7 +137,7 @@ getAllRepos = (keyword, filter, org, page, acc, globalCb) ->
 
 module.exports = {
   name: "Pull Requests"
-  description: "[ -url- |
+  description: "[ -url[s]- |
  without -filter- | with -filter- |
  recent [-unit-] |
  last [-number- | -filter-]
