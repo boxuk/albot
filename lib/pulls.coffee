@@ -14,6 +14,7 @@ GhHelpers = require './gh_helpers'
 pulls = (fallback, keyword, filter, extra) ->
 
   # First we verify if the arguments are URLs
+  # TODO: Handle more than 3
   args = keyword + ' ' + filter + ' ' + extra
   match = GhHelpers.githubPRUrlMatching(args)
   if (match?)
