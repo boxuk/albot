@@ -116,6 +116,13 @@ You can also specify the way the branch name is passed to the script. {{branch}}
 
     "branchArg": "-Sbranch={{branch}}",
 
+In case you need to post process the files after the download, you can declare a function for it:
+
+    "postProcessFile": "function(path, content, callback) { callback(null, content); }",
+
+The function gives you three arguments: The path, the content and a standard Node.js styled callback(err, content).
+The Deploy command will evaluate it, so please keep it small!
+
 If you have big project names, you can set pairs of key/value as aliases
 
     "webapp": "client-webapp-front"
@@ -211,13 +218,14 @@ If you are more comfortable with env variables. You can use that too.
  - __args__, A list of arguments to pass to. Default: []
  - __branchArg__, Another argument with the branch name. Default: {{branch}}
  - __env__, List of files do download from Github and create a directory with. Default: []
+ - __postProcessFile__, A function allowing you to post process the files after download. Default: "" 
  - __gistId__, Gist id for the execution logs
 - __changelog__,
  - __gistId__, Gist id for the saved changelogs
 - __amazon__,
  - __key__, The Amazon Key
  - __secret__, Amazon Secret
- - __region__, The region of your instances
+ - __region__, The region of your instances. Default: "eu-west-1"
 
 ## Hacking
 

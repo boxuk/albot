@@ -1,6 +1,11 @@
 Nconf = require 'nconf'
+_ = require('underscore')._
+
 Fs = require 'fs'
 Path = require 'path'
+
+Funcster = require 'funcster'
+
 HipchatApi = require 'hipchat'
 GithubApi = require 'github'
 Winston = require 'winston'
@@ -35,12 +40,13 @@ Nconf
     },
     "deploy": {
       "args": [],
-      "env": []
+      "env": [],
+      "postProcessFile": ""
     },
     "amazon": {
       "key": "",
       "secret": "",
-      "region": ""
+      "region": "eu-west-1"
     }
   }
 
@@ -100,4 +106,10 @@ module.exports =
     initLogger: initLogger,
     logger: @logger || initLogger()
   },
+  Deploy: _.extend(Nconf.get('deploy'), {
+    postProcessFunction: if Nconf.get('deploy').postProcessFile then Funcster.deepDeserialize(
+      { __js_function: Nconf.get('deploy').postProcessFile },
+      { globals: { console: console } }
+    )
+  }),
   Version: JSON.parse(Fs.readFileSync(Path.resolve(__dirname, '../package.json'), 'utf8')).version

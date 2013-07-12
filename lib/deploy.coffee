@@ -2,7 +2,7 @@ Configuration = require './configuration'
 _ = require('underscore')._
 
 Github = Configuration.Github
-Deploy = Configuration.Nconf.get('deploy')
+Deploy = Configuration.Deploy
 Aliases = Configuration.Nconf.get('aliases')
 Async = require 'async'
 Spawn = require('child_process').spawn
@@ -32,7 +32,13 @@ prepareEnv = (repo, ref, callback) ->
             Mkdirp Path.join(dirPath, Path.dirname(file)), waterCallback
 
           , (made, waterCallback) ->
-            Fs.writeFile Path.join(dirPath, filePath), script, waterCallback
+            if (_.isFunction(Deploy.postProcessFunction))
+              Deploy.postProcessFunction filePath, script, waterCallback
+            else
+              waterCallback(null, script)
+
+          , (postProcessedScript, waterCallback) ->
+            Fs.writeFile Path.join(dirPath, filePath), postProcessedScript, waterCallback
 
         ], (waterr) ->
           cb(waterr)

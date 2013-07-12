@@ -19,6 +19,7 @@
     "args": [],
     "branchArg": "{{branch}}",
     "env": [],
+    "postProcessFile": "function(path, content, callback) { callback(null, content); }",
     "gistId": ""
   },
   "changelog": {
