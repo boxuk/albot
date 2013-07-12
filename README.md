@@ -227,3 +227,7 @@ If not, submit an issue instead and tell us why!
 If you don't know where to start. Look at the TODO file for any ideas of improvement or new command
 
 Don't forget to add some tests. We use Mocha, Chai and Nock.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/boxuk/albot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
