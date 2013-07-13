@@ -18,7 +18,7 @@ amazon = (fallback, keyword, filter, filterValue) ->
 
   if (keyword == 'instances')
     AwsHelpers.getAllRecordSets Route53, (err, recordSets) ->
-      if (not recordSets?)
+      if (not recordSets? or (err? and _.isEmpty(recordSets)))
         Utils.fallback_printError fallback, err
       else
         dnsRoutePairs = mappingDnsWithRoute(recordSets)
@@ -35,54 +35,60 @@ amazon = (fallback, keyword, filter, filterValue) ->
 
 display = (fallback, Ec2, params, dnsRoutePairs, idInstances, filterValue) ->
   AwsHelpers.getInstancesByParams Ec2, params, (err, results) ->
-    list = _.map results, (instance) ->
+    if (not results?)
+      console.log err + results
+      Utils.fallback_printError fallback, err
+    else
+      list = _.map results, (instance) ->
 
-      tag = _.findWhere instance.Tags, {"Key": "Name"}
-      security = instance.SecurityGroups[0]
-      role = if instance.IamInstanceProfile? then " / Role: " + instance.IamInstanceProfile.Arn.split('/')[1] else ""
-      route = _.findWhere dnsRoutePairs, {"Dns": instance.PublicDnsName}
-      title =
-        if (route?)
-          route.Route
-        else if instance.PublicDnsName
-          instance.PublicDnsName
+        tag = _.findWhere instance.Tags, {"Key": "Name"}
+        security = instance.SecurityGroups[0]
+        role = if instance.IamInstanceProfile? then " / Role: " + instance.IamInstanceProfile.Arn.split('/')[1] else ""
+        route = _.findWhere dnsRoutePairs, {"Dns": instance.PublicDnsName}
+        title =
+          if (route?)
+            route.Route
+          else if instance.PublicDnsName
+            instance.PublicDnsName
+          else
+            "No route or public dns"
+
+        behinds = _.findWhere idInstances, {"Id": instance.InstanceId}
+        lb = if behinds? and behinds.LoadBalancer? then " - behind: #{behinds.LoadBalancer.LoadBalancerName}" else ""
+
+        {
+          title: title
+          #TODO: Should remove the trailing dot
+          url: if route? or instance.PublicDnsName then "http://#{title}"
+          infos: if tag? then tag.Value + ' / ' + instance.InstanceType else instance.InstanceType
+          comments: if security? then "Security: #{security.GroupName}#{role}"
+          status: instance.State.Name == 'running'
+          tails: if behinds? then _.map _.pluck(behinds.Routes, 'Route'), (route) -> "via #{route}#{lb}"
+        }
+
+      Utils.fallback_printList fallback, list, (list) ->
+        if (filterValue?)
+          _.filter list, (o) ->
+            stuff = o.title + o.infos + o.comments
+            stuff += _.reduce o.tails, (memo, tail) ->
+              memo.concat(tail)
+            , []
+
+            _.str.include(stuff, filterValue)
         else
-          "No route or public dns"
-
-      behinds = _.findWhere idInstances, {"Id": instance.InstanceId}
-      lb = if behinds? and behinds.LoadBalancer? then " - behind: #{behinds.LoadBalancer.LoadBalancerName}" else ""
-
-      {
-        title: title
-        #TODO: Should remove the trailing dot
-        url: "http://#{title}"
-        infos: if tag? then tag.Value + ' / ' + instance.InstanceType else instance.InstanceType
-        comments: if security? then "Security: #{security.GroupName}#{role}"
-        status: instance.State.Name == 'running'
-        tails: if behinds? then _.map _.pluck(behinds.Routes, 'Route'), (route) -> "via #{route}#{lb}"
-      }
-
-    Utils.fallback_printList fallback, list, (list) ->
-      if (filterValue?)
-        _.filter list, (o) ->
-          stuff = o.title + o.infos + o.comments
-          stuff += _.reduce o.tails, (memo, tail) ->
-            memo.concat(tail)
-          , []
-
-          _.str.include(stuff, filterValue)
-      else
-        list
+          list
 
 mappingDnsWithRoute = (recordSets) ->
   _.reduce recordSets, (memo, recordSet) ->
-    if (not _.isEmpty(recordSet.ResourceRecords))
+    if (recordSet? and not _.isEmpty(recordSet.ResourceRecords))
       memo.concat _.map recordSet.ResourceRecords, (record) ->
         { Dns: record.Value, Route: recordSet.Name }
-    else
+    else if (recordSet?)
       memo.concat [
         { Dns: recordSet.AliasTarget.DNSName, Route: recordSet.Name }
       ]
+    else
+      memo
   , []
 
 findInstancesBehindLoadBalancer = (Elb, routes, callback) ->
@@ -96,7 +102,7 @@ findInstancesBehindLoadBalancer = (Elb, routes, callback) ->
     if (not lbDescriptions?)
       callback err
     else
-      Async.reduce lbDescriptions, [], (memo, description, cb) ->
+      Async.reduce lbDescriptions.LoadBalancerDescriptions, [], (memo, description, cb) ->
         cb null, memo.concat _.map description.Instances, (instance) ->
           {
             Id: instance.InstanceId,
