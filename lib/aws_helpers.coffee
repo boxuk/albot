@@ -61,7 +61,7 @@ getLoadBalancersByNames = (Elb, names, callback) ->
     if (not loadBalancers?)
       callback err
     else
-      callback null, loadBalancers.LoadBalancerDescriptions
+      callback null, loadBalancers
 
 module.exports = {
   prepareFilters: prepareFilters,

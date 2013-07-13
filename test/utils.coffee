@@ -18,6 +18,11 @@ describe 'Utils', () ->
       text = Utils.format_term("title")
       text.should.equal "\u001b[33m●\u001b[0m title"
 
+    it 'should have tails on multi lines', () ->
+      tail = ["Once", "Twice", "Thrice"]
+      text = Utils.format_term("title", null, null, null, null, null, tail)
+      text.should.equal "\u001b[33m●\u001b[0m title\n\t ↳ Once\n\t ↳ Twice\n\t ↳ Thrice"
+
   describe '#format_html()', () ->
     it 'should be nicely formatted', () ->
       ok = Utils.format_html("title", "http://google.fr", "infos", "comments", true)
