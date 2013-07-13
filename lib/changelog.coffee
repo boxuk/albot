@@ -60,9 +60,14 @@ forBetween = (fallback, org, repo, filter, period, save) ->
   if (_.str.include filter, "...")
     first = _.first filter.split("...")
     last = _.last filter.split("...")
-  else
+    save = period
+  else if (_.str.include filter, "..")
     first = _.first filter.split("..")
     last = _.last filter.split("..")
+    save = period
+  else
+    first = filter
+    last = period
 
   Github.Api.repos.compareCommits {
     user: org
@@ -73,7 +78,7 @@ forBetween = (fallback, org, repo, filter, period, save) ->
     if (error?)
       Utils.fallback_printError(fallback, error)
     else
-      display(fallback, org, repo, diff.commits, period)
+      display(fallback, org, repo, diff.commits, save)
 
 display = (fallback, org, repo, commits, save) ->
   Async.map commits, (commit, callback) ->
@@ -82,7 +87,7 @@ display = (fallback, org, repo, commits, save) ->
       repo: repo,
       sha: commit.sha
     }, (error, statuses) ->
-      callback error, {
+      callback null, {
         title: commit.commit.message
         url: "https://github.com/#{org}/#{repo}/commit/#{commit.sha}"
         comments: Moment(commit.commit.committer.date).fromNow()
@@ -91,16 +96,13 @@ display = (fallback, org, repo, commits, save) ->
         status: GhHelpers.buildStatus(statuses)
       }
   , (err, list) ->
-    if (err?)
-      Utils.fallback_printError(fallback, err)
-    else
-      list = _.filter list, (object) ->
-        not object.title.match(new RegExp '^Merge')
+    list = _.filter list, (object) ->
+      not object.title.match(new RegExp '^Merge')
 
-      if (save == "save")
-        saving(fallback, list)
-      else
-        Utils.fallback_printList fallback, list
+    if (save == "save")
+      saving(fallback, list)
+    else
+      Utils.fallback_printList fallback, list
 
 saving = (fallback, list) ->
   gist list, (error, url) ->
