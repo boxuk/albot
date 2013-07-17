@@ -238,4 +238,4 @@ Don't forget to add some tests. We use Mocha, Chai and Nock.
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/boxuk/albot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
+[![NPM](https://nodei.co/npm-dl/albot.png?months=3)](https://nodei.co/npm-dl/albot/)
