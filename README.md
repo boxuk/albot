@@ -236,6 +236,5 @@ If you don't know where to start. Look at the TODO file for any ideas of improve
 
 Don't forget to add some tests. We use Mocha, Chai and Nock.
 
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/boxuk/albot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 [![NPM](https://nodei.co/npm-dl/albot.png?months=3)](https://nodei.co/npm-dl/albot/)
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/boxuk/albot/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
