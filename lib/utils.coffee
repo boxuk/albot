@@ -38,7 +38,10 @@ format_html = (title, url, infos, comments, status, avatar, tails) ->
   html = ""
   html += "#{status_icon(status)} "
   if (avatar?) and Configuration.Github.Gravatar
-    html += "<img src='http://www.gravatar.com/avatar/#{avatar}?s=20' /> - "
+    if (avatar.indexOf('http') > -1)
+      html += "<img src='#{avatar}' height='20px' width='20px' /> - "
+    else
+      html += "<img src='http://www.gravatar.com/avatar/#{avatar}?s=20' /> - "
   html += "<a href='#{url}'>" if url?
   html += "#{title}"
   html += "</a>" if url?

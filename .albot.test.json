@@ -29,5 +29,11 @@
   },
   "changelog": {
     "gistId": "test-gist-cl"
+  },
+  "jira": {
+    "host": "thieriotandco.atlassian.net",
+    "user": "aurelien",
+    "password": "neilerua",
+    "story_points_field": "sp"
   }
 }

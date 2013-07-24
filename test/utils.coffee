@@ -39,6 +39,10 @@ describe 'Utils', () ->
       test = Utils.format_html("title", "http://google.fr", "infos", "comments", false, "205e460b479e2e5b48aec07710c08d50")
       test.should.equal "✘ <img src='http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=20' /> - <a href='http://google.fr'>title</a> - <strong>infos</strong> - <i>comments</i>"
 
+    it 'should be able to display avatar urls', () ->
+      test = Utils.format_html("title", "http://google.fr", "infos", "comments", false, "http://my.awesome.avatar.com")
+      test.should.equal "✘ <img src='http://my.awesome.avatar.com' height='20px' width='20px' /> - <a href='http://google.fr'>title</a> - <strong>infos</strong> - <i>comments</i>"
+
     it 'should display tails as multi-line', () ->
       test = Utils.format_html("title", null, "infos", "comments", false, null, ["this is not a tail recursion"])
       test.should.equal "✘ title - <strong>infos</strong> - <i>comments</i><br />&nbsp; ↳ this is not a tail recursion"

@@ -30,7 +30,8 @@
     "aws-sdk": "~1.3.1",
     "winston": "~0.7.2",
     "xregexp": "~2.0.0",
-    "funcster": "0.0.2"
+    "funcster": "0.0.2",
+    "jira": "~0.6.0"
   },
   "devDependencies": {
     "chai": "~1.7.0",

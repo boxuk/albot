@@ -115,3 +115,8 @@ describe 'Server', () ->
       cmd = Server.dispatch("PR: https://github.com/me/albot/pull/25 https://github.com/you/albot/pull/42")
       cmd.should.have.property('name').equal("Pull Requests")
       cmd.should.have.deep.property('args[0]').equal("PR: https://github.com/me/albot/pull/25 https://github.com/you/albot/pull/42")
+
+    it 'should match an Issue url anywhere in a message', () ->
+      cmd = Server.dispatch("Issue: https://thieriotandco.atlassian.net/browse/ALB-94")
+      cmd.should.have.property('name').equal("Issues")
+      cmd.should.have.deep.property('args[0]').equal("Issue: https://thieriotandco.atlassian.net/browse/ALB-94")
