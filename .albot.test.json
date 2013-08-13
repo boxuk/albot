@@ -21,6 +21,8 @@
   "deploy": {
     "exec": "cat",
     "args": ["Capfile", "app/config/deploy.rb"],
+    "branchArg": "--{{branch}}",
+    "extraArg": "--{{extra}}",
     "env": ["Capfile", "app/config/deploy.rb"],
     "postProcessFile": "function(path, content, callback) { callback(null, \"- PROCESSED: \" + content); }",
     "gistId": "test-gist"

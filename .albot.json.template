@@ -18,6 +18,7 @@
     "exec": "",
     "args": [],
     "branchArg": "{{branch}}",
+    "extraArg": "{{extra}}",
     "env": [],
     "postProcessFile": "function(path, content, callback) { callback(null, content); }",
     "gistId": ""

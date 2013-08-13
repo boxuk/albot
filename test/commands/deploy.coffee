@@ -9,13 +9,13 @@ describe 'Commands', () ->
     before () ->
       Nock('https://api.github.com')
         .persist()
-        .get('/repos/testorg/test-deployable/contents/Capfile?ref=branche&access_token=testtoken')
+        .get('/repos/testorg/test-deployable/contents/Capfile?ref=number&access_token=testtoken')
         .reply(200, {
             "encoding": "base64",
             "content": new Buffer("Ceci est un README").toString('base64'),
             "path": "Capfile"
           })
-        .get('/repos/testorg/test-deployable/contents/app%2Fconfig%2Fdeploy.rb?ref=branche&access_token=testtoken')
+        .get('/repos/testorg/test-deployable/contents/app%2Fconfig%2Fdeploy.rb?ref=number&access_token=testtoken')
         .reply(200, {
             "encoding": "base64",
             "content": new Buffer("Un fichier de configuration\nMouhahah").toString('base64'),
@@ -24,7 +24,7 @@ describe 'Commands', () ->
         .intercept('/gists/test-gist?access_token=testtoken', 'PATCH', {
           files: {
             "history": {
-              content: "- PROCESSED: Ceci est un README- PROCESSED: Un fichier de configuration\nMouhahah"
+              content: "     1\t- PROCESSED: Ceci est un README- PROCESSED: Un fichier de configuration$\n     2\tMouhahah"
             }
           }
         })
@@ -40,14 +40,14 @@ describe 'Commands', () ->
         if count is 1
           object.title.should.be.equal 'Deploy started'
           object.infos.should.be.equal 'test-deployable'
-          object.comments.should.be.equal '(branche)'
+          object.comments.should.be.equal '(number / show-ends)'
           object.status.should.be.equal true
           count += 1
         else
           object.title.should.be.equal 'Successful deploy !'
           object.url.should.be.equal 'https://gist.github.com/1/123456'
           object.infos.should.be.equal 'test-deployable'
-          object.comments.should.be.equal '(branche)'
+          object.comments.should.be.equal '(number / show-ends)'
           object.status.should.be.equal true
           done()
-      , 't', 'branche'
+      , 't', 'number', 'show-ends'

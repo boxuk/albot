@@ -14,6 +14,57 @@ Path = require 'path'
 Commands = require './commands'
 Utils = require './utils'
 
+deploy = (fallback, repo, branch, extra) ->
+  repo = Aliases[repo] || repo
+  branch = if branch? then branch else "master"
+  if branch? and Deploy.branchArg? then Deploy.args.push(Deploy.branchArg.replace("{{branch}}", branch))
+  if extra? and Deploy.extraArg? then Deploy.args.push(Deploy.extraArg.replace("{{extra}}", extra))
+
+  comments = if extra? then "(#{branch} / #{extra})" else "(#{branch})"
+
+  prepareEnv repo, branch, (error, dirPath) ->
+    if (error?)
+      Utils.fallback_printError(fallback, error)
+    else
+      if (not Deploy.exec? or _.isEmpty(Deploy.exec))
+        Utils.fallback_printError(fallback, "Deploy not configured.")
+      else
+
+        proc = Spawn Deploy.exec, Deploy.args, { cwd: dirPath }
+
+        Utils.fallback_print(fallback)
+          title: "Deploy started", infos: repo, comments: comments, status: true
+       
+        logPath = Temp.path {suffix: ".log"}
+        log = Fs.createWriteStream logPath
+        proc.stdout.pipe log
+        proc.stderr.pipe log
+
+        proc.on 'exit', (code) ->
+          if (code is 0)
+            gist log, logPath, (err, url) ->
+              Utils.fallback_print(fallback)
+                title: "Successful deploy !", url: url, infos: repo, comments: comments, status: true
+          else
+            gist log, logPath, (err, url) ->
+              Utils.fallback_print(fallback) {
+                title: "A problem occured during the deploy",
+                url: url,
+                infos: repo,
+                comments: comments,
+                status: false
+              }
+
+        proc.on 'error', (error) ->
+          gist log, logPath, (err, url) ->
+            Utils.fallback_print(fallback) {
+              title: "A problem occured during the deploy: #{error}",
+              url: url,
+              infos: repo,
+              comments: comments,
+              status: false
+            }
+
 prepareEnv = (repo, ref, callback) ->
   Temp.mkdir 'repo', (error, dirPath) ->
     if (error)
@@ -45,54 +96,6 @@ prepareEnv = (repo, ref, callback) ->
       , (err) ->
         callback(err, dirPath)
 
-deploy = (fallback, repo, branch) ->
-  repo = Aliases[repo] || repo
-  branch = if branch? then branch else "master"
-  if branch? and Deploy.branchArg? then Deploy.args.push(Deploy.branchArg.replace("{{branch}}", branch))
-
-  prepareEnv repo, branch, (error, dirPath) ->
-    if (error?)
-      Utils.fallback_printError(fallback, error)
-    else
-      if (not Deploy.exec? or _.isEmpty(Deploy.exec))
-        Utils.fallback_printError(fallback, "Deploy not configured.")
-      else
-
-        proc = Spawn Deploy.exec, Deploy.args, { cwd: dirPath }
-
-        Utils.fallback_print(fallback)
-          title: "Deploy started", infos: repo, comments: "(#{branch})", status: true
-       
-        logPath = Temp.path {suffix: ".log"}
-        log = Fs.createWriteStream logPath
-        proc.stdout.pipe log
-        proc.stderr.pipe log
-
-        proc.on 'exit', (code) ->
-          if (code is 0)
-            gist log, logPath, (err, url) ->
-              Utils.fallback_print(fallback)
-                title: "Successful deploy !", url: url, infos: repo, comments: "(#{branch})", status: true
-          else
-            gist log, logPath, (err, url) ->
-              Utils.fallback_print(fallback) {
-                title: "A problem occured during the deploy",
-                url: url,
-                infos: repo,
-                comments: "(#{branch})",
-                status: false
-              }
-
-        proc.on 'error', (error) ->
-          gist log, logPath, (err, url) ->
-            Utils.fallback_print(fallback) {
-              title: "A problem occured during the deploy: #{error}",
-              url: url,
-              infos: repo,
-              comments: "(#{branch})",
-              status: false
-            }
-
 gist = (log, logPath, callback) ->
   Fs.readFile logPath, (error, data) ->
     data = data.toString()
@@ -107,7 +110,7 @@ gist = (log, logPath, callback) ->
 
 module.exports = {
   name: 'Deploy',
-  description: '-project- [ | -alias-] [-branch-] Deploy your projects with the configured command'
+  description: '-project- [ | -alias-] [-branch-] [-extra-] Deploy your projects with the configured command'
   action: deploy,
   prepareEnv: prepareEnv
 }
