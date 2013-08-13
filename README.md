@@ -25,7 +25,7 @@ You will just need Coffeescript
         Commands:
 
           pulls                  [ <url[s]> | without <filter> | with <filter> | recent [<unit>] | last [<number> | <filter>]] List all Pull Requests of the organisation
-          deploy                 <project> [ | <alias>] [<branch>] Deploy your projects with the configured command
+          deploy                 <project> [ | <alias>] [<branch>] [<extra>] Deploy your projects with the configured command
           changelog              <project> [ | <alias>] <pr> <number> | <since> <number> <period> | <between> <tag-range> [save] List changelog for a given PR, period, range
           amazon                 [ instances [ with <term> ] ] Display various informations about your Amazon infrastructure
           help                   Display a list of available commands
@@ -114,7 +114,11 @@ The standard stuff are the script name, the list of arguments and the list of th
 
 You can also specify the way the branch name is passed to the script. {{branch}} will be replaced by the argument value.
 
-    "branchArg": "-Sbranch={{branch}}",
+    "branchArg": "-sbranch={{branch}}",
+
+An extra parameter is available in case your need one. To specify a server for example.
+
+    "extraArg": "-sdomain={{extra}}",
 
 In case you need to post process the files after the download, you can declare a function for it:
 
@@ -217,6 +221,7 @@ If you are more comfortable with env variables. You can use that too.
  - __exec__, The script to execute as deployment
  - __args__, A list of arguments to pass to. Default: []
  - __branchArg__, Another argument with the branch name. Default: {{branch}}
+ - __extraArg__, Another argument for extra use.
  - __env__, List of files do download from Github and create a directory with. Default: []
  - __postProcessFile__, A function allowing you to post process the files after download. Default: "" 
  - __gistId__, Gist id for the execution logs
