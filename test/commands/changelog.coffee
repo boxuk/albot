@@ -111,7 +111,7 @@ describe 'Commands', () ->
         .intercept('/gists/test-gist-cl?access_token=testtoken', 'PATCH', {
           files: {
             "history.md": {
-              content: "- Commit message - *#{dateGist}*\n"
+              content: "- Commit message\n"
             }
           }
         })
@@ -155,7 +155,7 @@ describe 'Commands', () ->
         .intercept('/gists/test-gist-cl?access_token=testtoken', 'PATCH', {
           files: {
             "history.md": {
-              content: "- Commit message failing - *#{dateGist}*\n"
+              content: "- Commit message failing\n"
             }
           }
         })

@@ -118,7 +118,9 @@ saving = (fallback, list) ->
 
 gist = (list, callback) ->
   data = _.reduce list, (memo, o) ->
-    memo += '- ' + o.title + ' - *' + o.comments + '*' + '\n'
+    memo += '- '
+    memo += o.title
+    memo += '\n'
   , ""
 
   Github.Api.gists.edit { id: Changelog.gistId, files: {"history.md": { content: data } }}, (err, gist) ->
