@@ -9,6 +9,7 @@ Funcster = require 'funcster'
 HipchatApi = require 'hipchat'
 GithubApi = require 'github'
 Winston = require 'winston'
+JiraApi = require('jira').JiraApi
 AWS = require 'aws-sdk'
 
 userHome = () ->
@@ -47,6 +48,11 @@ Nconf
       "key": "",
       "secret": "",
       "region": "eu-west-1"
+    },
+    "jira": {
+      "host": "",
+      "user": "",
+      "password": ""
     }
   }
 
@@ -54,6 +60,8 @@ hipchat = new HipchatApi Nconf.get('hipchat').token
 
 github = new GithubApi { version: "3.0.0", debug: Nconf.get("github").debug }
 github.authenticate { type: "oauth", token: Nconf.get("github").token }
+
+jira = new JiraApi('https', Nconf.get("jira").host, 443, Nconf.get("jira").user, Nconf.get("jira").password, 2)
 
 initLogger =
   (verbose = false) ->
@@ -101,6 +109,11 @@ module.exports =
   Amazon: {
     initAws: initAws,
     aws: @aws || initAws()
+  },
+  Jira: {
+    Api: jira,
+    Host: Nconf.get('jira').host,
+    StoryPointsField: Nconf.get('jira').story_points_field
   },
   Winston: {
     initLogger: initLogger,

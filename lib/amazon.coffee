@@ -36,7 +36,6 @@ amazon = (fallback, keyword, filter, filterValue) ->
 display = (fallback, Ec2, params, dnsRoutePairs, idInstances, filterValue) ->
   AwsHelpers.getInstancesByParams Ec2, params, (err, results) ->
     if (not results?)
-      console.log err + results
       Utils.fallback_printError fallback, err
     else
       list = _.map results, (instance) ->

@@ -21,6 +21,7 @@ list = {
   deploy: require('./deploy'),
   changelog: require('./changelog'),
   amazon: require('./amazon'),
+  issues: require('./issues'),
   help: {
     name: "Help"
     description: "Display a list of available commands",
