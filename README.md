@@ -28,6 +28,7 @@ You will just need Coffeescript
           deploy                 <project> [ | <alias>] [<branch>] [<extra>] Deploy your projects with the configured command
           changelog              <project> [ | <alias>] <pr> <number> | <since> <number> <period> | <between> <tag-range> [save] List changelog for a given PR, period, range
           amazon                 [ instances [ with <term> ] ] Display various informations about your Amazon infrastructure
+          issues                 <id> | <url> Display details of a JIRA ticket
           help                   Display a list of available commands
           server                 Start albot to listen on Hipchat instead of the command line
 
@@ -180,6 +181,19 @@ You can, as always, filter the result list
 
      $ albot amazon instances with live
 
+### Issues
+
+Display details about about your issues. The only current provider is JIRA.
+If your issue has subtasks, they will be displayed as well.
+
+You can request informations about a given id
+
+     $ albot issues alb-100
+
+Or just an URL
+
+     $ albot issues https://thieriot.atlassian.net/browse/ALB-100
+
 ### Server
 
 Albot can also be use as an Hipchat bot.
@@ -195,6 +209,8 @@ Be careful, it's very short.
 
 As a special feature in server mode:
 If any Pull Request URL is detected anywhere in a message (even not prefixed by the name of the bot) then, the details of this PR will be printed the same way than ```albot pulls <url>```
+
+Note: The same will happen with an issue URL.
 
 ## Configuration
 
@@ -231,6 +247,11 @@ If you are more comfortable with env variables. You can use that too.
  - __key__, The Amazon Key
  - __secret__, Amazon Secret
  - __region__, The region of your instances. Default: "eu-west-1"
+- __jira__,
+ - __host__, Your JIRA hostname. Default: ""
+ - __user__, Username. Default: ""
+ - __password__, Password. Default: ""
+ - __story_points_field__, The name of the field used to store Story Points
 
 ## Hacking
 

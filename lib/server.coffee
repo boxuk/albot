@@ -24,8 +24,16 @@ dispatch = (message, from) ->
 
     if (not message.match(new RegExp "#{Configuration.Nickname}"))
       #TODO: This definitively need NOT to be a special case hard coded
+      #PrecedenceCondition?
       if (require('./gh_helpers').githubPRUrlMatching(message))
         cmd = Commands.pulls
+        if (cmd)
+          cmd.args = []
+          cmd.args.push message
+        cmd
+      #TODO: This definitively need NOT to be a special case hard coded
+      else if (require('./issues').jiraIssuesUrlMatching(message))
+        cmd = Commands.issues
         if (cmd)
           cmd.args = []
           cmd.args.push message
