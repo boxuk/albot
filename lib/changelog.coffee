@@ -82,6 +82,12 @@ forBetween = (fallback, org, repo, filter, period, save) ->
 
 display = (fallback, org, repo, commits, save) ->
   Async.map commits, (commit, callback) ->
+    
+    if (commit.committer.gravatar_id?)
+      avatarId = commit.committer.gravatar_id
+    else
+      avatarId = ''
+
     Github.Api.statuses.get {
       user: org,
       repo: repo,
@@ -91,7 +97,7 @@ display = (fallback, org, repo, commits, save) ->
         title: commit.commit.message
         url: "https://github.com/#{org}/#{repo}/commit/#{commit.sha}"
         comments: Moment(commit.commit.committer.date).fromNow()
-        avatar: commit.committer.gravatar_id
+        avatar: avatarId
         order: commit.commit.committer.date
         status: GhHelpers.buildStatus(statuses)
       }
