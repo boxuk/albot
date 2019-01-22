@@ -1,5 +1,7 @@
 # Albot [![Build Status](https://secure.travis-ci.org/boxuk/albot.png)](http://travis-ci.org/boxuk/albot) [![Coverage Status](https://coveralls.io/repos/boxuk/albot/badge.png?branch=master)](https://coveralls.io/r/boxuk/albot?branch=master) [![Dependency Status](https://gemnasium.com/boxuk/albot.png)](https://gemnasium.com/boxuk/albot) [![NPM version](https://badge.fury.io/js/albot.png)](http://badge.fury.io/js/albot)
 
+# This repository is unmaintained
+
 Albot is a small command line tool built as an attempt to help us with our Developement process
 
 You can find a better version of this documentation here: [http://boxuk.github.io/albot/](http://boxuk.github.io/albot/)
